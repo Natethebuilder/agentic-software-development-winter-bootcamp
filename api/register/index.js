@@ -1,5 +1,6 @@
 const { createHash } = require('node:crypto')
 
+const EVENT_ID = 'agentic-software-development-winter-bootcamp'
 const SESSION_IDS = new Set(['session-01', 'session-02', 'session-03', 'session-04', 'session-05', 'session-06'])
 const ENVIRONMENTS = new Set(['local', 'cloud'])
 
@@ -72,7 +73,6 @@ module.exports = async function register(context, req) {
 
   const flowUrl = process.env.REGISTRATION_FLOW_URL
   const flowSecret = process.env.REGISTRATION_FLOW_SHARED_SECRET
-
   if (!flowUrl || !flowSecret) {
     context.res = response(503, { error: 'Registration storage is not configured yet.' })
     return
@@ -90,9 +90,9 @@ module.exports = async function register(context, req) {
     return
   }
 
-  const registrationId = createHash('sha256').update(principal.userId).digest('hex')
-
+  const registrationId = createHash('sha256').update(`${EVENT_ID}:${principal.userId}`).digest('hex')
   const payload = {
+    eventId: EVENT_ID,
     registrationId,
     githubUserId: principal.userId,
     githubUsername: principal.userDetails,

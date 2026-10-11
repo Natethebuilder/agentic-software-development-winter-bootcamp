@@ -3,23 +3,33 @@
     {
       "route": "/api/register",
       "allowedRoles": ["authenticated"]
+    },
+    {
+      "route": "/login",
+      "redirect": "/.auth/login/github?post_login_redirect_uri=/?register=1"
+    },
+    {
+      "route": "/logout",
+      "redirect": "/.auth/logout?post_logout_redirect_uri=/"
+    },
+    {
+      "route": "/.auth/login/aad",
+      "statusCode": 404
     }
   ],
   "navigationFallback": {
     "rewrite": "/index.html",
-    "exclude": ["/api/*", "/.auth/*", "/*.{css,js,json,png,jpg,jpeg,gif,svg,ico,woff,woff2}"]
+    "exclude": ["/api/*", "/.auth/*", "/setup/*", "/*.{css,js,png,jpg,jpeg,svg,webp,ico,woff,woff2}"]
+  },
+  "globalHeaders": {
+    "X-Content-Type-Options": "nosniff",
+    "Referrer-Policy": "strict-origin-when-cross-origin",
+    "Permissions-Policy": "camera=(), microphone=(), geolocation=()"
   },
   "responseOverrides": {
     "401": {
-      "redirect": "/.auth/login/github?post_login_redirect_uri=/?register=1",
+      "redirect": "/.auth/login/github?post_login_redirect_uri=.referrer",
       "statusCode": 302
     }
-  },
-  "globalHeaders": {
-    "Content-Security-Policy": "default-src 'self'; img-src 'self' data: https://avatars.githubusercontent.com; style-src 'self' 'unsafe-inline'; script-src 'self' 'sha256-lGS/mzk2+4gTc9Yr9omMJ/OKBZKW9+m28ai7v+KHK60='; connect-src 'self'; frame-ancestors 'none'; base-uri 'self'; form-action 'self'",
-    "Referrer-Policy": "strict-origin-when-cross-origin",
-    "X-Content-Type-Options": "nosniff",
-    "X-Frame-Options": "DENY",
-    "Permissions-Policy": "camera=(), microphone=(), geolocation=()"
   }
 }

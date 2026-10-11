@@ -1,42 +1,50 @@
 # Agentic Software Development Winter Bootcamp
 
-One React, Vite and DECKIO application for the public event website and presentation deck for the broader software development community.
+Interactive public website and DECKIO presentation for a six-session community bootcamp about GitHub Copilot and agentic practices across the software development lifecycle.
+
+**Live website:** https://jolly-field-07f1d0f0f.3.azurestaticapps.net/
 
 | Route | Experience |
 | --- | --- |
-| `#/` | Public website, six-session placeholder programme, interactive agentic SDLC and registration |
-| `#/deck` | Presentation deck driven by the same content model |
+| `#/` | Public website with event framing, programme placeholders, development setup, FAQ and registration |
+| `#/deck` | Horizontal DECKIO presentation with the same content and embedded registration |
 
-## Local development
+Topics, dates, speakers and headshots intentionally remain visible placeholders until the programme is confirmed.
+
+## Develop
 
 ```powershell
 npm install
 npm run dev
 npm run build
+npm run build:swa
 ```
 
-The Azure Static Web Apps build uses `npm run build:swa` so the website, deck, GitHub authentication and registration API share one origin.
-
-## Content placeholders
-
-Dates, topics, speakers and headshots are intentionally marked `TBC`. Update the six entries in `src/content.js` when the programme is confirmed; both the website and deck update together.
+The Azure Static Web Apps build uses `/` so the website, deck, GitHub authentication and `/api/register` share one origin.
 
 ## Registration architecture
 
-Registration uses Azure Static Web Apps GitHub authentication and a protected `/api/register` function. The function validates the verified platform identity, generates an event-scoped deterministic registration ID and forwards only validated fields to a dedicated Power Automate flow for upsert into a private Microsoft List.
+The protected API:
 
-See [`docs/registration-backend.md`](docs/registration-backend.md) for the private SharePoint operations site, List schema, deterministic upsert flow, application settings and verification checklist.
+1. reads the authenticated GitHub identity from `x-ms-client-principal`;
+2. validates company, email, session IDs, environment and consent;
+3. derives an event-scoped SHA-256 `RegistrationId`;
+4. sends `eventId: agentic-software-development-winter-bootcamp` to the shared registration flow;
+5. lets that flow route the submission into the dedicated Software Development SharePoint List.
 
-## Deployment
-
-The workflow at `.github/workflows/deploy-registration.yml` deploys to a dedicated Azure Static Web App after these repository settings exist:
+The application uses:
 
 | Setting | Purpose |
 | --- | --- |
-| `AZURE_STATIC_WEB_APPS_API_TOKEN_SOFTWARE_DEVELOPMENT_BOOTCAMP` | Deployment token stored as a GitHub Actions secret |
-| `REGISTRATION_FLOW_URL` | Power Automate trigger URL stored as an Azure app setting |
-| `REGISTRATION_FLOW_SHARED_SECRET` | Required shared secret stored only in Azure and Power Automate |
+| `REGISTRATION_FLOW_URL` | Existing shared Data Winter Bootcamp registration flow endpoint |
+| `REGISTRATION_FLOW_SHARED_SECRET` | Server-side secret validated by the shared flow |
 
-Azure resource group: `rg-agentic-software-development-winter-bootcamp`.
+Never commit either value. See [docs/registration-backend.md](docs/registration-backend.md).
 
-Azure Static Web App: `swa-agentic-software-development-winter-bootcamp`.
+## Deploy
+
+Pushing to `main` deploys the complete application to Azure Static Web Apps:
+
+- Resource group: `rg-agentic-software-development-winter-bootcamp`
+- Static Web App: `swa-agentic-software-development-winter-bootcamp`
+- Workflow: `.github/workflows/deploy-registration.yml`

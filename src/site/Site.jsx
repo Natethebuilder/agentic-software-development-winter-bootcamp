@@ -1,212 +1,399 @@
-import { useEffect, useState } from 'react'
-import { EVENT, FAQ, NAV, PREP, REGISTRATION, SDLC_STAGES, SESSIONS, VALUE } from '../content.js'
+import { useEffect, useRef, useState } from 'react'
+import { Logos, Mascot } from '../winter/Decor.jsx'
+import { SnowToggle } from '../winter/Snowfall.jsx'
+import { AgentTerminal, Countdown, ScheduleQuery } from '../data/DataViz.jsx'
+import SetupWizard from '../setup/SetupWizard.jsx'
 import RegistrationForm from '../registration/RegistrationForm.jsx'
-import { MotionToggle } from '../theme/WinterGrid.jsx'
-import { AgenticLoop, PullRequestSimulator } from '../viz/AgenticLoop.jsx'
+import {
+  BOOTCAMP, FAQ, PERSONAS, PILLARS, PREP, REGISTRATION, SESSIONS,
+} from '../content.js'
+import s from './Site.module.css'
 
-function Brand() {
+const NAV = [
+  ['why', 'Why join'],
+  ['lineup', 'Lineup'],
+  ['schedule', 'Schedule'],
+  ['prepare', 'Get ready'],
+  ['faq', 'FAQ'],
+  ['join', 'Register'],
+]
+
+const PREP_KEY = 'winter-bootcamp:prep'
+const DECK_URL = `${import.meta.env.BASE_URL}#/deck`
+
+function useReveal(rootRef) {
+  useEffect(() => {
+    const root = rootRef.current
+    if (!root) return undefined
+    const els = root.querySelectorAll(`.${s.reveal}`)
+    const io = new IntersectionObserver(
+      (entries) => entries.forEach((e) => e.isIntersecting && e.target.classList.add(s.in)),
+      { root, threshold: 0.12 },
+    )
+    els.forEach((el) => io.observe(el))
+
+    // Items pop in as they scroll into view; long single-column phone sections otherwise feel static
+    const items = root.querySelectorAll(`.${s.grid} > *, .${s.checkItem}, .${s.faqItem}, .${s.personaBox}, .${s.flow}`)
+    const itemIo = new IntersectionObserver((entries) => {
+      entries.filter((e) => e.isIntersecting).forEach((e, k) => {
+        e.target.style.setProperty('--i', k)
+        e.target.classList.add(s.popIn)
+        itemIo.unobserve(e.target)
+      })
+    }, { root, threshold: 0.15, rootMargin: '0px 0px -6% 0px' })
+    items.forEach((el) => { el.classList.add(s.pop); itemIo.observe(el) })
+
+    return () => { io.disconnect(); itemIo.disconnect() }
+  }, [rootRef])
+}
+
+// Each section is a self-contained, full-height panel so it reads on its own.
+function Section({ id, idx, eyebrow, title, subtitle, className = '', children }) {
   return (
-    <a className="brand" href="#top" aria-label={`${EVENT.name} home`}>
-      <span aria-hidden="true">&lt;/&gt;</span>
-      <div><strong>Agentic Dev</strong><small>Winter Bootcamp</small></div>
-    </a>
+    <section id={id} className={`${s.panel} ${className}`} data-panel>
+      <div className={`${s.section} ${s.reveal}`}>
+        <div className={s.sectionHead}>
+          <p className={s.eyebrow}><span className={s.eyebrowIdx}>{idx}</span>{eyebrow}</p>
+          <h2>{title}</h2>
+          {subtitle && <p className={s.lead}>{subtitle}</p>}
+        </div>
+        {children}
+      </div>
+    </section>
   )
 }
 
-function SpeakerPlaceholder() {
+function useActiveSection(rootRef) {
+  const [active, setActive] = useState('top')
+  useEffect(() => {
+    const root = rootRef.current
+    if (!root) return undefined
+    const io = new IntersectionObserver(
+      (entries) => entries.forEach((e) => e.isIntersecting && setActive(e.target.id)),
+      { root, rootMargin: '-45% 0px -50% 0px' },
+    )
+    root.querySelectorAll('[data-panel]').forEach((el) => io.observe(el))
+    return () => io.disconnect()
+  }, [rootRef])
+  return active
+}
+
+function PersonaPicker() {
+  const [sel, setSel] = useState(PERSONAS[0].id)
+  const p = PERSONAS.find((x) => x.id === sel)
   return (
-    <div className="speaker-placeholder" aria-label="Speaker headshot to be confirmed">
-      <span />
-      <i />
+    <div className={s.personaBox}>
+      <div className={s.personaTabs} role="tablist" aria-label="Pick your role">
+        <span className={s.personasLabel}>Made for</span>
+        {PERSONAS.map((x) => (
+          <button
+            key={x.id}
+            type="button"
+            role="tab"
+            aria-selected={x.id === sel}
+            className={`${s.persona} ${x.id === sel ? s.personaOn : ''}`}
+            onClick={() => setSel(x.id)}
+          >
+            {x.icon} {x.label}
+          </button>
+        ))}
+      </div>
+      <div className={s.personaPanel} role="tabpanel" key={sel}>
+        <p>{p.does}</p>
+        <div className={s.stack}>
+          <span className={s.stackLabel}>your stack</span>
+          {p.stack.map((t) => <span key={t} className={s.stackChip}>{t}</span>)}
+        </div>
+      </div>
     </div>
   )
 }
 
-export default function Site({ motion, onToggleMotion }) {
-  const [menuOpen, setMenuOpen] = useState(false)
+function ProgrammeReveal() {
+  const [open, setOpen] = useState(false)
+
+  return (
+    <div className={s.programmeReveal}>
+      <button
+        type="button"
+        className={`${s.programmeMerge} ${open ? s.programmeMergeOpen : ''}`}
+        aria-expanded={open}
+        aria-controls="programme-sessions"
+        aria-label="Merge the programme"
+        disabled={open}
+        onClick={() => setOpen(true)}
+      >
+        <span className={s.mergeTop}><i />pull request · programme</span>
+        <span className={s.mergeBranches}><strong>programme/tbc</strong><i>→</i><strong>main</strong></span>
+        <span className={s.mergeSummary}>6 session placeholders · ready for review</span>
+        <span className={s.mergeAction}>{open ? 'Merged' : 'Merge programme'}</span>
+        <span className={s.mergePackets} aria-hidden="true"><i /><i /><i /><i /></span>
+      </button>
+
+      {open && (
+        <div id="programme-sessions" className={s.sessionList}>
+          {SESSIONS.map((session, index) => (
+            <article
+              key={session.id}
+              className={`${s.sessionRow} ${s.sessionRowOpen}`}
+              style={{ '--i': index, '--session-accent': session.accent }}
+            >
+              <div className={s.sessionSummary}>
+                <span className={s.sessionNumber}>{session.number}</span>
+                <span className={s.sessionHeading}>
+                  <span className={s.sessionAudience}>{session.audience}</span>
+                  <strong>{session.title}</strong>
+                  <small>{session.subtitle}</small>
+                </span>
+                <span className={s.sessionLead}>
+                  <span className={s.sessionHeadshot} aria-hidden="true"><i /><b /></span>
+                  <span className={s.sessionLeadCopy}>
+                    <small>Session lead</small>
+                    <strong>{session.lead}</strong>
+                  </span>
+                </span>
+              </div>
+
+              <div className={s.sessionDetails}>
+                <p className={s.sessionSpotlight}>{session.spotlight}</p>
+                <p className={s.sessionOverview}>{session.overview}</p>
+
+                <div className={s.sessionDepth}>
+                  <div>
+                    <h4>You will</h4>
+                    <ul>
+                      {session.outcomes.map((outcome) => <li key={outcome}>{outcome}</li>)}
+                    </ul>
+                  </div>
+                  <div className={s.sessionToolkit}>
+                    <span>Tools and concepts</span>
+                    <div className={s.sessionTools}>
+                      {session.tools.map((tool) => <span key={tool}>{tool}</span>)}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </article>
+          ))}
+        </div>
+      )}
+    </div>
+  )
+}
+
+function PrepChecklist() {
+  const [done, setDone] = useState(() => {
+    try { return JSON.parse(localStorage.getItem(PREP_KEY)) || {} } catch { return {} }
+  })
+  useEffect(() => {
+    try { localStorage.setItem(PREP_KEY, JSON.stringify(done)) } catch { /* ignore */ }
+  }, [done])
+
+  const count = PREP.filter((p) => done[p.id]).length
+  const pct = Math.round((count / PREP.length) * 100)
+  const all = count === PREP.length
+
+  return (
+    <div className={s.checklist}>
+      <div className={s.checkHead}>
+        <div>
+          <span className={s.checkScore}>{count}/{PREP.length}</span>
+          <span className={s.checkLabel}>{all ? 'All checks passed. You are ready.' : 'checks passed'}</span>
+        </div>
+        <div className={s.progress} role="progressbar" aria-valuenow={pct} aria-valuemin={0} aria-valuemax={100}>
+          <span style={{ width: `${pct}%` }} />
+        </div>
+      </div>
+      <ul>
+        {PREP.map((p) => (
+          <li key={p.id}>
+            <label className={`${s.checkItem} ${done[p.id] ? s.checked : ''}`}>
+              <input
+                type="checkbox"
+                checked={Boolean(done[p.id])}
+                onChange={(e) => setDone((d) => ({ ...d, [p.id]: e.target.checked }))}
+              />
+              <span className={s.checkBox} aria-hidden="true">{done[p.id] ? '✓' : ''}</span>
+              <span className={s.checkIcon} aria-hidden="true">{p.icon}</span>
+              <span className={s.checkText}>
+                <strong>{p.title}</strong>
+                <small>{p.desc}</small>
+              </span>
+              <span className={`${s.badge} ${done[p.id] ? s.badgePass : ''}`}>{done[p.id] ? 'PASS' : 'PENDING'}</span>
+            </label>
+          </li>
+        ))}
+      </ul>
+    </div>
+  )
+}
+
+export default function Site({ snow, onToggleSnow }) {
+  const rootRef = useRef(null)
+  const [scrolled, setScrolled] = useState(false)
+  useReveal(rootRef)
+  const active = useActiveSection(rootRef)
+
+  const go = (id) => rootRef.current?.querySelector(`#${id}`)?.scrollIntoView({ behavior: 'smooth', block: 'start' })
 
   useEffect(() => {
-    const shouldFocusRegistration = new URLSearchParams(window.location.search).get('register') === '1'
-    if (shouldFocusRegistration) {
-      window.setTimeout(() => document.getElementById('register')?.scrollIntoView({ behavior: 'smooth' }), 250)
-      const url = new URL(window.location.href)
-      url.searchParams.delete('register')
-      window.history.replaceState({}, '', `${url.pathname}${url.search}${url.hash}`)
+    if (new URLSearchParams(window.location.search).get('register') === '1') {
+      const id = setTimeout(() => go('join'), 100)
+      return () => clearTimeout(id)
     }
+    return undefined
   }, [])
 
   return (
-    <div className="site-shell" id="top">
-      <header className="site-header">
-        <Brand />
-        <button
-          className="menu-toggle"
-          type="button"
-          aria-expanded={menuOpen}
-          aria-label="Toggle navigation"
-          onClick={() => setMenuOpen((value) => !value)}
-        >
-          <span /><span />
+    <div className={s.site} ref={rootRef} onScroll={(e) => setScrolled(e.currentTarget.scrollTop > 40)}>
+
+      <header className={`${s.nav} ${scrolled ? s.navScrolled : ''}`}>
+        <button type="button" className={s.brand} onClick={() => go('top')}>
+          <span className={s.brandMark}>
+            <span className={s.brandDataGlyph}>
+              <span className={s.brandCodeGlyph}>&lt;/&gt;</span>
+              <span className={s.brandDataPackets} aria-hidden="true"><i /><i /><i /></span>
+            </span>
+          </span>
+          <span className={s.brandText}><small>Agentic Software</small><strong>Winter Bootcamp</strong></span>
         </button>
-        <nav className={menuOpen ? 'is-open' : ''} aria-label="Primary navigation">
-          {NAV.map((item) => <a key={item.href} href={item.href} onClick={() => setMenuOpen(false)}>{item.label}</a>)}
-          <a href="#/deck">Present the deck</a>
-          <a className="nav-register" href="#register" onClick={() => setMenuOpen(false)}>Register</a>
+        <nav className={s.navLinks} aria-label="Sections">
+          {NAV.map(([id, label]) => (
+            <button key={id} type="button" className={active === id ? s.navActive : ''} aria-current={active === id ? 'true' : undefined} onClick={() => go(id)}>{label}</button>
+          ))}
         </nav>
+        <div className={s.navActions}>
+          <SnowToggle enabled={snow} onToggle={onToggleSnow} />
+          <a className={`${s.btnGhost} ${s.navDeck}`} href={DECK_URL}>▶ Deck</a>
+        </div>
       </header>
 
       <main>
-        <section className="hero section">
-          <div className="hero-copy">
-            <div className="eyebrow"><span>Winter 2026</span>{EVENT.eyebrow}</div>
-            <h1>Build the<br /><em>next loop.</em></h1>
-            <p>{EVENT.subtitle}</p>
-            <div className="hero-actions">
-              <a className="button button-primary" href="#register">Register interest</a>
-              <a className="button button-secondary" href="#sdlc">Explore the SDLC</a>
+        <section id="top" className={`${s.panel} ${s.heroPanel}`} data-panel>
+          <div className={s.hero}>
+          <div className={s.heroText}>
+            <span className={s.pill}>BUILD · {BOOTCAMP.season} · Online · Free · For the software community</span>
+            <h1>
+              Agentic Software Development <span className={s.highlight}>Winter Bootcamp</span>
+            </h1>
+            <p className={s.heroLead}>
+              <strong>{BOOTCAMP.tagline}</strong> {BOOTCAMP.subtitle}
+            </p>
+            <div className={s.ctaRow}>
+              <a className={s.btnGhost} href={DECK_URL}>▶ Present the deck</a>
+              <button type="button" className={s.btnGhost} onClick={() => go('lineup')}>See the lineup</button>
+              <button type="button" className={s.btnPrimary} onClick={() => go('join')}>Register now</button>
             </div>
-            <div className="hero-meta">
-              <span><small>FORMAT</small>{EVENT.format}</span>
-              <span><small>COMMUNITY</small>Software builders at every stage</span>
-            </div>
+            <Countdown
+              target={BOOTCAMP.kickoff}
+              date={BOOTCAMP.kickoffDate}
+              dateLabel={BOOTCAMP.kickoffLabel}
+              className={s.countdown}
+            />
           </div>
-          <div className="hero-visual">
-            <div className="orbit orbit-one" />
-            <div className="orbit orbit-two" />
-            <div className="copilot-core">
-              <small>HUMAN</small>
-              <strong>+</strong>
-              <small>AGENT</small>
-            </div>
-            {SDLC_STAGES.map((stage, index) => (
-              <span key={stage.id} className={`orbit-node node-${index + 1}`}>{stage.object}</span>
-            ))}
+          <div className={s.heroArt}>
+            <AgentTerminal className={s.terminal}>
+              <Mascot className={s.perched} />
+            </AgentTerminal>
+            <Logos size="md" className={s.heroLogos} />
           </div>
-          <div className="hero-side-label">ISSUE → SPEC → CODE → PR → CI → PROD</div>
+          </div>
+          <button type="button" className={s.scrollCue} onClick={() => go('why')} aria-label="Next section">
+            <span>scroll</span><i aria-hidden="true">↓</i>
+          </button>
         </section>
 
-        <section className="marquee" aria-label="Event themes">
-          <div>
-            <span>GitHub Copilot</span><i>✦</i><span>Human judgement</span><i>✦</i>
-            <span>Agentic SDLC</span><i>✦</i><span>Community practice</span><i>✦</i>
-            <span>GitHub Copilot</span><i>✦</i><span>Human judgement</span><i>✦</i>
-          </div>
-        </section>
-
-        <section className="section split-intro" id="why">
-          <div>
-            <span className="section-index">01 / WHY NOW</span>
-            <h2>Software development is becoming a conversation.</h2>
-          </div>
-          <div className="intro-copy">
-            <p className="lead">The useful question is no longer whether AI can produce code.</p>
-            <p>It is how teams make intent legible, delegate safely, review evidence and learn faster without losing engineering accountability.</p>
-          </div>
-          <div className="value-grid">
-            {VALUE.map((item) => (
-              <article key={item.number}>
-                <span>{item.number}</span>
-                <h3>{item.title}</h3>
-                <p>{item.body}</p>
+        <Section
+          id="why"
+          idx="01"
+          eyebrow="Why join"
+          title="Agentic AI across the complete software delivery loop."
+          subtitle="A hands-on programme for developers, testers, architects, platform teams and engineering leaders."
+        >
+          <div className={`${s.grid} ${s.g3}`}>
+            {PILLARS.map((p) => (
+              <article key={p.id} className={s.card}>
+                <span className={s.icon}>{p.icon}</span>
+                <h3>{p.title}</h3>
+                <p>{p.desc}</p>
               </article>
             ))}
           </div>
-        </section>
+          <PersonaPicker />
+        </Section>
 
-        <section className="section lifecycle-section" id="sdlc">
-          <div className="section-heading">
-            <span className="section-index">02 / THE AGENTIC SDLC</span>
-            <h2>One connected delivery loop.</h2>
-            <p>Tap a stage to see the artefact, agent interaction and human-readable signal it should produce.</p>
-          </div>
-          <AgenticLoop active={motion} />
-        </section>
 
-        <section className="section evidence-section">
-          <div className="evidence-copy">
-            <span className="section-index">03 / EVIDENCE OVER OUTPUT</span>
-            <h2>A good agent does not just write code.</h2>
-            <p>It leaves a trail that a team can inspect: scoped intent, a focused branch, tests, review context and visible checks.</p>
-            <ul>
-              <li><span>01</span> Bound the task before delegation</li>
-              <li><span>02</span> Review the diff and the behaviour</li>
-              <li><span>03</span> Let automation report release confidence</li>
-            </ul>
-          </div>
-          <PullRequestSimulator active={motion} />
-        </section>
+        <Section
+          id="lineup"
+          idx="02"
+          eyebrow="The lineup"
+          title="Build the programme."
+          subtitle="Merge the placeholder programme to inspect all six reserved sessions."
+          className={s.lineupPanel}
+        >
+          <ProgrammeReveal />
+        </Section>
 
-        <section className="section sessions-section" id="sessions">
-          <div className="section-heading">
-            <span className="section-index">04 / SIX SESSIONS</span>
-            <h2>The programme is taking shape.</h2>
-            <p>Six places are reserved across the lifecycle. Topics, dates and community speakers will be added as they are confirmed.</p>
-          </div>
-          <div className="session-grid">
-            {SESSIONS.map((session) => (
-              <article key={session.id}>
-                <div className="session-number">{session.number}</div>
-                <div className="session-date"><span>{session.date}</span><small>{session.time}</small></div>
-                <h3>{session.title}</h3>
-                <p>{session.subtitle}</p>
-                <div className="speaker-row">
-                  <SpeakerPlaceholder />
-                  <div><strong>{session.speaker}</strong><span>Headshot TBC</span></div>
-                </div>
-              </article>
-            ))}
-          </div>
-        </section>
+        <Section
+          id="schedule"
+          idx="03"
+          eyebrow="Schedule"
+          title="Six sessions. One connected delivery loop."
+          subtitle="Topics and dates are still being confirmed. The programme will connect intent, implementation, quality, review, delivery and learning."
+        >
+          <ScheduleQuery />
+        </Section>
 
-        <section className="section prep-section" id="prepare">
-          <div className="section-heading">
-            <span className="section-index">05 / PRE-FLIGHT</span>
-            <h2>Bring curiosity. Prepare the basics.</h2>
+        <Section
+          id="prepare"
+          idx="04"
+          eyebrow="Get ready"
+          title="Pre-flight checks"
+          subtitle="Prepare the core development tools, sign in to GitHub, then tick off the checks. Progress stays in this browser only."
+          className={s.preflightPanel}
+        >
+          <div className={s.setupStack}>
+            <div className={s.preflightBlock}>
+              <div className={s.preflightLabel}><span>01</span><strong>Readiness checklist</strong></div>
+              <PrepChecklist />
+            </div>
+            <div className={s.preflightBlock}>
+              <div className={s.preflightLabel}><span>02</span><strong>Guided setup</strong></div>
+              <SetupWizard />
+            </div>
           </div>
-          <div className="prep-list">
-            {PREP.map((item, index) => (
-              <article key={item.title}>
-                <span>{String(index + 1).padStart(2, '0')}</span>
-                <div><h3>{item.title}</h3><p>{item.body}</p></div>
-                <strong>{item.state}</strong>
-              </article>
-            ))}
-          </div>
-        </section>
+        </Section>
 
-        <section className="section faq-section" id="faq">
-          <div className="section-heading">
-            <span className="section-index">06 / FAQ</span>
-            <h2>Before you join.</h2>
-          </div>
-          <div className="faq-list">
-            {FAQ.map((item, index) => (
-              <details key={item.question}>
-                <summary><span>{String(index + 1).padStart(2, '0')}</span>{item.question}<i>+</i></summary>
-                <p>{item.answer}</p>
+        <Section id="faq" idx="05" eyebrow="FAQ" title="Frequently asked questions">
+          <div className={s.faq}>
+            {FAQ.map((f) => (
+              <details key={f.q} className={s.faqItem}>
+                <summary>{f.q}</summary>
+                <p>{f.a}</p>
               </details>
             ))}
           </div>
-        </section>
+        </Section>
 
-        <section className="section register-section" id="register">
-          <div className="register-heading">
-            <span className="section-index">07 / REGISTER</span>
-            <h2>{REGISTRATION.heading}</h2>
-            <p>{REGISTRATION.body}</p>
-          </div>
+        <Section
+          id="join"
+          idx="06"
+          eyebrow={REGISTRATION.eyebrow}
+          title={REGISTRATION.title}
+          subtitle={REGISTRATION.subtitle}
+        >
           <RegistrationForm />
-        </section>
-      </main>
+        </Section>
 
-      <footer>
-        <Brand />
-        <p>Built for the broader software development community with GitHub Copilot and human judgement.</p>
-        <div>
-          <a href="#/deck">Open deck</a>
-          <MotionToggle enabled={motion} onToggle={onToggleMotion} />
-        </div>
-      </footer>
+        <footer className={s.footer}>
+          <Logos size="sm" />
+          <p>
+            Educational workshop series delivered by Microsoft. Not a consulting engagement. Use sample or
+            sample or non-sensitive repositories only. Workshop outputs are learning artifacts.
+          </p>
+          <p className={s.footerSmall}>Built with DECKIO</p>
+        </footer>
+      </main>
     </div>
   )
 }

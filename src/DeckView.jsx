@@ -1,65 +1,36 @@
 import { InlineEditProvider, Navigation, SlideErrorBoundary, SlideProvider, useSlides } from '@deckio/deck-engine'
 import '@deckio/deck-engine/styles/editable.css'
 import project from '../deck.config.js'
-import { useEffect, useState } from 'react'
-import RegistrationForm from './registration/RegistrationForm.jsx'
-import { MotionToggle } from './theme/WinterGrid.jsx'
+import { Mascot } from './winter/Decor.jsx'
+import { SnowToggle } from './winter/Snowfall.jsx'
+
+function FloatingCopilot() {
+  const { current, totalSlides } = useSlides()
+  if (current <= 0 || current === totalSlides - 1) return null
+  return <Mascot className="floating-copilot" />
+}
 
 function DeliveryProgress() {
   const { current, totalSlides, visibleIndices = [] } = useSlides()
-  const order = visibleIndices.length ? visibleIndices : Array.from({ length: totalSlides }, (_, index) => index)
-  const position = Math.max(0, order.indexOf(current))
-  const progress = ((position + 1) / order.length) * 100
-  const labels = ['ISSUE', 'SPEC', 'CODE', 'PR', 'CI', 'PROD']
-
+  const order = visibleIndices.length ? visibleIndices : Array.from({ length: totalSlides }, (_, i) => i)
+  const pos = Math.max(0, order.indexOf(current))
+  const progress = ((pos + 1) / order.length) * 100
   return (
-    <div className="delivery-progress" aria-hidden="true">
-      <div className="delivery-track"><i style={{ width: `${progress}%` }} /></div>
-      <div className="delivery-labels">
-        {labels.map((label, index) => (
-          <span className={progress >= ((index + 1) / labels.length) * 100 ? 'is-active' : ''} key={label}>
-            <b />{label}
-          </span>
-        ))}
-      </div>
+    <div className="deck-delivery-progress" aria-hidden="true">
+      <span style={{ width: `${progress}%` }} />
+      {Array.from({ length: 6 }, (_, index) => <i key={index} className={progress >= ((index + 1) / 6) * 100 ? 'is-complete' : ''} />)}
     </div>
   )
 }
 
-export default function DeckView({ motion, onToggleMotion }) {
+export default function DeckView({ snow, onToggleSnow }) {
   const { id, slides, theme } = project
-  const [registrationOpen, setRegistrationOpen] = useState(false)
-
-  useEffect(() => {
-    const openRegistration = () => setRegistrationOpen(true)
-    window.addEventListener('deck:open-registration', openRegistration)
-
-    const url = new URL(window.location.href)
-    if (url.searchParams.get('register') === '1') {
-      setRegistrationOpen(true)
-      url.searchParams.delete('register')
-      window.history.replaceState({}, '', `${url.pathname}${url.search}${url.hash}`)
-    }
-
-    return () => window.removeEventListener('deck:open-registration', openRegistration)
-  }, [])
-
-  useEffect(() => {
-    if (!registrationOpen) return undefined
-    const closeOnEscape = (event) => {
-      if (event.key === 'Escape') setRegistrationOpen(false)
-    }
-    window.addEventListener('keydown', closeOnEscape)
-    return () => window.removeEventListener('keydown', closeOnEscape)
-  }, [registrationOpen])
-
   return (
     <InlineEditProvider overrides={{}} project={id}>
       <SlideProvider totalSlides={slides.length} project={id} slides={slides} theme={theme}>
         <div className="deck-chrome">
-          <a href="#/">← Website</a>
-          <button type="button" onClick={() => setRegistrationOpen(true)}>Register</button>
-          <MotionToggle enabled={motion} onToggle={onToggleMotion} />
+          <a className="deck-home-link" href="#/">← Website</a>
+          <SnowToggle enabled={snow} onToggle={onToggleSnow} />
         </div>
         <Navigation />
         <DeliveryProgress />
@@ -70,20 +41,7 @@ export default function DeckView({ motion, onToggleMotion }) {
             </SlideErrorBoundary>
           ))}
         </div>
-        {registrationOpen && (
-          <div className="deck-registration-backdrop" role="presentation" onMouseDown={() => setRegistrationOpen(false)}>
-            <div className="deck-registration-modal" role="dialog" aria-modal="true" aria-labelledby="deck-registration-title" onMouseDown={(event) => event.stopPropagation()}>
-              <div className="deck-registration-header">
-                <div>
-                  <span>GitHub-authenticated registration</span>
-                  <h2 id="deck-registration-title">Reserve your place.</h2>
-                </div>
-                <button type="button" aria-label="Close registration" onClick={() => setRegistrationOpen(false)}>×</button>
-              </div>
-              <RegistrationForm postLoginRedirect="/?register=1#/deck" />
-            </div>
-          </div>
-        )}
+        <FloatingCopilot />
       </SlideProvider>
     </InlineEditProvider>
   )

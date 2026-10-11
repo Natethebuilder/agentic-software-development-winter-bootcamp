@@ -1,6 +1,6 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
-import { deckPlugin } from '@deckio/deck-engine/vite'
+import { deckPlugin, tailwindPlugin } from '@deckio/deck-engine/vite'
 
 export default defineConfig({
   base: '/',
@@ -9,6 +9,7 @@ export default defineConfig({
       include: [/\.[jt]sx?$/, /node_modules\/@deckio\/deck-engine\/.+\.jsx$/],
     }),
     deckPlugin({ inlineEditing: false }),
+    tailwindPlugin(),
   ],
   server: {
     fs: {
