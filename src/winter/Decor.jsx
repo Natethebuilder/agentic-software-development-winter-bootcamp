@@ -1,10 +1,9 @@
 const BASE = import.meta.env.BASE_URL
 
-export function Mascot({ kind = 'copilot', className = '' }) {
-  const src = kind === 'duck' ? `${BASE}mascot-duck.png` : `${BASE}copilot-mascot.png`
+export function Mascot({ className = '' }) {
   return (
-    <span className={`mascot mascot-${kind} ${className}`}>
-      <img src={src} alt="" className="mascot-img" />
+    <span className={`mascot mascot-copilot ${className}`}>
+      <img src={`${BASE}copilot-mascot.png`} alt="" className="mascot-img" />
     </span>
   )
 }
