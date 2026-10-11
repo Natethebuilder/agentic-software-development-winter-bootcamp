@@ -1,0 +1,138 @@
+const { createHmac } = require('node:crypto')
+
+const EVENT_ID = 'ASDWB-2026'
+const SESSION_IDS = new Set(['session-01', 'session-02', 'session-03', 'session-04', 'session-05', 'session-06'])
+const ENVIRONMENTS = new Set(['browser', 'local', 'either'])
+
+function response(status, body) {
+  return {
+    status,
+    headers: {
+      'Content-Type': 'application/json',
+      'Cache-Control': 'no-store',
+    },
+    body,
+  }
+}
+
+function getHeader(req, name) {
+  if (typeof req.headers?.get === 'function') return req.headers.get(name)
+  return req.headers?.[name] || req.headers?.[name.toLowerCase()]
+}
+
+function readPrincipal(req) {
+  const encoded = getHeader(req, 'x-ms-client-principal')
+  if (!encoded || encoded.length > 16_384) return null
+  return JSON.parse(Buffer.from(encoded, 'base64').toString('utf8'))
+}
+
+module.exports = async function register(context, req) {
+  let principal
+  try {
+    principal = readPrincipal(req)
+  } catch {
+    context.res = response(401, { error: 'Invalid authentication context.' })
+    return
+  }
+
+  if (
+    !principal
+    || principal.identityProvider !== 'github'
+    || typeof principal.userDetails !== 'string'
+    || typeof principal.userId !== 'string'
+    || !principal.userDetails
+    || !principal.userId
+  ) {
+    context.res = response(401, { error: 'Sign in with GitHub before registering.' })
+    return
+  }
+
+  const body = req.body || {}
+  const organisation = typeof body.organisation === 'string' ? body.organisation.trim() : ''
+  const email = typeof body.email === 'string' ? body.email.trim().toLowerCase() : ''
+  const requestedSessions = Array.isArray(body.sessions) ? body.sessions : []
+  const sessions = [...new Set(requestedSessions.filter((id) => SESSION_IDS.has(id)))]
+  const environment = ENVIRONMENTS.has(body.environment) ? body.environment : ''
+
+  if (body.eventId !== EVENT_ID) {
+    context.res = response(400, { error: 'Invalid event registration.' })
+    return
+  }
+  if (!organisation || organisation.length > 160) {
+    context.res = response(400, { error: 'Enter a valid company or organisation.' })
+    return
+  }
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) || email.length > 254) {
+    context.res = response(400, { error: 'Enter a valid company email address.' })
+    return
+  }
+  if (!sessions.length || sessions.length !== requestedSessions.length) {
+    context.res = response(400, { error: 'Choose at least one valid session.' })
+    return
+  }
+  if (!environment || body.consent !== true) {
+    context.res = response(400, { error: 'Choose an environment and provide data consent.' })
+    return
+  }
+
+  const flowUrl = process.env.SOFTWARE_DEVELOPMENT_REGISTRATION_FLOW_URL
+  const flowSecret = process.env.SOFTWARE_DEVELOPMENT_REGISTRATION_FLOW_SHARED_SECRET
+  const registrationSalt = process.env.SOFTWARE_DEVELOPMENT_REGISTRATION_ID_SALT
+
+  if (!flowUrl || !flowSecret || !registrationSalt) {
+    context.res = response(503, { error: 'Registration storage is not configured yet.' })
+    return
+  }
+
+  let parsedFlowUrl
+  try {
+    parsedFlowUrl = new URL(flowUrl)
+  } catch {
+    context.res = response(503, { error: 'Registration storage is not configured correctly.' })
+    return
+  }
+  if (parsedFlowUrl.protocol !== 'https:') {
+    context.res = response(503, { error: 'Registration storage requires a secure endpoint.' })
+    return
+  }
+
+  const registrationId = createHmac('sha256', registrationSalt)
+    .update(`${EVENT_ID}:${principal.identityProvider}:${principal.userId}`)
+    .digest('hex')
+
+  const payload = {
+    eventId: EVENT_ID,
+    registrationId,
+    githubUserId: principal.userId,
+    githubUsername: principal.userDetails,
+    organisation,
+    email,
+    sessions,
+    environment,
+    consent: true,
+    updatedAt: new Date().toISOString(),
+  }
+
+  let flowResponse
+  try {
+    flowResponse = await fetch(parsedFlowUrl, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-software-development-registration-secret': flowSecret,
+      },
+      body: JSON.stringify(payload),
+      signal: AbortSignal.timeout(10_000),
+    })
+  } catch {
+    context.res = response(502, { error: 'Registration storage is temporarily unavailable.' })
+    return
+  }
+
+  if (!flowResponse.ok) {
+    context.res = response(502, { error: 'Registration storage rejected the request.' })
+    return
+  }
+
+  context.res = response(202, { ok: true })
+}
