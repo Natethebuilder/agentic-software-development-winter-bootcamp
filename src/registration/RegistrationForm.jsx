@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { EVENT, REGISTRATION, SESSIONS } from '../content.js'
+import { REGISTRATION, SESSIONS } from '../content.js'
 
 async function loadPrincipal() {
   if (import.meta.env.DEV) {
@@ -18,9 +18,9 @@ export default function RegistrationForm({ postLoginRedirect = '/?register=1' })
   const [principal, setPrincipal] = useState(undefined)
   const [authError, setAuthError] = useState('')
   const [sessions, setSessions] = useState([])
-  const [organisation, setOrganisation] = useState('')
+  const [company, setCompany] = useState('')
   const [email, setEmail] = useState('')
-  const [environment, setEnvironment] = useState('browser')
+  const [environment, setEnvironment] = useState('local')
   const [consent, setConsent] = useState(false)
   const [status, setStatus] = useState('idle')
   const [message, setMessage] = useState('')
@@ -35,7 +35,7 @@ export default function RegistrationForm({ postLoginRedirect = '/?register=1' })
   }, [])
 
   const signedIn = principal?.identityProvider === 'github'
-  const isValid = signedIn && sessions.length > 0 && organisation.trim() && email.trim() && consent
+  const isValid = signedIn && sessions.length > 0 && company.trim() && email.trim() && consent
   const loginUrl = `/.auth/login/github?post_login_redirect_uri=${encodeURIComponent(postLoginRedirect)}`
 
   const toggleSession = (id) => {
@@ -59,8 +59,7 @@ export default function RegistrationForm({ postLoginRedirect = '/?register=1' })
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
-            eventId: EVENT.registrationEventId,
-            organisation: organisation.trim(),
+            company: company.trim(),
             email: email.trim(),
             sessions,
             environment,
@@ -117,8 +116,8 @@ export default function RegistrationForm({ postLoginRedirect = '/?register=1' })
             required
             maxLength="160"
             autoComplete="organization"
-            value={organisation}
-            onChange={(event) => setOrganisation(event.target.value)}
+            value={company}
+            onChange={(event) => setCompany(event.target.value)}
           />
         </label>
         <label>

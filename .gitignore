@@ -1,7 +1,7 @@
 node_modules/
 dist/
 .vite/
-verify-output*/
+verify-*/
 .env
 .env.*
 !.env.example

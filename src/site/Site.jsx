@@ -29,6 +29,9 @@ export default function Site({ motion, onToggleMotion }) {
     const shouldFocusRegistration = new URLSearchParams(window.location.search).get('register') === '1'
     if (shouldFocusRegistration) {
       window.setTimeout(() => document.getElementById('register')?.scrollIntoView({ behavior: 'smooth' }), 250)
+      const url = new URL(window.location.href)
+      url.searchParams.delete('register')
+      window.history.replaceState({}, '', `${url.pathname}${url.search}${url.hash}`)
     }
   }, [])
 
@@ -47,7 +50,7 @@ export default function Site({ motion, onToggleMotion }) {
         </button>
         <nav className={menuOpen ? 'is-open' : ''} aria-label="Primary navigation">
           {NAV.map((item) => <a key={item.href} href={item.href} onClick={() => setMenuOpen(false)}>{item.label}</a>)}
-          <a href="#/deck">Deck</a>
+          <a href="#/deck">Present the deck</a>
           <a className="nav-register" href="#register" onClick={() => setMenuOpen(false)}>Register</a>
         </nav>
       </header>
@@ -148,7 +151,7 @@ export default function Site({ motion, onToggleMotion }) {
                 <p>{session.subtitle}</p>
                 <div className="speaker-row">
                   <SpeakerPlaceholder />
-                  <div><strong>{session.speaker}</strong><span>{session.role}</span></div>
+                  <div><strong>{session.speaker}</strong><span>Headshot TBC</span></div>
                 </div>
               </article>
             ))}

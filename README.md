@@ -25,7 +25,7 @@ Dates, topics, speakers and headshots are intentionally marked `TBC`. Update the
 
 Registration uses Azure Static Web Apps GitHub authentication and a protected `/api/register` function. The function validates the verified platform identity, generates an event-scoped deterministic registration ID and forwards only validated fields to a dedicated Power Automate flow for upsert into a private Microsoft List.
 
-See [`docs/registration-backend.md`](docs/registration-backend.md) for the private SharePoint operations site, List schema, flow contract, application settings and verification checklist.
+See [`docs/registration-backend.md`](docs/registration-backend.md) for the private SharePoint operations site, List schema, deterministic upsert flow, application settings and verification checklist.
 
 ## Deployment
 
@@ -34,7 +34,9 @@ The workflow at `.github/workflows/deploy-registration.yml` deploys to a dedicat
 | Setting | Purpose |
 | --- | --- |
 | `AZURE_STATIC_WEB_APPS_API_TOKEN_SOFTWARE_DEVELOPMENT_BOOTCAMP` | Deployment token stored as a GitHub Actions secret |
-| `SOFTWARE_DEVELOPMENT_REGISTRATION_FLOW_URL` | Power Automate trigger URL stored as an Azure app setting |
-| `SOFTWARE_DEVELOPMENT_REGISTRATION_FLOW_SHARED_SECRET` | Required shared secret stored only in Azure and Power Automate |
+| `REGISTRATION_FLOW_URL` | Power Automate trigger URL stored as an Azure app setting |
+| `REGISTRATION_FLOW_SHARED_SECRET` | Required shared secret stored only in Azure and Power Automate |
 
-Suggested Azure resource name: `swa-agentic-software-development-winter`.
+Azure resource group: `rg-agentic-software-development-winter-bootcamp`.
+
+Azure Static Web App: `swa-agentic-software-development-winter-bootcamp`.

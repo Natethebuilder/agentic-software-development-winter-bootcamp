@@ -1,8 +1,7 @@
-const { createHmac } = require('node:crypto')
+const { createHash } = require('node:crypto')
 
-const EVENT_ID = 'ASDWB-2026'
 const SESSION_IDS = new Set(['session-01', 'session-02', 'session-03', 'session-04', 'session-05', 'session-06'])
-const ENVIRONMENTS = new Set(['browser', 'local', 'either'])
+const ENVIRONMENTS = new Set(['local', 'cloud'])
 
 function response(status, body) {
   return {
@@ -48,17 +47,13 @@ module.exports = async function register(context, req) {
   }
 
   const body = req.body || {}
-  const organisation = typeof body.organisation === 'string' ? body.organisation.trim() : ''
+  const company = typeof body.company === 'string' ? body.company.trim() : ''
   const email = typeof body.email === 'string' ? body.email.trim().toLowerCase() : ''
   const requestedSessions = Array.isArray(body.sessions) ? body.sessions : []
   const sessions = [...new Set(requestedSessions.filter((id) => SESSION_IDS.has(id)))]
   const environment = ENVIRONMENTS.has(body.environment) ? body.environment : ''
 
-  if (body.eventId !== EVENT_ID) {
-    context.res = response(400, { error: 'Invalid event registration.' })
-    return
-  }
-  if (!organisation || organisation.length > 160) {
+  if (!company || company.length > 160) {
     context.res = response(400, { error: 'Enter a valid company or organisation.' })
     return
   }
@@ -75,11 +70,10 @@ module.exports = async function register(context, req) {
     return
   }
 
-  const flowUrl = process.env.SOFTWARE_DEVELOPMENT_REGISTRATION_FLOW_URL
-  const flowSecret = process.env.SOFTWARE_DEVELOPMENT_REGISTRATION_FLOW_SHARED_SECRET
-  const registrationSalt = process.env.SOFTWARE_DEVELOPMENT_REGISTRATION_ID_SALT
+  const flowUrl = process.env.REGISTRATION_FLOW_URL
+  const flowSecret = process.env.REGISTRATION_FLOW_SHARED_SECRET
 
-  if (!flowUrl || !flowSecret || !registrationSalt) {
+  if (!flowUrl || !flowSecret) {
     context.res = response(503, { error: 'Registration storage is not configured yet.' })
     return
   }
@@ -96,16 +90,13 @@ module.exports = async function register(context, req) {
     return
   }
 
-  const registrationId = createHmac('sha256', registrationSalt)
-    .update(`${EVENT_ID}:${principal.identityProvider}:${principal.userId}`)
-    .digest('hex')
+  const registrationId = createHash('sha256').update(principal.userId).digest('hex')
 
   const payload = {
-    eventId: EVENT_ID,
     registrationId,
     githubUserId: principal.userId,
     githubUsername: principal.userDetails,
-    organisation,
+    company,
     email,
     sessions,
     environment,
@@ -119,7 +110,7 @@ module.exports = async function register(context, req) {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'x-software-development-registration-secret': flowSecret,
+        'x-registration-secret': flowSecret,
       },
       body: JSON.stringify(payload),
       signal: AbortSignal.timeout(10_000),

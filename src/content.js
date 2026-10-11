@@ -1,6 +1,5 @@
 export const EVENT = {
   id: 'agentic-software-development-winter-bootcamp',
-  registrationEventId: 'ASDWB-2026',
   name: 'Agentic Software Development Winter Bootcamp',
   shortName: 'Agentic Dev Winter',
   season: 'Winter 2026',
@@ -106,7 +105,6 @@ export const SESSIONS = Array.from({ length: 6 }, (_, index) => {
     date: '[Date TBC]',
     time: '[Time TBC]',
     speaker: '[Speaker TBC]',
-    role: '[Role / community TBC]',
     headshot: null,
   }
 })
@@ -157,9 +155,8 @@ export const REGISTRATION = {
   body:
     'Sign in with GitHub, choose the sessions you want and tell us how you plan to participate. You can update the same registration later.',
   environments: [
-    { id: 'browser', label: 'Browser / Codespaces' },
     { id: 'local', label: 'Local development environment' },
-    { id: 'either', label: 'Either works for me' },
+    { id: 'cloud', label: 'Cloud / browser development environment' },
   ],
   consent:
     'I agree that my registration details may be used to administer this event. Event operations will retain them only for the stated administration period.',

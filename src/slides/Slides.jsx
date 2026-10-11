@@ -1,6 +1,5 @@
 import { BottomBar, Slide, useSlides } from '@deckio/deck-engine'
 import { EVENT, PREP, SDLC_STAGES, SESSIONS, VALUE } from '../content.js'
-import RegistrationForm from '../registration/RegistrationForm.jsx'
 import { AgenticLoop, PullRequestSimulator } from '../viz/AgenticLoop.jsx'
 
 function Frame({ index, children, className = '' }) {
@@ -112,7 +111,7 @@ function SessionSlide({ index, session }) {
         <div className="session-speaker-placeholder">
           <div><span /><i /></div>
           <strong>{session.speaker}</strong>
-          <small>{session.role}</small>
+          <small>Headshot TBC</small>
         </div>
       </div>
       <div className="session-stage-note"><span>{stage.label}</span><strong>{stage.title}</strong><p>{stage.prompt}</p></div>
@@ -140,10 +139,14 @@ export function PrepareSlide({ index }) {
 }
 
 export function RegistrationSlide({ index }) {
+  const openRegistration = () => window.dispatchEvent(new CustomEvent('deck:open-registration'))
   return (
     <Frame index={index} className="registration-slide">
       <Header kicker="REGISTER" title="Reserve your place in the loop." />
-      <RegistrationForm postLoginRedirect="/?register=1#/deck" />
+      <div className="registration-slide-cta">
+        <p>Choose any combination of the six sessions. Sign in with GitHub to create or update one registration.</p>
+        <button className="button button-primary" type="button" onClick={openRegistration}>Open registration</button>
+      </div>
     </Frame>
   )
 }
