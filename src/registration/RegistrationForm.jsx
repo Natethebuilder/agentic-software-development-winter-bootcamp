@@ -115,7 +115,7 @@ export default function RegistrationForm({ postLoginRedirect = '/?register=1' })
         {REGISTRATION.environments.map((option) => (
           <label key={option.id}>
             <input type="radio" name="environment" value={option.id} checked={environment === option.id} onChange={(e) => setEnvironment(e.target.value)} />
-            <span>{option.label}</span>
+            <span><strong>{option.label}</strong><small>{option.desc}</small></span>
           </label>
         ))}
       </fieldset>

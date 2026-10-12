@@ -1,49 +1,49 @@
 @import '@deckio/deck-engine/styles/global.css';
 @import '@deckio/deck-engine/themes/dark.css';
 
-/* ── Code-green winter palette (overrides DECKIO dark theme) ─────────── */
+/* ── Neutral code palette with restrained Matrix accents ─────────────── */
 :root {
-  --background: #020806;
-  --foreground: #edfff4;
-  --card: #07140f;
-  --secondary: #0a1d14;
-  --muted: #10291c;
-  --muted-foreground: #8eae9b;
-  --border: #1e4b32;
-  --accent: #62ff9f;
-  --primary: #62ff9f;
-  --ring: rgba(98, 255, 159, 0.4);
+  --background: #06090f;
+  --foreground: #edf4fa;
+  --card: #0c121b;
+  --secondary: #111a25;
+  --muted: #182433;
+  --muted-foreground: #a7b5c4;
+  --border: #2b3b4d;
+  --accent: #67dba4;
+  --primary: #67dba4;
+  --ring: rgba(103, 219, 164, 0.32);
 
-  --purple: #a4ffc6;
-  --purple-deep: #17623a;
-  --cyan: #8fffd0;
-  --green: #42f58d;
-  --pink: #aaffc8;
+  --purple: #b0a6ff;
+  --purple-deep: #5d50a8;
+  --cyan: #78d7ff;
+  --green: #67dba4;
+  --pink: #e7a6c7;
 
-  --holly: #39ff88;
-  --pine: #119754;
-  --gold: #b8ff5e;
-  --frost: #effff5;
-  --ice: #69ffad;
-  --night: #020806;
+  --holly: #67dba4;
+  --pine: #2c8e68;
+  --gold: #f2c56b;
+  --frost: #f4f8fb;
+  --ice: #79c7ff;
+  --night: #06090f;
 
-  --glow-accent: rgba(98, 255, 159, 0.13);
-  --glow-purple: rgba(164, 255, 198, 0.10);
-  --glow-cyan: rgba(143, 255, 208, 0.10);
+  --glow-accent: rgba(103, 219, 164, 0.08);
+  --glow-purple: rgba(176, 166, 255, 0.08);
+  --glow-cyan: rgba(120, 215, 255, 0.09);
 }
 
 body {
   background:
-    radial-gradient(1200px 700px at 85% -10%, rgba(27, 116, 66, 0.30), transparent 60%),
-    radial-gradient(900px 600px at -10% 110%, rgba(36, 255, 120, 0.10), transparent 60%),
+    radial-gradient(1200px 700px at 85% -10%, rgba(45, 82, 128, 0.26), transparent 60%),
+    radial-gradient(900px 600px at -10% 110%, rgba(54, 122, 94, 0.12), transparent 60%),
     var(--night);
 }
 
 /* Code-stream accent bar on every slide */
 .accent-bar {
-  background: linear-gradient(to bottom, var(--ice), var(--pine));
-  opacity: 0.85;
-  box-shadow: 0 0 18px rgba(98, 255, 159, 0.35);
+  background: linear-gradient(to bottom, var(--ice), var(--green));
+  opacity: 0.72;
+  box-shadow: 0 0 14px rgba(121, 199, 255, 0.24);
 }
 
 .deck-ty-watermark { display: none; }
@@ -55,25 +55,6 @@ body {
   pointer-events: none;
   z-index: 150;
 }
-
-.snow-toggle {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  padding: 8px 14px;
-  border-radius: 999px;
-  border: 1px solid color-mix(in srgb, var(--ice) 35%, transparent);
-  background: color-mix(in srgb, var(--card) 70%, transparent);
-  color: var(--foreground);
-  font: inherit;
-  font-size: 13px;
-  font-weight: 600;
-  cursor: pointer;
-  backdrop-filter: blur(8px);
-  transition: border-color 0.2s, transform 0.2s;
-}
-.snow-toggle:hover { border-color: var(--ice); transform: translateY(-1px); }
-.snow-toggle:focus-visible { outline: 2px solid var(--ice); outline-offset: 2px; }
 
 .deck ~ * [class*="progressTrack"], [class*="navWrapper"] > [class*="progressTrack"] { display: none; }
 
@@ -105,8 +86,8 @@ body {
   position: absolute;
   inset: auto auto 0 0;
   height: 3px;
-  background: linear-gradient(90deg, #116a38, var(--ice), #c8ff67);
-  box-shadow: 0 0 14px color-mix(in srgb, var(--ice) 70%, transparent);
+  background: linear-gradient(90deg, var(--green), var(--ice), var(--purple));
+  box-shadow: 0 0 12px color-mix(in srgb, var(--ice) 48%, transparent);
   transition: width 0.45s ease;
 }
 .deck-delivery-progress i,
@@ -216,7 +197,6 @@ button[title="Back to home"] { top: 36px !important; }
   button[title="Back to home"] { display: none !important; }
   .deck-chrome { top: 34px; left: 12px; gap: 8px; opacity: 0.9; }
   .deck-home-link { padding: 6px 12px; font-size: 12px; }
-  .deck-chrome .snow-toggle-label { display: none; }
   [class*="_navBtn_"] {
     top: auto !important;
     bottom: calc(14px + env(safe-area-inset-bottom, 0px));

@@ -4,7 +4,7 @@ import { BottomBar, Editable, Slide, useSlides } from '@deckio/deck-engine'
 import RegistrationForm from '../registration/RegistrationForm.jsx'
 import { Logos, Mascot } from '../winter/Decor.jsx'
 import {
-  BOOTCAMP, PERSONAS, PILLARS, PREP, REGISTER_STEPS, SCHEDULE, SESSIONS,
+  BOOTCAMP, PERSONAS, PILLARS, PREP, REGISTER_STEPS, SESSIONS, TEAM,
 } from '../content.js'
 import s from './Slides.module.css'
 
@@ -167,11 +167,11 @@ export function TimetableSlide({ index }) {
       <Header
         id="timetable"
         eyebrow="Programme schedule"
-        title="Six sessions. One connected delivery loop."
-        subtitle="Topics and dates are still being confirmed. Each session will add another perspective on agentic software development."
+        title="Six reserved sessions. One delivery loop."
+        subtitle="Topics, owners, formats, dates and times are still being confirmed. No placeholder status column—only the programme structure we know."
       />
       <div className={`${s.grid} ${s.grid6}`}>
-        {SCHEDULE.map((session, i) => (
+        {SESSIONS.map((session, i) => (
           <div key={session.id} className={s.door} style={{ '--door-accent': session.accent }}>
             <span className={s.doorIcon} aria-hidden="true">{session.scheduleMark}</span>
             <span className={s.doorNum}>{i + 1}</span>
@@ -193,8 +193,8 @@ export function SetupSlide({ index }) {
       <Header
         id="setup"
         eyebrow="Get ready"
-        title="Your development setup"
-        subtitle="Audit first, install only what is missing, then connect the GitHub account you will use."
+        title="Your hands-on development setup"
+        subtitle="This setup is required for hands-on participation. Complete it locally before your first session or request a limited cloud environment."
       />
       <div className={`${s.grid} ${s.grid4}`}>
         {PREP.slice(0, 4).map((p) => (
@@ -262,8 +262,8 @@ function SessionDetailSlide({ index, session }) {
             </div>
             <div className={`${s.detailPanel} ${s.detailToolbox}`}>
               <div>
-                <span className={s.detailLabel}>Session lead</span>
-                <strong>{session.lead}</strong>
+                <span className={s.detailLabel}>Session owner</span>
+                <strong>{session.owner}</strong>
               </div>
               <div className={s.detailTools}>{session.tools.map((tool) => <span key={tool}>{tool}</span>)}</div>
             </div>
@@ -289,13 +289,13 @@ export function SurveySlide({ index }) {
         id="survey"
         eyebrow="One request from us"
         title="Tell us how we did"
-        subtitle="A very short survey after each session. It shows us what landed and shapes the next edition."
+        subtitle="After each session, we will ask how we did so your feedback can improve the next session."
       />
       <div className={s.points}>
         {[
           ['TIME', 'short', 'Very short, about 2 minutes'],
           ['SAFE', 'pii', 'No PII captured. Feedback links to a company, not a person'],
-          ['LOOP', 'improve', 'Shapes how we improve the programme'],
+          ['LOOP', 'improve', 'Used to improve the next session'],
         ].map(([icon, k, text]) => (
           <div key={k} className={s.point}>
             <span className={s.icon}>{icon}</span>
@@ -391,18 +391,18 @@ export function TeamSlide({ index }) {
       <Header
         id="team"
         eyebrow="Brought to you by"
-        title="Your session leads"
-        subtitle="Speaker names, headshots and session assignments will be added as the programme is confirmed."
+        title="Your Team"
+        subtitle="Your host is confirmed; session owners will be added as the programme is finalised."
       />
-      <div className={`${s.grid} ${s.grid6}`}>
-        {SESSIONS.map((session) => (
-          <div key={session.id} className={`${s.card} ${s.helper}`}>
-            <span className={s.helperAvatar} style={{ '--avatar-accent': session.accent }} aria-label={`Photo placeholder for ${session.lead}`}>
-              <i aria-hidden="true" />
-              <b aria-hidden="true" />
+      <div className={`${s.grid} ${s.teamGrid}`}>
+        {TEAM.map((person) => (
+          <div key={person.id} className={`${s.card} ${s.helper}`}>
+            <span className={s.helperAvatar} style={{ '--avatar-accent': person.accent }} aria-label={person.name}>
+              {person.initials}
             </span>
-            <Editable as="h3" id={`team.${session.id}.name`}>{session.lead}</Editable>
-            <Editable as="p" id={`team.${session.id}.topic`} className={s.helperTopic}>{session.shortTitle}</Editable>
+            <Editable as="h3" id={`team.${person.id}.name`}>{person.name}</Editable>
+            <span className={s.helperRole}>{person.role}</span>
+            <Editable as="p" id={`team.${person.id}.topic`} className={s.helperTopic}>{person.focus}</Editable>
           </div>
         ))}
       </div>

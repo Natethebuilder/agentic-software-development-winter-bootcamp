@@ -10,7 +10,7 @@
 .githubMark { width: 46px; height: 46px; display: grid; place-items: center; border-radius: 50%; background: #f6f8fa; color: #0d1117; font-weight: 900; }
 .signIn { text-decoration: none; padding: 11px 17px; border-radius: 999px; background: var(--frost); color: var(--night); font-weight: 800; white-space: nowrap; }
 .spinner { width: 18px; height: 18px; border-radius: 50%; border: 2px solid var(--border); border-top-color: var(--ice); animation: spin .8s linear infinite; }
-.form { padding: 24px; }
+.form { min-width: 0; max-width: 100%; padding: 24px; }
 .identity { display: flex; align-items: center; gap: 13px; padding-bottom: 20px; border-bottom: 1px solid var(--border); }
 .avatar {
   width: 48px; height: 48px; flex: 0 0 48px; display: grid; place-items: center;
@@ -29,7 +29,7 @@
   background: color-mix(in srgb, var(--night) 70%, transparent); font: inherit;
 }
 .fields input:focus { outline: 2px solid var(--ice); outline-offset: 1px; }
-.sessionField, .environment { border: 0; margin: 24px 0 0; padding: 0; }
+.sessionField, .environment { min-width: 0; max-width: 100%; border: 0; margin: 24px 0 0; padding: 0; }
 .sessionField legend, .environment legend { margin-bottom: 12px; }
 .sessionGrid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
 .sessionGrid label {
@@ -46,12 +46,15 @@
 .sessionGrid .sessionOn i { color: var(--night); background: var(--green); border-color: var(--green); }
 .environment { display: flex; flex-wrap: wrap; gap: 10px; }
 .environment legend { width: 100%; }
-.environment label { display: flex; align-items: center; gap: 8px; padding: 9px 12px; border: 1px solid var(--border); border-radius: 999px; cursor: pointer; }
+.environment label { display: flex; align-items: flex-start; gap: 10px; flex: 1 1 320px; padding: 12px 14px; border: 1px solid var(--border); border-radius: 14px; cursor: pointer; }
 .environment input { accent-color: var(--ice); }
+.environment label > span { display: flex; flex-direction: column; gap: 4px; }
+.environment strong { font-size: 13px; }
+.environment small { color: var(--muted-foreground); font-size: 12px; line-height: 1.4; }
 .consent { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 11px; margin-top: 22px; padding: 14px; border-radius: 12px; background: color-mix(in srgb, var(--night) 50%, transparent); color: var(--muted-foreground); font-size: 13px; line-height: 1.5; }
 .consent input { margin-top: 3px; accent-color: var(--ice); }
 .submitRow { display: flex; align-items: center; gap: 16px; margin-top: 20px; }
-.submitRow button { appearance: none; border: 0; border-radius: 999px; padding: 12px 20px; color: #021008; background: linear-gradient(135deg, var(--holly), #22c96c); font: inherit; font-weight: 800; cursor: pointer; }
+.submitRow button { appearance: none; border: 0; border-radius: 999px; padding: 12px 20px; color: #041019; background: linear-gradient(135deg, var(--ice), var(--green)); font: inherit; font-weight: 800; cursor: pointer; }
 .submitRow button:disabled { opacity: .48; cursor: not-allowed; }
 .submitRow small { color: var(--muted-foreground); }
 .message { margin-top: 15px; padding: 11px 13px; border-radius: 10px; color: var(--green); background: color-mix(in srgb, var(--green) 10%, transparent); }

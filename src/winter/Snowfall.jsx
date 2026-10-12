@@ -1,39 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
-
-const STORAGE_KEY = 'software-winter-bootcamp:code-rain-v1'
-
-export function useSnowPreference() {
-  const [enabled, setEnabled] = useState(() => {
-    try {
-      const stored = localStorage.getItem(STORAGE_KEY)
-      if (stored !== null) return stored === 'on'
-      return true
-    } catch {
-      return true
-    }
-  })
-
-  useEffect(() => {
-    try { localStorage.setItem(STORAGE_KEY, enabled ? 'on' : 'off') } catch { /* ignore */ }
-  }, [enabled])
-
-  return [enabled, setEnabled]
-}
-
-export function SnowToggle({ enabled, onToggle, className = '' }) {
-  return (
-    <button
-      type="button"
-      className={`snow-toggle ${className}`}
-      onClick={onToggle}
-      aria-pressed={enabled}
-      title={enabled ? 'Pause code rain' : 'Resume code rain'}
-    >
-      <span aria-hidden="true">{enabled ? '</>' : '||'}</span>
-      <span className="snow-toggle-label">{enabled ? 'Code on' : 'Code off'}</span>
-    </button>
-  )
-}
+import { useEffect, useRef } from 'react'
 
 export default function Snowfall({ enabled = true, density = 1 }) {
   const canvasRef = useRef(null)
@@ -57,7 +22,7 @@ export default function Snowfall({ enabled = true, density = 1 }) {
       vy: 0.3 + Math.random() * 0.9,
       vx: -0.18 + Math.random() * 0.36,
       phase: Math.random() * Math.PI * 2,
-      alpha: 0.12 + Math.random() * 0.28,
+      alpha: 0.04 + Math.random() * 0.11,
     })
 
     const resize = () => {
@@ -70,7 +35,7 @@ export default function Snowfall({ enabled = true, density = 1 }) {
       canvas.style.height = `${height}px`
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0)
       const count = Math.round(Math.min(115, (width * height) / 16500) * density)
-      particles = Array.from({ length: Math.round(count * 0.72) }, () => spawn(true))
+      particles = Array.from({ length: Math.round(count * 0.58) }, () => spawn(true))
     }
 
     const onMove = (e) => {
@@ -83,7 +48,7 @@ export default function Snowfall({ enabled = true, density = 1 }) {
       for (const f of particles) {
         f.y += f.vy
         f.x += f.vx + Math.sin(t / 1400 + f.phase) * 0.35
-        // Flakes drift away from the cursor.
+        // Code symbols drift away from the cursor.
         const dx = f.x - pointer.x
         const dy = f.y - pointer.y
         const dist = Math.hypot(dx, dy) || 1
@@ -93,7 +58,7 @@ export default function Snowfall({ enabled = true, density = 1 }) {
         }
         if (f.y > height + 10 || f.x < -20 || f.x > width + 20) Object.assign(f, spawn(false))
         ctx.font = `${f.size}px ui-monospace, SFMono-Regular, Consolas, monospace`
-        ctx.fillStyle = `rgba(98, 255, 159, ${f.alpha})`
+        ctx.fillStyle = `rgba(111, 207, 255, ${f.alpha})`
         ctx.fillText(f.symbol, f.x, f.y)
       }
       raf = requestAnimationFrame(tick)

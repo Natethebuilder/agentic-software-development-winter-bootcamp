@@ -14,7 +14,7 @@ export const BOOTCAMP = {
   footer: 'Agentic Software Development Winter Bootcamp',
 }
 
-const ACCENTS = ['#62ff9f', '#8cffbc', '#45db7f', '#a7ffcf', '#2ecf70', '#79ffc0']
+const ACCENTS = ['#79c7ff', '#a8a0ff', '#f0b86e', '#63d9b1', '#7ca7ff', '#e59bc3']
 
 export const SESSIONS = Array.from({ length: 6 }, (_, index) => {
   const number = String(index + 1).padStart(2, '0')
@@ -25,7 +25,8 @@ export const SESSIONS = Array.from({ length: 6 }, (_, index) => {
     shortTitle: `Session ${number}`,
     track: 'Topic TBC',
     subtitle: 'Session details will be added when the programme is confirmed.',
-    lead: '[Speaker TBC]',
+    owner: '[Owner TBC]',
+    ownerInitials: 'TBC',
     audience: 'Software community',
     format: 'Format TBC',
     scheduleMark: `S${index + 1}`,
@@ -41,13 +42,6 @@ export const SESSIONS = Array.from({ length: 6 }, (_, index) => {
     tools: ['Tools TBC'],
   }
 })
-
-export const SCHEDULE = SESSIONS.map((session) => ({
-  ...session,
-  dateIso: null,
-  date: 'Date TBC',
-  status: 'to be announced',
-}))
 
 export const PERSONAS = [
   {
@@ -67,6 +61,25 @@ export const PERSONAS = [
     desc: 'Connect repositories, CI, delivery and production learning.',
     does: 'Give agents safe, observable paths through the delivery system while teams retain control of release decisions.',
     stack: ['GitHub', 'CI/CD', 'Cloud', 'Telemetry'],
+  },
+]
+
+export const TEAM = [
+  {
+    id: 'nathan',
+    name: 'Nathan Brahmbhatt',
+    initials: 'NB',
+    role: 'Host',
+    focus: 'Bootcamp host and programme coordination',
+    accent: '#79c7ff',
+  },
+  {
+    id: 'owners',
+    name: 'To be announced',
+    initials: 'TBC',
+    role: 'Session owners',
+    focus: 'Owners for the six programme sessions will be published when confirmed',
+    accent: '#63d9b1',
   },
 ]
 
@@ -180,6 +193,24 @@ export const PREP = [
   { id: 'sample', icon: 'Repo', title: 'Sample repository only', desc: 'Use workshop or non-sensitive code. Do not bring credentials or confidential production repositories.' },
 ]
 
+export const READINESS_PATHS = [
+  {
+    id: 'ready',
+    title: 'Already ready',
+    desc: 'If every check passes, choose the local development option and arrive ready for the hands-on work.',
+  },
+  {
+    id: 'setup',
+    title: 'Able to install locally',
+    desc: 'Choose the local development option and complete the published setup before your first hands-on session.',
+  },
+  {
+    id: 'cloud',
+    title: 'Need a managed environment',
+    desc: 'Choose the cloud option if local setup is not possible. Capacity is limited, so access is not guaranteed.',
+  },
+]
+
 export const SETUP_RESOURCES = [
   { id: 'git', label: 'Git', check: 'git --version', login: 'No sign-in required', href: 'https://git-scm.com/downloads' },
   { id: 'gh', label: 'GitHub CLI', check: 'gh --version', login: 'gh auth login', href: 'https://cli.github.com/' },
@@ -227,8 +258,16 @@ export const REGISTRATION = {
   title: 'Join the Agentic Software Development Winter Bootcamp.',
   subtitle: 'Sign in with GitHub, confirm your sessions and provide the details needed for event access.',
   environments: [
-    { id: 'local', label: 'I will use a local development environment' },
-    { id: 'cloud', label: 'I need a cloud development environment' },
+    {
+      id: 'local',
+      label: 'I will use a local development environment',
+      desc: 'Choose this if your machine already meets the requirements or you will complete the setup yourself.',
+    },
+    {
+      id: 'cloud',
+      label: 'I need a cloud development environment',
+      desc: 'Managed environments have limited capacity. Selecting this option does not guarantee access.',
+    },
   ],
   consent:
     'I consent to Microsoft using my company, company email, session choices, GitHub.com username and environment preference to administer the bootcamp, provision access, communicate with me and improve the programme. Registration data is deleted after the administration period.',
