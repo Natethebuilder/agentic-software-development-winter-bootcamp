@@ -99,21 +99,21 @@ The shared flow temporarily accepts `email`, `sessions`, and `environment` as al
 
 ## Shared flow behavior
 
-The shared `Agentic Winter Bootcamps Registration Upsert` flow must be updated and verified before this contract is considered deployed:
+The deployed shared `Agentic Winter Bootcamps Registration Upsert` flow:
 
 1. Invalid shared secrets return HTTP `401`.
 2. `agentic-software-development-winter-bootcamp` routes only to this List.
 3. Missing or unrecognized event IDs return HTTP `400`.
-4. Configure the HTTP trigger concurrency control to `runs: 1`. Serial processing prevents simultaneous anonymous submissions from both passing the duplicate check before either create completes.
-5. `Get_software_items` temporarily queries for either `Title eq '<registrationEmailKey>'` or `CompanyEmail eq '<normalizedCompanyEmail>'`, with top count `1`. The hashed `Title` is the canonical deduplication key; the email fallback supports legacy rows without a manual backfill.
-6. The branch updates the first matching row or creates one when absent.
-7. Creates store the email hash in `Title`, the normalized address in `CompanyEmail`, and the token-derived `RegistrationId`; they initialize `OrganizationAccessStatus` to `Pending`.
-8. Creates set `CloudEnvironmentStatus` to `Requested` for cloud or `Not requested` for local.
-9. Updates keep the stored `CompanyEmail` immutable. A submitted email is used only to derive the lookup key and must not replace the address already stored on the matched item.
-10. When the legacy fallback matched `CompanyEmail`, migrate `Title` to `registrationEmailKey` only when both the submitted normalized email and token-derived `RegistrationId` match the stored row. This valid same-token/same-email update performs the cutover lazily without a manual SharePoint backfill.
-11. When `Company` changes, reset `OrganizationAccessStatus` to `Pending` if the current status reflects an approval or invitation decision that must be reviewed for the new company.
-12. When `Environment` changes, reset `CloudEnvironmentStatus` to `Requested` for cloud or `Not requested` for local so provisioning reflects the new choice.
-13. Updates that do not change company or environment preserve both operational status fields.
+4. `Get_software_items` temporarily queries for either `Title eq '<registrationEmailKey>'` or `CompanyEmail eq '<normalizedCompanyEmail>'`, with top count `1`. The hashed `Title` is the canonical deduplication key; the email fallback supports legacy rows without a manual backfill.
+5. The branch updates the first matching row or creates one when absent.
+6. Creates store the email hash in `Title`, the normalized address in `CompanyEmail`, and the token-derived `RegistrationId`; they initialize `OrganizationAccessStatus` to `Pending`.
+7. Creates set `CloudEnvironmentStatus` to `Requested` for cloud or `Not requested` for local.
+8. Updates keep the stored `CompanyEmail` immutable. A submitted email is used only to derive the lookup key and must not replace the address already stored on the matched item.
+9. When the legacy fallback matched `CompanyEmail`, migrate `Title` to `registrationEmailKey` only when both the submitted normalized email and token-derived `RegistrationId` match the stored row. This valid same-token/same-email update performs the cutover lazily without a manual SharePoint backfill.
+10. When `Company` changes, reset `OrganizationAccessStatus` to `Pending` if the current status reflects an approval or invitation decision that must be reviewed for the new company.
+11. When `Environment` changes, reset `CloudEnvironmentStatus` to `Requested` for cloud or `Not requested` for local so provisioning reflects the new choice.
+12. Updates that do not change company or environment preserve both operational status fields.
+13. Keep the HTTP trigger in synchronous response mode. The `400`, `401`, and `202` Response actions run only after the relevant validation and SharePoint storage path completes, so the caller never receives success before persistence.
 14. Enable secure inputs and secure outputs on the HTTP trigger and every action carrying registration data or secrets. Apply the approved flow run-history retention policy.
 15. Accepted registrations return HTTP `202`.
 
@@ -147,6 +147,6 @@ A few days before the event, the invitation provides the link for joining the ev
 - A repeat submission from the same browser should retain its token-derived `RegistrationId`.
 - A submission using the same normalized email from another browser should match the hashed `Title` row without replacing `CompanyEmail`.
 - A valid same-token/same-email update to a legacy row should replace its email-valued `Title` with the hash; mismatched tokens must not trigger that migration.
-- Concurrent duplicate-submission testing should confirm trigger concurrency `runs: 1` prevents duplicate creates.
+- Response-path testing should confirm `400` and `401` failures, and that `202` is returned only after the SharePoint create or update completes.
 - Flow run history should mask secure inputs and outputs for registration-bearing actions.
 - Company and environment changes should reset only the relevant downstream operational status as described above.
