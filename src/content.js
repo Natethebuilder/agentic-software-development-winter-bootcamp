@@ -104,6 +104,13 @@ export const PILLARS = [
   },
 ]
 
+export const GOLDEN_TICKET = {
+  eyebrow: 'GitHub Golden Ticket',
+  title: 'Event organization access and $100 of GitHub Copilot AI credits.',
+  description:
+    'A few days before the event starts, registered attendees will receive an invitation containing the link to join the event GitHub organization. The Golden Ticket environment includes $100 worth of AI credits to use with GitHub Copilot.',
+}
+
 export const PIPELINE = [
   {
     id: 'issue', label: 'Issue', sub: 'intent', color: '#8fd8ff',
@@ -185,7 +192,7 @@ export const TERMINAL_SCRIPTS = [
 ]
 
 export const PREP = [
-  { id: 'github', icon: 'GH', title: 'GitHub account ready', desc: 'Use the GitHub identity you want associated with registration and workshop activity.' },
+  { id: 'github', icon: 'GH', title: 'GitHub account ready', desc: 'Use the GitHub.com account that will accept the Golden Ticket organization invitation.' },
   { id: 'copilot', icon: 'AI', title: 'GitHub Copilot access', desc: 'Bring an active Copilot plan through your organisation, education access or individual subscription.' },
   { id: 'git', icon: 'Git', title: 'Git installed', desc: 'A current Git installation supports the hands-on repository workflows.' },
   { id: 'gh-cli', icon: 'CLI', title: 'GitHub CLI', desc: 'Install and authenticate gh for repository, pull request and workflow exercises.' },
@@ -242,21 +249,29 @@ export const FAQ = [
     a: 'Yes, where possible. Each confirmed session will publish its prerequisites and hands-on format before registration closes.',
   },
   {
+    q: 'What is included with the Golden Ticket environment?',
+    a: 'You receive access to the event GitHub organization and $100 worth of AI credits to use with GitHub Copilot.',
+  },
+  {
+    q: 'How do I access the GitHub organization?',
+    a: 'A few days before the event starts, your event invitation will include the Golden Ticket link used to join the organization.',
+  },
+  {
     q: 'How do I register?',
-    a: 'Sign in with GitHub, provide the event details needed for administration and select the sessions you plan to attend.',
+    a: 'Provide and confirm your company email, choose your sessions and select your development environment. No GitHub sign-in is required on this website.',
   },
 ]
 
 export const REGISTER_STEPS = [
-  'Sign in with your personal GitHub.com account',
-  'Confirm the sessions you plan to attend and add your company details',
-  'Receive setup guidance and access information by email',
+  'Enter and confirm your company email address',
+  'Choose the sessions and development environment you need',
+  'Receive the Golden Ticket organization link a few days before the event',
 ]
 
 export const REGISTRATION = {
   eyebrow: 'Registration',
   title: 'Join the Agentic Software Development Winter Bootcamp.',
-  subtitle: 'Sign in with GitHub, confirm your sessions and provide the details needed for event access.',
+  subtitle: 'Confirm your company email, choose your sessions and provide the details needed for event access.',
   environments: [
     {
       id: 'local',
@@ -270,5 +285,5 @@ export const REGISTRATION = {
     },
   ],
   consent:
-    'I consent to Microsoft using my company, company email, session choices, GitHub.com username and environment preference to administer the bootcamp, provision access, communicate with me and improve the programme. Registration data is deleted after the administration period.',
+    'I consent to Microsoft using my company, company email, session choices and environment preference to administer the bootcamp, send the Golden Ticket organization invitation, provision access, communicate with me and improve the programme. Registration data is deleted after the administration period.',
 }

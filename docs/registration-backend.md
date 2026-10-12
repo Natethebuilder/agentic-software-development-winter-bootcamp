@@ -1,6 +1,6 @@
 # Software Development registration backend
 
-The live site uses Azure Static Web Apps GitHub authentication and the shared registration flow originally created for the Agentic Data Winter Bootcamp. The Software Development API sends the constant event identifier:
+The live site uses a public registration form and the shared registration flow originally created for the Agentic Data Winter Bootcamp. GitHub OAuth is not used for registration. The Software Development API sends the constant event identifier:
 
 ```json
 {
@@ -25,10 +25,10 @@ The shared flow validates the secret, routes by `eventId`, and stores this event
 
 | Display name | Type | Required | Notes |
 | --- | --- | --- | --- |
-| Title | Single line text | Yes | GitHub username |
+| Title | Single line text | Yes | Legacy field currently receives `not-collected` |
 | RegistrationId | Single line text | Yes | Unique and indexed |
-| GitHubUserId | Single line text | Yes | Application-scoped GitHub identity |
-| GitHubUsername | Single line text | Yes | Verified username |
+| GitHubUserId | Single line text | Yes | Legacy compatibility field set to `not-collected` |
+| GitHubUsername | Single line text | Yes | Legacy compatibility field set to `not-collected` |
 | Company | Single line text | Yes | Organisation |
 | CompanyEmail | Single line text | Yes | Event communication |
 | Sessions | Multiple lines text | Yes | Semicolon-delimited session IDs |
@@ -48,13 +48,19 @@ The deployed flow keeps the existing shared-secret condition and adds `Route_reg
 6. Missing or unrecognized `eventId` values continue to the unchanged Data branch while the legacy Data client is migrated.
 7. An invalid shared secret continues to return HTTP `401`.
 
-The API calculates:
+The attendee enters the company email twice, and the browser and API reject values that do not match. This reduces typing mistakes but does not verify ownership of the mailbox.
+
+On the first successful registration, the API generates an opaque UUID token and returns it to the browser. The browser stores it in local storage for later updates. The API calculates:
 
 ```text
-SHA256("agentic-software-development-winter-bootcamp:" + applicationScopedGitHubUserId)
+SHA256("agentic-software-development-winter-bootcamp:" + registrationToken)
 ```
 
-This keeps registration IDs event-specific and makes repeat submissions deterministic updates.
+This keeps registration IDs event-specific and lets the same browser update the same record without using the email address as an authentication credential. GitHub identity is not collected; the required legacy fields receive `not-collected`.
+
+## Golden Ticket access
+
+A few days before the event starts, the event invitation supplies the Golden Ticket link used to join the event GitHub organization. The environment includes $100 worth of AI credits for GitHub Copilot.
 
 ## Azure settings
 
@@ -70,8 +76,9 @@ Do not expose these values in source, browser responses, documentation or logs.
 ## Live verification
 
 - The public site returns HTTP `200`.
-- Unauthenticated `POST /api/register` redirects to GitHub authentication.
+- The GitHub OAuth login route is disabled.
+- Public `POST /api/register` validates matching email entries, sessions, environment and consent.
 - An intentionally invalid shared secret returns HTTP `401`.
-- A GitHub-authenticated submission creates one Software Development List item and returns the registration success state.
+- A valid submission creates one Software Development List item and returns an opaque browser registration token.
 - The create run executed `Create_software_registration`; the Data actions were skipped.
-- Repeating the same registration kept the List at one row, advanced `UpdatedAt`, executed `Update_software_registration`, and skipped both the Software create action and every Data action.
+- Repeating from the same browser uses the stored token to update the same row.

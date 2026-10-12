@@ -20,17 +20,19 @@ npm run build
 npm run build:swa
 ```
 
-The Azure Static Web Apps build uses `/` so the website, deck, GitHub authentication and `/api/register` share one origin.
+The Azure Static Web Apps build uses `/` so the website, deck and `/api/register` share one origin.
 
 ## Registration architecture
 
-The protected API:
+The registration API:
 
-1. reads the authenticated GitHub identity from `x-ms-client-principal`;
-2. validates company, email, session IDs, environment and consent;
-3. derives an event-scoped SHA-256 `RegistrationId`;
+1. validates company, matching email entries, session IDs, environment and consent;
+2. uses a browser-held opaque token to derive an event-scoped SHA-256 `RegistrationId`;
+3. sends legacy GitHub fields as explicit `not-collected` compatibility markers;
 4. sends `eventId: agentic-software-development-winter-bootcamp` to the shared registration flow;
 5. lets that flow route the submission into the dedicated Software Development SharePoint List.
+
+A few days before the event, the attendee receives a Golden Ticket invitation containing the link to join the event GitHub organization. The environment includes $100 worth of GitHub Copilot AI credits.
 
 The application uses:
 
