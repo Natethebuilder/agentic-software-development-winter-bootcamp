@@ -4,7 +4,7 @@ import { BottomBar, Editable, Slide, useSlides } from '@deckio/deck-engine'
 import RegistrationForm from '../registration/RegistrationForm.jsx'
 import { Logos, Mascot } from '../winter/Decor.jsx'
 import {
-  BOOTCAMP, GITHUB_ACCESS, PERSONAS, PILLARS, PREP, REGISTER_STEPS, SESSIONS, TEAM,
+  BOOTCAMP, GITHUB_ACCESS, PERSONAS, PILLARS, PREP, REGISTER_STEPS, SESSION_DATES, SESSIONS, TEAM,
 } from '../content.js'
 import s from './Slides.module.css'
 
@@ -166,22 +166,30 @@ export function TimetableSlide({ index }) {
     <Frame index={index} id="timetable" orbs={['orbIce', 'orbHolly']}>
       <Header
         id="timetable"
-        eyebrow="Programme schedule"
-        title="Six reserved sessions. One delivery loop."
-        subtitle="Topics, owners, formats, dates and times are still being confirmed. No placeholder status column—only the programme structure we know."
+        eyebrow="Placeholder programme schedule"
+        title="Six Fridays. Six sessions each."
+        subtitle="These dates and times validate the registration workflow. The complete public programme remains TBC."
       />
-      <div className={`${s.grid} ${s.grid6}`}>
-        {SESSIONS.map((session, i) => (
-          <div key={session.id} className={s.door} style={{ '--door-accent': session.accent }}>
-            <span className={s.doorIcon} aria-hidden="true">{session.scheduleMark}</span>
-            <span className={s.doorNum}>{i + 1}</span>
-            <Editable as="span" id={`timetable.${session.id}.week`} className={s.doorWeek}>{session.track}</Editable>
-            <Editable as="span" id={`timetable.${session.id}.date`} className={s.doorDate}>{session.format}</Editable>
+      <div className={s.scheduleGrid}>
+        {SESSION_DATES.map((date) => (
+          <div key={date.id} className={s.scheduleDay}>
+            <header>
+              <span><b>{date.day}</b>{date.month}</span>
+              <div><strong>{date.short}</strong><small>Placeholder · TBC</small></div>
+            </header>
+            <div>
+              {SESSIONS.map((session) => (
+                <span key={`${date.id}-${session.id}`} style={{ '--slot-accent': session.accent }}>
+                  <time dateTime={`${date.id}T${session.time}`}>{session.time}</time>
+                  <b>{session.shortTitle}</b>
+                </span>
+              ))}
+            </div>
           </div>
         ))}
       </div>
       <Editable as="p" id="timetable.caption" className={s.caption}>
-        Topics · dates · speakers to be announced
+        36 valid registration choices · final dates, topics and speakers TBC
       </Editable>
     </Frame>
   )

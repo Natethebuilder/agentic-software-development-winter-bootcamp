@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { PIPELINE, SESSIONS, TERMINAL_SCRIPTS } from '../content.js'
+import { PIPELINE, SESSION_DATES, SESSIONS, TERMINAL_SCRIPTS } from '../content.js'
 import d from './Data.module.css'
 
 /* ── Countdown to the first session, styled as a scheduled pipeline run ── */
@@ -113,24 +113,32 @@ export function AgentTerminal({ className = '', children }) {
   )
 }
 
-/* ── Reserved programme slots and the shared delivery lifecycle ── */
+/* ── Placeholder Friday schedule and the shared delivery lifecycle ── */
 export function ProgrammeBoard() {
   return (
     <div className={d.programmeBoard}>
       <div className={d.programmeHead}>
         <div>
           <span>programme.yml</span>
-          <strong>Six reserved session branches</strong>
+          <strong>Six placeholder Fridays · 36 selectable sessions</strong>
         </div>
-        <p>Topics, owners, formats, dates and times will be added as they are confirmed.</p>
+        <p>Every session is available on every placeholder date. Dates, topics and owners remain TBC until the programme is confirmed.</p>
       </div>
-      <div className={d.sessionSlots}>
-        {SESSIONS.map((session) => (
-          <article key={session.id} style={{ '--slot-accent': session.accent }}>
-            <span>{session.number}</span>
-            <div>
-              <strong>{session.title}</strong>
-              <small>Owner, format and date TBC</small>
+      <div className={d.scheduleDates}>
+        {SESSION_DATES.map((date) => (
+          <article key={date.id} className={d.scheduleDate}>
+            <header>
+              <span><b>{date.day}</b>{date.month}</span>
+              <div><strong>{date.label}</strong><small>Placeholder date · final schedule TBC</small></div>
+            </header>
+            <div className={d.scheduleSlots}>
+              {SESSIONS.map((session) => (
+                <span key={`${date.id}-${session.id}`} style={{ '--slot-accent': session.accent }}>
+                  <time dateTime={`${date.id}T${session.time}`}>{session.time}</time>
+                  <b>{session.shortTitle}</b>
+                  <small>Topic TBC</small>
+                </span>
+              ))}
             </div>
           </article>
         ))}

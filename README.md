@@ -9,7 +9,7 @@ Interactive public website and DECKIO presentation for a six-session community b
 | `#/` | Public website with event framing, programme placeholders, development setup, FAQ and registration |
 | `#/deck` | Horizontal DECKIO presentation with the same content and embedded registration |
 
-Topics, dates, speakers and headshots intentionally remain visible placeholders until the programme is confirmed.
+Topics, speakers and headshots intentionally remain visible placeholders until the programme is confirmed. Six Friday dates and six daily times are also shown as explicit placeholder/TBC values so the 36-choice registration workflow can be validated end-to-end.
 
 ## Develop
 
@@ -26,7 +26,7 @@ The Azure Static Web Apps build uses `/` so the website, deck and `/api/register
 
 The registration API:
 
-1. validates company, matching email entries, session IDs, environment and consent;
+1. validates company, matching email entries, the 36 allowed `YYYY-MM-DD|HH:MM|session-id` placeholder selections, environment and consent;
 2. uses a browser-held opaque token to derive an event-scoped SHA-256 `RegistrationId`;
 3. sends canonical company-email, session-selection and environment-preference fields without GitHub identity;
 4. sends `eventId: agentic-software-development-winter-bootcamp` to the shared registration flow;

@@ -4,6 +4,18 @@ const test = require('node:test')
 const register = require('./index.js')
 
 const registrationToken = '123e4567-e89b-42d3-a456-426614174000'
+const sessionDates = ['2026-12-04', '2026-12-11', '2026-12-18', '2027-01-08', '2027-01-15', '2027-01-22']
+const sessionTimes = {
+  'session-01': '09:15',
+  'session-02': '10:15',
+  'session-03': '11:15',
+  'session-04': '12:45',
+  'session-05': '13:45',
+  'session-06': '14:45',
+}
+const allSlots = sessionDates.flatMap((date) => (
+  Object.entries(sessionTimes).map(([session, time]) => `${date}|${time}|${session}`)
+))
 
 function request(body) {
   return { headers: {}, body }
@@ -15,7 +27,7 @@ function validBody() {
     email: 'Builder@Example.com',
     emailConfirmation: 'builder@example.com',
     registrationToken,
-    sessions: ['session-01', 'session-06'],
+    sessions: ['2026-12-04|09:15|session-01', '2027-01-22|14:45|session-06'],
     environment: 'cloud',
     consent: true,
   }
@@ -35,13 +47,34 @@ test('rejects mismatched email confirmation', async () => {
   assert.equal(context.res.status, 400)
 })
 
-test('rejects unknown or duplicate session identifiers', async () => {
+test('rejects duplicate date and session slots', async () => {
   configuredEnvironment()
   const context = {}
   const body = validBody()
-  body.sessions = ['session-01', 'session-01']
+  body.sessions = ['2026-12-04|09:15|session-01', '2026-12-04|09:15|session-01']
   await register(context, request(body))
   assert.equal(context.res.status, 400)
+})
+
+test('rejects invalid date, time, and session combinations', async (t) => {
+  configuredEnvironment()
+  const invalidSelections = [
+    '2026-12-03|09:15|session-01',
+    '2026-12-04|09:00|session-01',
+    '2026-12-04|09:15|session-02',
+    '2026-12-04|09:15|session-99',
+    'session-01',
+  ]
+
+  for (const selection of invalidSelections) {
+    await t.test(selection, async () => {
+      const context = {}
+      const body = validBody()
+      body.sessions = [selection]
+      await register(context, request(body))
+      assert.equal(context.res.status, 400)
+    })
+  }
 })
 
 test('requires shared backend settings', async () => {
@@ -80,4 +113,22 @@ test('forwards an anonymous event-routed upsert payload', async () => {
     createHash('sha256').update(`agentic-software-development-winter-bootcamp:${registrationToken}`).digest('hex'),
   )
   assert.equal(context.res.body.registrationToken, registrationToken)
+})
+
+test('accepts and forwards all 36 canonical placeholder choices', async () => {
+  configuredEnvironment()
+  let received
+  global.fetch = async (_url, options) => {
+    received = JSON.parse(options.body)
+    return { ok: true }
+  }
+
+  const context = {}
+  const body = validBody()
+  body.sessions = allSlots
+  await register(context, request(body))
+
+  assert.equal(context.res.status, 202)
+  assert.equal(allSlots.length, 36)
+  assert.deepEqual(received.sessionSelections, allSlots)
 })

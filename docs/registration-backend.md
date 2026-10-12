@@ -18,7 +18,7 @@ The public form uses the shared multi-event Power Automate flow and a dedicated 
 | `RegistrationId` | Single line of text | Unique, indexed event-scoped identifier |
 | `Company` | Single line of text | Company or organisation |
 | `CompanyEmail` | Single line of text | Normalized communication address |
-| `SessionSelections` | Choice, multiple selections | Filterable `session-01` through `session-06` selections |
+| `SessionSelections` | Choice, multiple selections | The 36 canonical placeholder date-time-session choices described below |
 | `Sessions` | Multiple lines of text | Temporary semicolon-delimited compatibility copy |
 | `Environment` | Choice | `local` or `cloud` |
 | `OrganizationAccessStatus` | Choice | `Pending`, `Invitation queued`, `Invitation sent`, `Joined`, or `Issue` |
@@ -42,13 +42,44 @@ This lets the same browser update the same row without using the email address a
 
 ## API payload
 
+The public placeholder schedule uses these six Fridays:
+
+- `2026-12-04`
+- `2026-12-11`
+- `2026-12-18`
+- `2027-01-08`
+- `2027-01-15`
+- `2027-01-22`
+
+Each date offers the same six session slots:
+
+| Session | Placeholder time |
+| --- | --- |
+| `session-01` | `09:15` |
+| `session-02` | `10:15` |
+| `session-03` | `11:15` |
+| `session-04` | `12:45` |
+| `session-05` | `13:45` |
+| `session-06` | `14:45` |
+
+The canonical stored selection format is:
+
+```text
+YYYY-MM-DD|HH:MM|session-id
+```
+
+The API allowlist is the Cartesian product of the six dates and six session/time mappings: exactly 36 valid values. The dates and times are placeholders for workflow validation and remain publicly labelled TBC.
+
 ```json
 {
   "eventId": "agentic-software-development-winter-bootcamp",
   "registrationId": "event-scoped SHA-256 value",
   "company": "Example organisation",
   "companyEmail": "person@example.com",
-  "sessionSelections": ["session-01", "session-06"],
+  "sessionSelections": [
+    "2026-12-04|09:15|session-01",
+    "2027-01-22|14:45|session-06"
+  ],
   "environmentPreference": "cloud",
   "consent": true,
   "updatedAt": "2026-01-01T12:00:00.000Z"
@@ -71,7 +102,7 @@ The live flow is `Agentic Winter Bootcamps Registration Upsert`:
 8. Updates preserve both operational status fields.
 9. Accepted registrations return HTTP `202`.
 
-The flow writes filterable `SessionSelections` and the temporary `Sessions` text copy.
+The flow writes filterable `SessionSelections` and the temporary `Sessions` text copy. Configure the List choice field with all 36 canonical values before accepting these placeholder registrations.
 
 ## Operational view
 
@@ -94,7 +125,7 @@ A few days before the event, the invitation provides the link for joining the ev
 
 - The public site and registration API do not require GitHub sign-in.
 - The disabled GitHub OAuth route returns `404`.
-- Registration tests validate email confirmation, session IDs, backend settings, and the canonical payload.
+- Registration tests validate email confirmation, all 36 canonical choices, invalid date/time/session combinations, backend settings, and the canonical payload.
 - Test submissions require explicit approval because they create or update SharePoint data.
 - A create should initialize the two operational status fields.
 - A repeat submission from the same browser should update the same row and preserve status progress.
