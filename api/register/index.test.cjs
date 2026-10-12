@@ -101,6 +101,10 @@ test('forwards an anonymous event-routed upsert payload', async () => {
   assert.equal(received.options.headers['x-registration-secret'], 'test-only-secret')
   assert.equal(received.body.eventId, 'agentic-software-development-winter-bootcamp')
   assert.equal(received.body.companyEmail, 'builder@example.com')
+  assert.equal(
+    received.body.registrationEmailKey,
+    createHash('sha256').update('agentic-software-development-winter-bootcamp:builder@example.com').digest('hex'),
+  )
   assert.deepEqual(received.body.sessionSelections, validBody().sessions)
   assert.equal(received.body.environmentPreference, 'cloud')
   assert.equal('githubUserId' in received.body, false)
@@ -113,6 +117,54 @@ test('forwards an anonymous event-routed upsert payload', async () => {
     createHash('sha256').update(`agentic-software-development-winter-bootcamp:${registrationToken}`).digest('hex'),
   )
   assert.equal(context.res.body.registrationToken, registrationToken)
+  assert.equal('registrationEmailKey' in context.res.body, false)
+})
+
+test('normalizes the downstream email key deterministically', async () => {
+  configuredEnvironment()
+  const keys = []
+  global.fetch = async (_url, options) => {
+    keys.push(JSON.parse(options.body).registrationEmailKey)
+    return { ok: true }
+  }
+
+  const first = validBody()
+  first.email = '  Builder@Example.COM '
+  first.emailConfirmation = 'builder@example.com'
+  await register({}, request(first))
+
+  const second = validBody()
+  second.email = 'builder@example.com'
+  second.emailConfirmation = ' BUILDER@EXAMPLE.COM '
+  await register({}, request(second))
+
+  const expected = createHash('sha256')
+    .update('agentic-software-development-winter-bootcamp:builder@example.com')
+    .digest('hex')
+  assert.deepEqual(keys, [expected, expected])
+})
+
+test('ignores caller-supplied email and registration key overrides', async () => {
+  configuredEnvironment()
+  let received
+  global.fetch = async (_url, options) => {
+    received = JSON.parse(options.body)
+    return { ok: true }
+  }
+
+  const body = validBody()
+  body.registrationEmailKey = 'caller-controlled-email-key'
+  body.registrationId = 'caller-controlled-registration-id'
+  await register({}, request(body))
+
+  assert.equal(
+    received.registrationEmailKey,
+    createHash('sha256').update('agentic-software-development-winter-bootcamp:builder@example.com').digest('hex'),
+  )
+  assert.equal(
+    received.registrationId,
+    createHash('sha256').update(`agentic-software-development-winter-bootcamp:${registrationToken}`).digest('hex'),
+  )
 })
 
 test('accepts and forwards all 36 canonical placeholder choices', async () => {
