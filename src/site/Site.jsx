@@ -344,8 +344,8 @@ export default function Site() {
           id="schedule"
           idx="03"
           eyebrow="Schedule"
-          title="Six reserved sessions. One delivery loop."
-          subtitle="Topics, owners and dates are still being confirmed. The programme will connect intent, implementation, quality, review, delivery and learning."
+          title="Six placeholder Fridays. Every session on every date."
+          subtitle="The dates and times below validate the registration workflow and remain explicitly TBC. Final topics, owners and schedule will be confirmed later."
         >
           <ProgrammeBoard />
         </Section>

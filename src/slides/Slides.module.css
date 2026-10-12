@@ -290,6 +290,59 @@
 
 .caption { font-size: 14px; color: var(--muted-foreground); }
 
+.scheduleGrid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+.scheduleDay {
+  min-width: 0;
+  overflow: hidden;
+  border-radius: 13px;
+  border: 1px solid var(--border);
+  background: color-mix(in srgb, var(--card) 88%, transparent);
+}
+.scheduleDay header {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  gap: 10px;
+  padding: 9px 11px;
+  border-bottom: 1px solid var(--border);
+  background: color-mix(in srgb, var(--ice) 8%, var(--night));
+}
+.scheduleDay header > span {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  color: var(--ice);
+  font: 800 9px/1 ui-monospace, monospace;
+  letter-spacing: 1px;
+}
+.scheduleDay header > span b { color: var(--frost); font-size: 20px; line-height: 1; }
+.scheduleDay header div { min-width: 0; }
+.scheduleDay header strong { display: block; color: var(--frost); font-size: 13px; }
+.scheduleDay header small { display: block; margin-top: 2px; color: var(--gold); font-size: 9px; }
+.scheduleDay > div {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+.scheduleDay > div > span {
+  min-width: 0;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  gap: 7px;
+  padding: 7px 8px;
+  border-right: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  box-shadow: inset 2px 0 0 color-mix(in srgb, var(--slot-accent) 75%, transparent);
+}
+.scheduleDay > div > span:nth-child(2n) { border-right: 0; }
+.scheduleDay > div > span:nth-last-child(-n + 2) { border-bottom: 0; }
+.scheduleDay time { color: var(--slot-accent); font: 800 10px/1 ui-monospace, monospace; }
+.scheduleDay > div b { min-width: 0; color: var(--frost); font-size: 10px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
 /* ── Flow bar ── */
 .flow {
   display: flex;

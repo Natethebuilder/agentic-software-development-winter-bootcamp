@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { REGISTRATION, SESSIONS } from '../content.js'
+import { REGISTRATION, SESSION_DATES, SESSIONS, registrationSlotId } from '../content.js'
 import s from './RegistrationForm.module.css'
 
 const TOKEN_KEY = 'agentic-software-development-winter-bootcamp:registration-token'
@@ -13,7 +13,8 @@ function saveRegistrationToken(token) {
 }
 
 export default function RegistrationForm() {
-  const [sessions, setSessions] = useState([])
+  const [slots, setSlots] = useState([])
+  const [activeDate, setActiveDate] = useState(SESSION_DATES[0].id)
   const [company, setCompany] = useState('')
   const [email, setEmail] = useState('')
   const [emailConfirmation, setEmailConfirmation] = useState('')
@@ -27,9 +28,10 @@ export default function RegistrationForm() {
   const normalizedConfirmation = emailConfirmation.trim().toLowerCase()
   const emailsMatch = Boolean(normalizedEmail) && normalizedEmail === normalizedConfirmation
   const emailMismatch = Boolean(emailConfirmation) && !emailsMatch
-  const valid = sessions.length > 0 && company.trim() && emailsMatch && consent
+  const valid = slots.length > 0 && company.trim() && emailsMatch && consent
+  const selectedDateCount = new Set(slots.map((slot) => slot.split('|')[0])).size
 
-  const toggleSession = (id) => setSessions((current) => (
+  const toggleSlot = (id) => setSlots((current) => (
     current.includes(id) ? current.filter((item) => item !== id) : [...current, id]
   ))
 
@@ -52,7 +54,7 @@ export default function RegistrationForm() {
             email: normalizedEmail,
             emailConfirmation: normalizedConfirmation,
             registrationToken,
-            sessions,
+            sessions: slots,
             environment,
             consent,
           }),
@@ -106,16 +108,45 @@ export default function RegistrationForm() {
       </div>
 
       <fieldset className={s.sessionField}>
-        <legend>Which sessions are you interested in?</legend>
-        <div className={s.sessionGrid}>
-          {SESSIONS.map((session) => (
-            <label key={session.id} className={sessions.includes(session.id) ? s.sessionOn : ''}>
-              <input type="checkbox" checked={sessions.includes(session.id)} onChange={() => toggleSession(session.id)} />
-              <span><strong>{session.number} · {session.title}</strong><small>{session.subtitle}</small></span>
-              <i>{sessions.includes(session.id) ? '✓' : '+'}</i>
-            </label>
-          ))}
+        <legend>Choose your placeholder dates and session times</legend>
+        <p className={s.sessionHint}>{REGISTRATION.slotHelp}</p>
+        <div className={s.dateTabs} role="tablist" aria-label="Choose a placeholder bootcamp date">
+          {SESSION_DATES.map((date) => {
+            const count = slots.filter((slot) => slot.startsWith(`${date.id}|`)).length
+            return (
+              <button
+                key={date.id}
+                type="button"
+                role="tab"
+                aria-selected={date.id === activeDate}
+                className={date.id === activeDate ? s.dateTabOn : ''}
+                onClick={() => setActiveDate(date.id)}
+              >
+                <span>{date.short}</span>
+                <small>{count ? `${count} selected` : 'Placeholder · TBC'}</small>
+              </button>
+            )
+          })}
         </div>
+        <div className={s.sessionGrid} role="tabpanel">
+          {SESSIONS.map((session) => {
+            const id = registrationSlotId(activeDate, session)
+            const selected = slots.includes(id)
+            return (
+              <label key={session.id} className={selected ? s.sessionOn : ''}>
+                <input type="checkbox" checked={selected} onChange={() => toggleSlot(id)} />
+                <time dateTime={`${activeDate}T${session.time}`}>{session.time}</time>
+                <span><strong>{session.number} · {session.title}</strong><small>{session.subtitle}</small></span>
+                <i aria-hidden="true">{selected ? '✓' : '+'}</i>
+              </label>
+            )
+          })}
+        </div>
+        <p className={s.selectionSummary}>
+          {slots.length
+            ? `${slots.length} placeholder session time${slots.length === 1 ? '' : 's'} selected across ${selectedDateCount} date${selectedDateCount === 1 ? '' : 's'}`
+            : 'No placeholder date or session time selected yet'}
+        </p>
       </fieldset>
 
       <fieldset className={s.environment}>

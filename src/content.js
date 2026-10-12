@@ -1,5 +1,5 @@
 // Shared public content for the landing site and the deck.
-// Topics, speakers and dates intentionally remain visible placeholders.
+// Topics and speakers remain TBC. Dates and times are placeholders used to validate the registration workflow.
 
 export const BOOTCAMP = {
   name: 'Agentic Software Development Winter Bootcamp',
@@ -9,7 +9,7 @@ export const BOOTCAMP = {
     'A six-session community programme exploring how GitHub Copilot supports intent, implementation, quality, review, delivery and learning.',
   season: 'Winter',
   kickoffDate: null,
-  kickoffLabel: 'Dates to be announced',
+  kickoffLabel: 'Placeholder Friday schedule · final dates TBC',
   kickoff: null,
   footer: 'Agentic Software Development Winter Bootcamp',
 }
@@ -29,6 +29,7 @@ export const SESSIONS = Array.from({ length: 6 }, (_, index) => {
     ownerInitials: 'TBC',
     audience: 'Software community',
     format: 'Format TBC',
+    time: ['09:15', '10:15', '11:15', '12:45', '13:45', '14:45'][index],
     scheduleMark: `S${index + 1}`,
     accent: ACCENTS[index],
     spotlight: 'The session focus and hands-on challenge will be announced.',
@@ -42,6 +43,17 @@ export const SESSIONS = Array.from({ length: 6 }, (_, index) => {
     tools: ['Tools TBC'],
   }
 })
+
+export const SESSION_DATES = [
+  { id: '2026-12-04', label: 'Friday, 4 December 2026', short: '4 Dec', day: '04', month: 'DEC' },
+  { id: '2026-12-11', label: 'Friday, 11 December 2026', short: '11 Dec', day: '11', month: 'DEC' },
+  { id: '2026-12-18', label: 'Friday, 18 December 2026', short: '18 Dec', day: '18', month: 'DEC' },
+  { id: '2027-01-08', label: 'Friday, 8 January 2027', short: '8 Jan', day: '08', month: 'JAN' },
+  { id: '2027-01-15', label: 'Friday, 15 January 2027', short: '15 Jan', day: '15', month: 'JAN' },
+  { id: '2027-01-22', label: 'Friday, 22 January 2027', short: '22 Jan', day: '22', month: 'JAN' },
+]
+
+export const registrationSlotId = (dateId, session) => `${dateId}|${session.time}|${session.id}`
 
 export const PERSONAS = [
   {
@@ -272,6 +284,8 @@ export const REGISTRATION = {
   eyebrow: 'Registration',
   title: 'Join the Agentic Software Development Winter Bootcamp.',
   subtitle: 'Confirm your company email, choose your sessions and provide the details needed for event access.',
+  slotHelp:
+    'These Friday dates and times are placeholders for workflow validation. Final dates and programme details remain TBC. Select any session times you would attend.',
   environments: [
     {
       id: 'local',

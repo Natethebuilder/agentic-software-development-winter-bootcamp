@@ -1,7 +1,18 @@
 const { createHash, randomUUID } = require('node:crypto')
 
 const EVENT_ID = 'agentic-software-development-winter-bootcamp'
-const SESSION_IDS = new Set(['session-01', 'session-02', 'session-03', 'session-04', 'session-05', 'session-06'])
+const SESSION_DATES = ['2026-12-04', '2026-12-11', '2026-12-18', '2027-01-08', '2027-01-15', '2027-01-22']
+const SESSION_TIMES = {
+  'session-01': '09:15',
+  'session-02': '10:15',
+  'session-03': '11:15',
+  'session-04': '12:45',
+  'session-05': '13:45',
+  'session-06': '14:45',
+}
+const SESSION_IDS = new Set(
+  SESSION_DATES.flatMap((date) => Object.entries(SESSION_TIMES).map(([session, time]) => `${date}|${time}|${session}`)),
+)
 const ENVIRONMENTS = new Set(['local', 'cloud'])
 const REGISTRATION_TOKEN = /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i
 
@@ -43,7 +54,7 @@ module.exports = async function register(context, req) {
     return
   }
   if (!sessions.length || sessions.length !== requestedSessions.length) {
-    context.res = response(400, { error: 'Choose at least one valid session.' })
+    context.res = response(400, { error: 'Choose at least one valid placeholder date and session time.' })
     return
   }
   if (!environment || body.consent !== true) {

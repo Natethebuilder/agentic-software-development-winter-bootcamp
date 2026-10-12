@@ -1,4 +1,4 @@
-.mono, .terminal, .cdNum, .cdLabel, .status, .programmeHead span, .sessionSlots > article > span, .lifecycle {
+.mono, .terminal, .cdNum, .cdLabel, .status, .programmeHead span, .scheduleDate header > span, .scheduleSlots, .lifecycle {
   font-family: ui-monospace, 'Cascadia Code', 'JetBrains Mono', Consolas, monospace;
 }
 
@@ -93,22 +93,35 @@
 .programmeHead span { color: var(--ice); font-size: 11px; letter-spacing: 1.3px; text-transform: uppercase; }
 .programmeHead strong { font-size: 21px; }
 .programmeHead p { max-width: 440px; color: var(--muted-foreground); font-size: 13px; line-height: 1.45; text-align: right; }
-.sessionSlots { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
-.sessionSlots article {
-  min-width: 0;
-  display: grid;
-  grid-template-columns: auto minmax(0, 1fr);
-  align-items: center;
-  gap: 12px;
-  padding: 13px 14px;
-  border-radius: 13px;
-  border: 1px solid color-mix(in srgb, var(--slot-accent) 38%, var(--border));
-  background: color-mix(in srgb, var(--card) 92%, var(--slot-accent) 8%);
+.scheduleDates { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+.scheduleDate {
+  min-width: 0; overflow: hidden; border-radius: 13px; border: 1px solid var(--border);
+  background: color-mix(in srgb, var(--card) 92%, transparent);
 }
-.sessionSlots > article > span { color: var(--slot-accent); font-size: 13px; font-weight: 800; }
-.sessionSlots div { min-width: 0; }
-.sessionSlots strong { display: block; color: var(--frost); font-size: 14px; line-height: 1.3; }
-.sessionSlots small { display: block; margin-top: 4px; color: var(--muted-foreground); font-size: 11px; }
+.scheduleDate header {
+  display: grid; grid-template-columns: auto minmax(0, 1fr); align-items: center; gap: 11px;
+  padding: 12px 13px; border-bottom: 1px solid var(--border);
+  background: color-mix(in srgb, var(--ice) 7%, var(--night));
+}
+.scheduleDate header > span {
+  min-width: 43px; display: flex; flex-direction: column; align-items: center;
+  color: var(--ice); font-size: 10px; letter-spacing: 1px;
+}
+.scheduleDate header > span b { color: var(--frost); font-size: 22px; line-height: 1; }
+.scheduleDate header div { min-width: 0; }
+.scheduleDate header strong { display: block; color: var(--frost); font-size: 13px; }
+.scheduleDate header small { display: block; margin-top: 3px; color: var(--gold); font-size: 10px; }
+.scheduleSlots { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.scheduleSlots > span {
+  min-width: 0; padding: 9px 10px; display: grid; grid-template-columns: auto minmax(0, 1fr);
+  gap: 3px 8px; border-right: 1px solid var(--border); border-bottom: 1px solid var(--border);
+  box-shadow: inset 2px 0 0 color-mix(in srgb, var(--slot-accent) 70%, transparent);
+}
+.scheduleSlots > span:nth-child(3n) { border-right: 0; }
+.scheduleSlots > span:nth-last-child(-n + 3) { border-bottom: 0; }
+.scheduleSlots time { grid-row: 1 / span 2; color: var(--slot-accent); font-size: 11px; font-weight: 800; }
+.scheduleSlots b { min-width: 0; color: var(--frost); font-size: 10px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.scheduleSlots small { color: var(--muted-foreground); font-size: 9px; }
 .lifecycle { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 8px; margin-top: 14px; }
 .lifecycle span {
   min-width: 0;
@@ -123,7 +136,7 @@
 .lifecycle b { margin-right: 6px; color: var(--stage-accent); }
 
 @media (max-width: 800px) {
-  .sessionSlots { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .scheduleDates { grid-template-columns: 1fr; }
   .cdNum { font-size: 24px; }
 }
 @media (max-width: 600px) {
@@ -137,6 +150,10 @@
   .programmeBoard { padding: 14px; }
   .programmeHead { align-items: flex-start; flex-direction: column; gap: 8px; }
   .programmeHead p { text-align: left; }
-  .sessionSlots { grid-template-columns: 1fr; }
+  .scheduleSlots { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .scheduleSlots > span:nth-child(3n) { border-right: 1px solid var(--border); }
+  .scheduleSlots > span:nth-child(2n) { border-right: 0; }
+  .scheduleSlots > span:nth-last-child(-n + 3) { border-bottom: 1px solid var(--border); }
+  .scheduleSlots > span:nth-last-child(-n + 2) { border-bottom: 0; }
   .lifecycle { grid-template-columns: 1fr; }
 }
