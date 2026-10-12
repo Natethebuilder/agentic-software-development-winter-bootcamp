@@ -13,17 +13,33 @@ export default function Snowfall({ enabled = true, density = 1 }) {
     let height = 0
     const pointer = { x: -9999, y: -9999 }
 
-    const symbols = ['0', '1', '{ }', '</>', 'git', 'CI']
-    const spawn = (anywhere) => ({
-      x: Math.random() * width,
-      y: anywhere ? Math.random() * height : -10,
-      size: 8 + Math.random() * 5,
-      symbol: symbols[Math.floor(Math.random() * symbols.length)],
-      vy: 0.3 + Math.random() * 0.9,
-      vx: -0.18 + Math.random() * 0.36,
-      phase: Math.random() * Math.PI * 2,
-      alpha: 0.04 + Math.random() * 0.11,
-    })
+    const symbols = [
+      { text: '0', rgb: '103, 219, 164' },
+      { text: '1', rgb: '103, 219, 164' },
+      { text: '0', rgb: '103, 219, 164' },
+      { text: '1', rgb: '103, 219, 164' },
+      { text: '{ }', rgb: '121, 199, 255' },
+      { text: '[]', rgb: '121, 199, 255' },
+      { text: '</>', rgb: '121, 199, 255' },
+      { text: '=>', rgb: '176, 166, 255' },
+      { text: 'git', rgb: '121, 199, 255' },
+      { text: 'CI', rgb: '103, 219, 164' },
+      { text: 'PR', rgb: '176, 166, 255' },
+    ]
+    const spawn = (anywhere) => {
+      const token = symbols[Math.floor(Math.random() * symbols.length)]
+      return {
+        x: Math.random() * width,
+        y: anywhere ? Math.random() * height : -10,
+        size: 8 + Math.random() * 5,
+        symbol: token.text,
+        rgb: token.rgb,
+        vy: 0.3 + Math.random() * 0.9,
+        vx: -0.18 + Math.random() * 0.36,
+        phase: Math.random() * Math.PI * 2,
+        alpha: 0.07 + Math.random() * 0.12,
+      }
+    }
 
     const resize = () => {
       const dpr = Math.min(window.devicePixelRatio || 1, 2)
@@ -35,7 +51,7 @@ export default function Snowfall({ enabled = true, density = 1 }) {
       canvas.style.height = `${height}px`
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0)
       const count = Math.round(Math.min(115, (width * height) / 16500) * density)
-      particles = Array.from({ length: Math.round(count * 0.58) }, () => spawn(true))
+      particles = Array.from({ length: Math.round(count * 0.65) }, () => spawn(true))
     }
 
     const onMove = (e) => {
@@ -58,7 +74,7 @@ export default function Snowfall({ enabled = true, density = 1 }) {
         }
         if (f.y > height + 10 || f.x < -20 || f.x > width + 20) Object.assign(f, spawn(false))
         ctx.font = `${f.size}px ui-monospace, SFMono-Regular, Consolas, monospace`
-        ctx.fillStyle = `rgba(111, 207, 255, ${f.alpha})`
+        ctx.fillStyle = `rgba(${f.rgb}, ${f.alpha})`
         ctx.fillText(f.symbol, f.x, f.y)
       }
       raf = requestAnimationFrame(tick)

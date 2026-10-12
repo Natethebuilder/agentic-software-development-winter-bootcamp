@@ -25,7 +25,7 @@ export default function App() {
 
   return (
     <>
-      <Snowfall density={route === 'deck' ? 0.28 : 0.42} />
+      <Snowfall density={route === 'deck' ? 0.38 : 0.58} />
       {route === 'deck'
         ? <DeckView />
         : <Site />}
