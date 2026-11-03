@@ -1,3 +1,5 @@
+import { PREREQUISITES_STATE, REGISTRATION_OPEN } from './siteState.js'
+
 // Shared public content for the landing site and the deck.
 // Session topics are confirmed. Facilitators, dates and times remain TBC.
 
@@ -151,6 +153,17 @@ export const SESSIONS = [
     tools: ['Modernization', 'Refactoring', 'Regression testing'],
   },
 ]
+
+export const LINEUP = {
+  title: 'Run the software delivery loop.',
+  subtitle: 'Start the programme workflow, watch it hand off through all six sessions, then inspect each stage.',
+  agent: 'programme.yml',
+  coreTitle: 'Delivery orchestrator',
+  coreDetail: '6 sessions · one software loop',
+  run: 'Run the programme workflow',
+  running: 'Handing off across the delivery loop…',
+  done: 'All six sessions are ready. Select a stage to jump to its session.',
+}
 
 export const SESSION_DATES = [
   { id: '2026-12-04', label: 'Friday, 4 December 2026', short: '4 Dec', day: '04', month: 'DEC' },
@@ -311,6 +324,21 @@ export const TERMINAL_SCRIPTS = [
   },
 ]
 
+export const PREREQUISITES = {
+  soon: {
+    title: 'Pre-flight checks',
+    subtitle: 'The software and access checks for the hands-on sessions will be published here.',
+    mark: '>_',
+    label: 'Setup pending',
+    heading: 'Prerequisites are being prepared.',
+    body: 'We will publish the required tools, account checks and guided setup here before the bootcamp, and include them in the event communication.',
+  },
+  ready: {
+    title: 'Pre-flight checks',
+    subtitle: 'Complete these software and access checks locally before your first hands-on session, or request a limited cloud environment during registration.',
+  },
+}
+
 export const PREP = [
   { id: 'github', icon: 'GH', title: 'GitHub account ready', desc: 'Use the GitHub.com account that will accept the event organization invitation.' },
   { id: 'copilot', icon: 'AI', title: 'GitHub Copilot access', desc: 'Bring an active Copilot plan through your organisation, education access or individual subscription.' },
@@ -366,7 +394,15 @@ export const FAQ = [
   },
   {
     q: 'Is it hands-on?',
-    a: 'Yes, where possible. Each confirmed session will publish its prerequisites and hands-on format before registration closes.',
+    a: PREREQUISITES_STATE === 'ready'
+      ? 'Yes, where possible. The readiness checklist and guided setup explain what to prepare before your first hands-on session.'
+      : 'Yes, where possible. The readiness checklist and guided setup will be published before the bootcamp.',
+  },
+  {
+    q: 'What do I need to prepare?',
+    a: PREREQUISITES_STATE === 'ready'
+      ? 'A GitHub account, GitHub Copilot access, Git, GitHub CLI, Node.js LTS and a sample or non-sensitive repository. The website includes a saved checklist and guided setup.'
+      : 'The required tools, account checks and guided setup will be published here before the bootcamp.',
   },
   {
     q: 'What is included with the event GitHub environment?',
@@ -378,7 +414,9 @@ export const FAQ = [
   },
   {
     q: 'How do I register?',
-    a: 'Provide and confirm your company email, choose your sessions and select your development environment. No GitHub sign-in is required on this website.',
+    a: REGISTRATION_OPEN
+      ? 'Provide and confirm your company email, choose your sessions and select your development environment. No GitHub sign-in is required on this website.'
+      : 'Registration will open soon. When it does, provide and confirm your company email, choose your sessions and select your development environment.',
   },
 ]
 
@@ -408,4 +446,15 @@ export const REGISTRATION = {
   ],
   consent:
     'I consent to Microsoft using my company, company email, session choices and environment preference to administer the bootcamp, send the GitHub organization invitation, provision access, communicate with me and improve the programme. Registration data is deleted after the administration period.',
+  success: 'Thanks. Your registration is saved. GitHub organization access details will be sent a few days before the event.',
+}
+
+export const REGISTRATION_SOON = {
+  eyebrow: 'Registration',
+  title: 'Registration will open soon.',
+  subtitle: 'The programme is ready and the registration flow is being prepared. Check back soon to choose your dates and sessions.',
+  badge: 'Opening soon',
+  heading: 'Registration will open soon',
+  body: 'All six sessions run on every placeholder date. Once registration opens, you can choose any combination of session times and request the development environment you need.',
+  cta: 'Registration opens soon',
 }

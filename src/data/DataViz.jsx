@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { PIPELINE, SESSION_DATES, SESSIONS, TERMINAL_SCRIPTS } from '../content.js'
+import { REGISTRATION_OPEN } from '../siteState.js'
 import d from './Data.module.css'
 
 /* ── Countdown to the first session, styled as a scheduled pipeline run ── */
@@ -122,7 +123,10 @@ export function ProgrammeBoard() {
           <span>programme.yml</span>
           <strong>Six confirmed sessions · 36 selectable time slots</strong>
         </div>
-        <p>Every session is available on every placeholder date. Dates, times and facilitators remain TBC.</p>
+        <p>
+          Every session is available on every placeholder date. Dates, times and facilitators remain TBC.{' '}
+          {REGISTRATION_OPEN ? 'Choose any combination during registration.' : 'Registration will open soon.'}
+        </p>
       </div>
       <div className={d.scheduleDates}>
         {SESSION_DATES.map((date) => (

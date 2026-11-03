@@ -146,6 +146,26 @@
   font-size: 13px; font-weight: 600; color: var(--frost);
   backdrop-filter: blur(12px);
 }
+.heroCta { display: flex; flex-wrap: wrap; align-items: center; gap: 14px; margin-top: 24px; }
+.heroRegister {
+  appearance: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 13px 22px;
+  border: 0;
+  border-radius: 999px;
+  color: var(--night);
+  background: linear-gradient(135deg, #e4ba80, #bb834c);
+  box-shadow: 0 10px 28px rgba(212, 160, 106, 0.24);
+  font: inherit;
+  font-size: 16px;
+  font-weight: 850;
+  cursor: pointer;
+}
+.heroRegister:hover { transform: translateY(-2px); box-shadow: 0 14px 34px rgba(212, 160, 106, 0.34); }
+.heroRegister:focus-visible { outline: 2px solid var(--ice); outline-offset: 3px; }
+.heroCtaNote { color: var(--muted-foreground); font-size: 14px; }
 
 @keyframes bob {
   0%, 100% { transform: translateY(0) rotate(-2deg); }
@@ -440,7 +460,7 @@
   height: 50px;
   display: grid;
   place-items: center;
-  border-radius: 50%;
+  border-radius: 14px;
   background: var(--frost);
   color: var(--night);
   font-weight: 900;
@@ -483,6 +503,7 @@
   background: var(--night);
   box-shadow: 0 30px 90px rgba(0, 0, 0, 0.65);
 }
+.registrationModal:focus { outline: none; }
 .registrationModalHeader {
   position: sticky;
   top: -22px;
@@ -517,6 +538,71 @@
   line-height: 1;
   cursor: pointer;
 }
+
+/* ── Registration and prerequisite states ── */
+.heroSoon, .registerSoonBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  border-radius: 999px;
+  border: 1px solid color-mix(in srgb, var(--gold) 55%, transparent);
+  background: color-mix(in srgb, var(--gold) 10%, transparent);
+  color: var(--gold);
+  font-weight: 800;
+}
+.heroSoon { padding: 13px 22px; font-size: 16px; }
+.registerSoonBadge { grid-column: 1 / -1; justify-content: center; padding: 12px 20px; }
+.heroSoon i, .registerSoonBadge i, .soonCard small i {
+  width: 8px;
+  height: 8px;
+  flex-shrink: 0;
+  border-radius: 2px;
+  background: currentColor;
+  animation: statePulse 1.6s ease-in-out infinite;
+}
+@keyframes statePulse { 50% { opacity: 0.25; } }
+.registerPromptSoon {
+  border-color: color-mix(in srgb, var(--gold) 42%, var(--border));
+  background:
+    radial-gradient(260px 160px at 100% 0%, color-mix(in srgb, var(--gold) 14%, transparent), transparent 70%),
+    color-mix(in srgb, var(--secondary) 78%, transparent);
+}
+.soonCard {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  gap: 22px;
+  max-width: 880px;
+  padding: 28px 30px;
+  border-radius: 20px;
+  border: 1px solid color-mix(in srgb, var(--gold) 42%, var(--border));
+  background:
+    radial-gradient(520px 200px at 100% 0%, color-mix(in srgb, var(--gold) 12%, transparent), transparent 72%),
+    color-mix(in srgb, var(--secondary) 78%, transparent);
+  backdrop-filter: blur(14px);
+}
+.soonMark {
+  width: 66px;
+  height: 66px;
+  display: grid;
+  place-items: center;
+  border-radius: 16px;
+  border: 1px solid color-mix(in srgb, var(--gold) 58%, transparent);
+  background: color-mix(in srgb, var(--gold) 11%, var(--night));
+  color: var(--gold);
+  font: 900 15px/1 ui-monospace, monospace;
+}
+.soonCard small {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  color: var(--gold);
+  font: 700 11px/1.2 ui-monospace, monospace;
+  letter-spacing: 1.4px;
+  text-transform: uppercase;
+}
+.soonCard h3 { margin-top: 8px; color: var(--frost); font-size: 24px; line-height: 1.25; }
+.soonCard p { margin-top: 8px; color: var(--muted-foreground); font-size: 16px; line-height: 1.55; }
 
 /* ── Team ── */
 .teamGrid { grid-template-columns: repeat(2, minmax(0, 1fr)); max-width: 760px; }
@@ -576,6 +662,9 @@
   .heroLogos { position: static; padding: 0 var(--content-gutter); margin-top: 20px; }
   .heroLogos img { height: 32px; }
   .pill { font-size: 12px; }
+  .heroCta { align-items: flex-start; flex-direction: column; margin-top: 18px; }
+  .heroRegister, .heroSoon { width: 100%; justify-content: center; }
+  .heroCtaNote { font-size: 13px; }
 
   .grid { gap: 12px; }
   .card { padding: 18px 16px 16px; gap: 6px; }
@@ -636,6 +725,9 @@
   .stepNum { width: 30px; height: 30px; }
   .registerSlideGrid { grid-template-columns: 1fr; }
   .registerPrompt { padding: 18px; }
+  .soonCard { grid-template-columns: 1fr; gap: 14px; padding: 20px 18px; }
+  .soonMark { width: 54px; height: 54px; font-size: 13px; }
+  .soonCard h3 { font-size: 20px; }
   .registrationOverlay { padding: 10px; }
   .registrationModal {
     width: calc(100vw - 20px);
@@ -669,4 +761,8 @@
   .card:active { transform: translateY(-3px) scale(0.99); border-color: color-mix(in srgb, var(--ice) 55%, transparent); transition-duration: 0.1s; }
   .door:hover { transform: none; border-color: color-mix(in srgb, var(--ice) 35%, transparent); border-style: dashed; }
   .door:active { transform: translateY(-3px) rotate(-1deg); border-color: var(--ice); border-style: solid; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .heroSoon i, .registerSoonBadge i, .soonCard small i { animation: none; }
 }

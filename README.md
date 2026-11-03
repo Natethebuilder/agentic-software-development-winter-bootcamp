@@ -6,10 +6,23 @@ Interactive public website and DECKIO presentation for a six-session community b
 
 | Route | Experience |
 | --- | --- |
-| `#/` | Public website with event framing, the six-session programme, development setup, FAQ and registration |
+| `#/` | Public website with event framing, interactive programme workflow, development setup, FAQ and registration |
 | `#/deck` | Horizontal DECKIO presentation with the same content and embedded registration |
 
 The six session topics, descriptions and audiences are confirmed. Facilitators, six Friday dates and six daily times remain explicit placeholder/TBC values so the 36-choice registration workflow can be validated end-to-end.
+
+## Public release states
+
+The website, deck and registration API share `api/site-state.json`.
+
+| Setting | Value | Behaviour |
+| --- | --- | --- |
+| `registration` | `1` | Registration is open and submissions reach `/api/register` |
+| `registration` | `2` | Registration entry points show “opening soon” and the API returns `403` |
+| `prerequisites` | `"ready"` | Show the readiness checklist and guided setup |
+| `prerequisites` | `"soon"` | Replace setup content with a coming-soon panel |
+
+Change only this JSON file to move the public experience between states.
 
 ## Develop
 

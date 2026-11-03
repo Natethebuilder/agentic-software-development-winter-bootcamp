@@ -1,4 +1,5 @@
 const { createHash, randomUUID } = require('node:crypto')
+const siteState = require('../site-state.json')
 
 const EVENT_ID = 'agentic-software-development-winter-bootcamp'
 const SESSION_DATES = ['2026-12-04', '2026-12-11', '2026-12-18', '2027-01-08', '2027-01-15', '2027-01-22']
@@ -28,6 +29,11 @@ function response(status, body) {
 }
 
 module.exports = async function register(context, req) {
+  if (siteState.registration === 2) {
+    context.res = response(403, { error: 'Registration will open soon.' })
+    return
+  }
+
   const body = req.body || {}
   const company = typeof body.company === 'string' ? body.company.trim() : ''
   const email = typeof body.email === 'string' ? body.email.trim().toLowerCase() : ''

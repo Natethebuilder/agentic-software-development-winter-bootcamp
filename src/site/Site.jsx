@@ -1,11 +1,14 @@
 import { useEffect, useRef, useState } from 'react'
 import { Logos, Mascot } from '../winter/Decor.jsx'
 import { AgentTerminal, Countdown, ProgrammeBoard } from '../data/DataViz.jsx'
+import usePrefersReducedMotion from '../hooks/usePrefersReducedMotion.js'
 import SetupWizard from '../setup/SetupWizard.jsx'
 import RegistrationForm from '../registration/RegistrationForm.jsx'
 import {
-  BOOTCAMP, FAQ, GITHUB_ACCESS, PERSONAS, PILLARS, PREP, READINESS_PATHS, REGISTRATION, SESSIONS,
+  BOOTCAMP, FAQ, GITHUB_ACCESS, LINEUP, PERSONAS, PILLARS, PREP, PREREQUISITES, READINESS_PATHS,
+  REGISTRATION, REGISTRATION_SOON, SESSIONS,
 } from '../content.js'
+import { PREREQUISITES_STATE, REGISTRATION_OPEN } from '../siteState.js'
 import s from './Site.module.css'
 
 const NAV = [
@@ -13,7 +16,7 @@ const NAV = [
   ['lineup', 'Lineup'],
   ['schedule', 'Schedule'],
   ['prepare', 'Get ready'],
-  ['join', 'Register'],
+  ['join', REGISTRATION_OPEN ? 'Register' : 'Registration'],
   ['faq', 'FAQ'],
 ]
 
@@ -108,57 +111,163 @@ function PersonaPicker() {
   )
 }
 
+const BUS_GRADIENT = `linear-gradient(90deg, ${SESSIONS.map((session) => session.accent).join(', ')})`
+
 function ProgrammeReveal() {
+  const reduced = usePrefersReducedMotion()
+  const [phase, setPhase] = useState('idle')
+  const [lit, setLit] = useState(0)
+  const runRef = useRef(null)
+  const firstNodeRef = useRef(null)
+  const moveFocus = useRef(false)
+
+  useEffect(() => {
+    if (phase !== 'running') return undefined
+    const id = lit < SESSIONS.length
+      ? setTimeout(() => setLit((count) => count + 1), lit === 0 ? 520 : 240)
+      : setTimeout(() => setPhase('done'), 420)
+    return () => clearTimeout(id)
+  }, [phase, lit])
+
+  useEffect(() => {
+    if (phase === 'done' && moveFocus.current) {
+      moveFocus.current = false
+      firstNodeRef.current?.focus({ preventScroll: true })
+    }
+  }, [phase])
+
+  const run = () => {
+    if (phase !== 'idle') return
+    moveFocus.current = document.activeElement === runRef.current
+    if (reduced) {
+      setLit(SESSIONS.length)
+      setPhase('done')
+    } else {
+      setPhase('running')
+    }
+  }
+
+  const jumpTo = (id) =>
+    document.getElementById(`programme-${id}`)?.scrollIntoView({
+      behavior: reduced ? 'auto' : 'smooth',
+      block: 'start',
+    })
+
+  const status = phase === 'idle' ? 'ready' : phase === 'running' ? `handoff ${lit}/${SESSIONS.length}` : 'complete'
+
   return (
     <div className={s.programmeReveal}>
-      <div className={s.programmeSummary}>
-        <div>
-          <span>Confirmed programme</span>
-          <strong>Foundations → plan → build → ship → improve → modernize</strong>
+      <div className={`${s.orch} ${phase !== 'idle' ? s.orchActive : ''} ${phase === 'done' ? s.orchDone : ''}`}>
+        <div className={s.orchHead}>
+          <span className={s.orchName}><i aria-hidden="true" />{LINEUP.agent}</span>
+          <span className={s.orchStatus}><i aria-hidden="true" />{status}</span>
         </div>
-        <p><b>6</b> connected sessions</p>
+
+        <div className={s.orchCore}>
+          <span className={s.orchCoreMark} aria-hidden="true"><span className={s.orchCode}>&lt;/&gt;</span></span>
+          <span className={s.orchCoreText}>
+            <strong>{LINEUP.coreTitle}</strong>
+            <small>{LINEUP.coreDetail}</small>
+          </span>
+        </div>
+        <span className={s.orchTrunk} aria-hidden="true" />
+        <span className={s.orchBus} style={{ '--bus': BUS_GRADIENT }} aria-hidden="true" />
+
+        <ol className={s.orchNodes} aria-label="Programme stages">
+          {SESSIONS.map((session, index) => {
+            const label = (
+              <>
+                <span className={s.orchNodeNum}>{session.number}</span>
+                <span className={s.orchNodeTrack}>{session.scheduleMark}</span>
+                <span className={s.orchNodeTime}>{session.time}</span>
+              </>
+            )
+            return (
+              <li
+                key={session.id}
+                className={index < lit ? s.orchNodeOn : ''}
+                style={{ '--node-accent': session.accent, '--i': index }}
+              >
+                <i className={s.orchPacket} aria-hidden="true" />
+                {phase === 'done' ? (
+                  <button
+                    type="button"
+                    ref={index === 0 ? firstNodeRef : undefined}
+                    className={s.orchNode}
+                    onClick={() => jumpTo(session.id)}
+                    aria-label={`Go to session ${session.number}: ${session.title}`}
+                  >
+                    {label}
+                  </button>
+                ) : (
+                  <span className={s.orchNode}>{label}</span>
+                )}
+              </li>
+            )
+          })}
+        </ol>
+
+        {phase === 'done' ? (
+          <p className={s.orchHint}>{LINEUP.done}</p>
+        ) : (
+          <button
+            ref={runRef}
+            type="button"
+            className={`${s.btnPrimary} ${s.orchRun}`}
+            onClick={run}
+            aria-disabled={phase === 'running'}
+            aria-controls="programme-sessions"
+          >
+            <span className={phase === 'running' ? s.orchSpinner : s.orchPlay} aria-hidden="true" />
+            {phase === 'running' ? LINEUP.running : LINEUP.run}
+          </button>
+        )}
+        <span className={s.srOnly} role="status">{phase === 'done' ? LINEUP.done : ''}</span>
       </div>
 
-      <div id="programme-sessions" className={s.sessionList}>
-        {SESSIONS.map((session, index) => (
-          <article
-            key={session.id}
-            className={s.sessionRow}
-            style={{ '--i': index, '--session-accent': session.accent }}
-          >
-            <div className={s.sessionSummary}>
-              <span className={s.sessionNumber}>{session.number}</span>
-              <span className={s.sessionHeading}>
-                <span className={s.sessionAudience}>{session.track}</span>
-                <strong>{session.title}</strong>
-                <small>{session.subtitle}</small>
-              </span>
-              <span className={s.sessionFormat}>{session.format}</span>
-            </div>
+      {phase === 'done' && (
+        <div id="programme-sessions" className={s.sessionList}>
+          {SESSIONS.map((session, index) => (
+            <article
+              key={session.id}
+              id={`programme-${session.id}`}
+              className={s.sessionRow}
+              style={{ '--i': index, '--session-accent': session.accent }}
+            >
+              <div className={s.sessionSummary}>
+                <span className={s.sessionNumber}>{session.number}</span>
+                <span className={s.sessionHeading}>
+                  <span className={s.sessionAudience}>{session.track}</span>
+                  <strong>{session.title}</strong>
+                  <small>{session.subtitle}</small>
+                </span>
+                <span className={s.sessionFormat}>{session.format}</span>
+              </div>
 
-            <div className={s.sessionDetails}>
-              <p className={s.sessionSpotlight}>{session.spotlight}</p>
-              <p className={s.sessionOverview}>{session.overview}</p>
+              <div className={s.sessionDetails}>
+                <p className={s.sessionSpotlight}>{session.spotlight}</p>
+                <p className={s.sessionOverview}>{session.overview}</p>
 
-              <div className={s.sessionDepth}>
-                <div>
-                  <h4>Audience</h4>
-                  <p className={s.sessionAudienceCopy}>{session.audience}</p>
-                  {session.prerequisite && (
-                    <p className={s.sessionPrerequisite}>Prerequisite: {session.prerequisite}</p>
-                  )}
-                </div>
-                <div className={s.sessionToolkit}>
-                  <span>Tools and concepts</span>
-                  <div className={s.sessionTools}>
-                    {session.tools.map((tool) => <span key={tool}>{tool}</span>)}
+                <div className={s.sessionDepth}>
+                  <div>
+                    <h4>Audience</h4>
+                    <p className={s.sessionAudienceCopy}>{session.audience}</p>
+                    {session.prerequisite && (
+                      <p className={s.sessionPrerequisite}>Prerequisite: {session.prerequisite}</p>
+                    )}
+                  </div>
+                  <div className={s.sessionToolkit}>
+                    <span>Tools and concepts</span>
+                    <div className={s.sessionTools}>
+                      {session.tools.map((tool) => <span key={tool}>{tool}</span>)}
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
-          </article>
-        ))}
-      </div>
+            </article>
+          ))}
+        </div>
+      )}
     </div>
   )
 }
@@ -206,6 +315,20 @@ function PrepChecklist() {
           </li>
         ))}
       </ul>
+    </div>
+  )
+}
+
+function SoonPanel({ mark, label, heading, body, children }) {
+  return (
+    <div className={s.soonPanel} role="status">
+      <span className={s.soonMark} aria-hidden="true">{mark}</span>
+      <div>
+        <small><i aria-hidden="true" />{label}</small>
+        <h3>{heading}</h3>
+        <p>{body}</p>
+      </div>
+      {children && <div className={s.soonActions}>{children}</div>}
     </div>
   )
 }
@@ -263,7 +386,9 @@ export default function Site() {
             <div className={s.ctaRow}>
               <button type="button" className={s.btnGhost} onClick={() => go('why')}>More info</button>
               <button type="button" className={s.btnGhost} onClick={() => go('lineup')}>See the lineup</button>
-              <button type="button" className={s.btnPrimary} onClick={() => go('join')}>Register now</button>
+              <button type="button" className={s.btnPrimary} onClick={() => go('join')}>
+                {REGISTRATION_OPEN ? 'Register now' : REGISTRATION_SOON.cta}
+              </button>
             </div>
             <Countdown
               target={BOOTCAMP.kickoff}
@@ -316,8 +441,8 @@ export default function Site() {
           id="lineup"
           idx="02"
           eyebrow="The lineup"
-          title="Six sessions. One AI-native delivery loop."
-          subtitle="Start with the GitHub Copilot app, move through the software lifecycle, then bring everything together in a modernization capstone."
+          title={LINEUP.title}
+          subtitle={LINEUP.subtitle}
           className={s.lineupPanel}
         >
           <ProgrammeReveal />
@@ -328,7 +453,7 @@ export default function Site() {
           idx="03"
           eyebrow="Schedule"
           title="Six placeholder Fridays. The complete programme each time."
-          subtitle="Session topics are confirmed. The dates and times below validate the registration workflow and remain explicitly TBC; facilitators will be announced later."
+          subtitle={`Session topics are confirmed. The dates and times below validate the registration workflow and remain explicitly TBC; facilitators will be announced later. ${REGISTRATION_OPEN ? 'Choose any combination during registration.' : 'Once registration opens, choose any combination of session times.'}`}
         >
           <ProgrammeBoard />
         </Section>
@@ -337,41 +462,60 @@ export default function Site() {
           id="prepare"
           idx="04"
           eyebrow="Get ready"
-          title="Pre-flight checks"
-          subtitle="This setup is required for hands-on participation. Complete it locally before your first session or request a limited cloud environment during registration."
+          title={PREREQUISITES[PREREQUISITES_STATE].title}
+          subtitle={PREREQUISITES[PREREQUISITES_STATE].subtitle}
           className={s.preflightPanel}
         >
-          <div className={s.setupStack}>
-            <div className={s.readinessPaths}>
-              {READINESS_PATHS.map((path, index) => (
-                <article key={path.id}>
-                  <span>{String(index + 1).padStart(2, '0')}</span>
-                  <div>
-                    <strong>{path.title}</strong>
-                    <p>{path.desc}</p>
-                  </div>
-                </article>
-              ))}
+          {PREREQUISITES_STATE === 'ready' ? (
+            <div className={s.setupStack}>
+              <div className={s.readinessPaths}>
+                {READINESS_PATHS.map((path, index) => (
+                  <article key={path.id}>
+                    <span>{String(index + 1).padStart(2, '0')}</span>
+                    <div>
+                      <strong>{path.title}</strong>
+                      <p>{path.desc}</p>
+                    </div>
+                  </article>
+                ))}
+              </div>
+              <div className={s.preflightBlock}>
+                <div className={s.preflightLabel}><span>01</span><strong>Readiness checklist</strong></div>
+                <PrepChecklist />
+              </div>
+              <div className={s.preflightBlock}>
+                <div className={s.preflightLabel}><span>02</span><strong>Guided setup</strong></div>
+                <SetupWizard />
+              </div>
             </div>
-            <div className={s.preflightBlock}>
-              <div className={s.preflightLabel}><span>01</span><strong>Readiness checklist</strong></div>
-              <PrepChecklist />
-            </div>
-            <div className={s.preflightBlock}>
-              <div className={s.preflightLabel}><span>02</span><strong>Guided setup</strong></div>
-              <SetupWizard />
-            </div>
-          </div>
+          ) : (
+            <SoonPanel
+              mark={PREREQUISITES.soon.mark}
+              label={PREREQUISITES.soon.label}
+              heading={PREREQUISITES.soon.heading}
+              body={PREREQUISITES.soon.body}
+            />
+          )}
         </Section>
 
         <Section
           id="join"
           idx="05"
-          eyebrow={REGISTRATION.eyebrow}
-          title={REGISTRATION.title}
-          subtitle={REGISTRATION.subtitle}
+          eyebrow={REGISTRATION_OPEN ? REGISTRATION.eyebrow : REGISTRATION_SOON.eyebrow}
+          title={REGISTRATION_OPEN ? REGISTRATION.title : REGISTRATION_SOON.title}
+          subtitle={REGISTRATION_OPEN ? REGISTRATION.subtitle : REGISTRATION_SOON.subtitle}
         >
-          <RegistrationForm />
+          {REGISTRATION_OPEN ? <RegistrationForm /> : (
+            <SoonPanel
+              mark="REG"
+              label={REGISTRATION_SOON.badge}
+              heading={REGISTRATION_SOON.heading}
+              body={REGISTRATION_SOON.body}
+            >
+              <button type="button" className={s.btnGhost} onClick={() => go('lineup')}>Run the programme</button>
+              <button type="button" className={s.btnGhost} onClick={() => go('schedule')}>View the schedule</button>
+            </SoonPanel>
+          )}
         </Section>
 
         <Section id="faq" idx="06" eyebrow="FAQ" title="Frequently asked questions">
