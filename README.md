@@ -6,10 +6,10 @@ Interactive public website and DECKIO presentation for a six-session community b
 
 | Route | Experience |
 | --- | --- |
-| `#/` | Public website with event framing, programme placeholders, development setup, FAQ and registration |
+| `#/` | Public website with event framing, the six-session programme, development setup, FAQ and registration |
 | `#/deck` | Horizontal DECKIO presentation with the same content and embedded registration |
 
-Topics, speakers and headshots intentionally remain visible placeholders until the programme is confirmed. Six Friday dates and six daily times are also shown as explicit placeholder/TBC values so the 36-choice registration workflow can be validated end-to-end.
+The six session topics, descriptions and audiences are confirmed. Facilitators, six Friday dates and six daily times remain explicit placeholder/TBC values so the 36-choice registration workflow can be validated end-to-end.
 
 ## Develop
 

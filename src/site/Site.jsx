@@ -109,73 +109,56 @@ function PersonaPicker() {
 }
 
 function ProgrammeReveal() {
-  const [open, setOpen] = useState(false)
-
   return (
     <div className={s.programmeReveal}>
-      <button
-        type="button"
-        className={`${s.programmeMerge} ${open ? s.programmeMergeOpen : ''}`}
-        aria-expanded={open}
-        aria-controls="programme-sessions"
-        aria-label="Merge the programme"
-        disabled={open}
-        onClick={() => setOpen(true)}
-      >
-        <span className={s.mergeTop}><i />pull request · programme</span>
-        <span className={s.mergeBranches}><strong>programme/tbc</strong><i>→</i><strong>main</strong></span>
-        <span className={s.mergeSummary}>6 session placeholders · ready for review</span>
-        <span className={s.mergeAction}>{open ? 'Merged' : 'Merge programme'}</span>
-        <span className={s.mergePackets} aria-hidden="true"><i /><i /><i /><i /></span>
-      </button>
+      <div className={s.programmeSummary}>
+        <div>
+          <span>Confirmed programme</span>
+          <strong>Foundations → plan → build → ship → improve → modernize</strong>
+        </div>
+        <p><b>6</b> connected sessions</p>
+      </div>
 
-      {open && (
-        <div id="programme-sessions" className={s.sessionList}>
-          {SESSIONS.map((session, index) => (
-            <article
-              key={session.id}
-              className={`${s.sessionRow} ${s.sessionRowOpen}`}
-              style={{ '--i': index, '--session-accent': session.accent }}
-            >
-              <div className={s.sessionSummary}>
-                <span className={s.sessionNumber}>{session.number}</span>
-                <span className={s.sessionHeading}>
-                  <span className={s.sessionAudience}>{session.audience}</span>
-                  <strong>{session.title}</strong>
-                  <small>{session.subtitle}</small>
-                </span>
-                <span className={s.sessionLead}>
-                  <span className={s.sessionHeadshot} aria-hidden="true">{session.ownerInitials}</span>
-                  <span className={s.sessionLeadCopy}>
-                    <small>Session owner</small>
-                    <strong>{session.owner}</strong>
-                  </span>
-                </span>
-              </div>
+      <div id="programme-sessions" className={s.sessionList}>
+        {SESSIONS.map((session, index) => (
+          <article
+            key={session.id}
+            className={s.sessionRow}
+            style={{ '--i': index, '--session-accent': session.accent }}
+          >
+            <div className={s.sessionSummary}>
+              <span className={s.sessionNumber}>{session.number}</span>
+              <span className={s.sessionHeading}>
+                <span className={s.sessionAudience}>{session.track}</span>
+                <strong>{session.title}</strong>
+                <small>{session.subtitle}</small>
+              </span>
+              <span className={s.sessionFormat}>{session.format}</span>
+            </div>
 
-              <div className={s.sessionDetails}>
-                <p className={s.sessionSpotlight}>{session.spotlight}</p>
-                <p className={s.sessionOverview}>{session.overview}</p>
+            <div className={s.sessionDetails}>
+              <p className={s.sessionSpotlight}>{session.spotlight}</p>
+              <p className={s.sessionOverview}>{session.overview}</p>
 
-                <div className={s.sessionDepth}>
-                  <div>
-                    <h4>You will</h4>
-                    <ul>
-                      {session.outcomes.map((outcome) => <li key={outcome}>{outcome}</li>)}
-                    </ul>
-                  </div>
-                  <div className={s.sessionToolkit}>
-                    <span>Tools and concepts</span>
-                    <div className={s.sessionTools}>
-                      {session.tools.map((tool) => <span key={tool}>{tool}</span>)}
-                    </div>
+              <div className={s.sessionDepth}>
+                <div>
+                  <h4>Audience</h4>
+                  <p className={s.sessionAudienceCopy}>{session.audience}</p>
+                  {session.prerequisite && (
+                    <p className={s.sessionPrerequisite}>Prerequisite: {session.prerequisite}</p>
+                  )}
+                </div>
+                <div className={s.sessionToolkit}>
+                  <span>Tools and concepts</span>
+                  <div className={s.sessionTools}>
+                    {session.tools.map((tool) => <span key={tool}>{tool}</span>)}
                   </div>
                 </div>
               </div>
-            </article>
-          ))}
-        </div>
-      )}
+            </div>
+          </article>
+        ))}
+      </div>
     </div>
   )
 }
@@ -270,7 +253,7 @@ export default function Site() {
         <section id="top" className={`${s.panel} ${s.heroPanel}`} data-panel>
           <div className={s.hero}>
           <div className={s.heroText}>
-            <span className={s.pill}>BUILD · {BOOTCAMP.season} · Online · Free · $100 AI credits included</span>
+            <span className={s.pill}>BUILD · LEARN · SHIP · {BOOTCAMP.season} · Online</span>
             <h1>
               Agentic Software Development <span className={s.highlight}>Winter Bootcamp</span>
             </h1>
@@ -333,8 +316,8 @@ export default function Site() {
           id="lineup"
           idx="02"
           eyebrow="The lineup"
-          title="Build the programme."
-          subtitle="Merge the placeholder programme to inspect all six reserved sessions."
+          title="Six sessions. One AI-native delivery loop."
+          subtitle="Start with the GitHub Copilot app, move through the software lifecycle, then bring everything together in a modernization capstone."
           className={s.lineupPanel}
         >
           <ProgrammeReveal />
@@ -344,8 +327,8 @@ export default function Site() {
           id="schedule"
           idx="03"
           eyebrow="Schedule"
-          title="Six placeholder Fridays. Every session on every date."
-          subtitle="The dates and times below validate the registration workflow and remain explicitly TBC. Final topics, owners and schedule will be confirmed later."
+          title="Six placeholder Fridays. The complete programme each time."
+          subtitle="Session topics are confirmed. The dates and times below validate the registration workflow and remain explicitly TBC; facilitators will be announced later."
         >
           <ProgrammeBoard />
         </Section>
@@ -406,7 +389,7 @@ export default function Site() {
           <Logos size="sm" />
           <p>
             Educational workshop series delivered by Microsoft. Not a consulting engagement. Use sample or
-            sample or non-sensitive repositories only. Workshop outputs are learning artifacts.
+            non-sensitive repositories only. Workshop outputs are learning artifacts.
           </p>
           <p className={s.footerSmall}>Built with DECKIO</p>
         </footer>

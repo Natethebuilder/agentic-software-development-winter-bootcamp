@@ -34,7 +34,7 @@ export default function SetupWizard() {
         <div className={s.panel} role="tabpanel">
           <div className={s.intro}>
             <div>
-              <span className={s.kicker}>Summer Bootcamp-style prerequisites</span>
+              <span className={s.kicker}>Bootcamp prerequisites</span>
               <h3>Prepare the core development environment.</h3>
               <p>Install the tools needed for repository work, GitHub authentication and the hands-on sample application.</p>
             </div>

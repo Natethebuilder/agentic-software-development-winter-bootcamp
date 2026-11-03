@@ -1,48 +1,156 @@
 // Shared public content for the landing site and the deck.
-// Topics and speakers remain TBC. Dates and times are placeholders used to validate the registration workflow.
+// Session topics are confirmed. Facilitators, dates and times remain TBC.
 
 export const BOOTCAMP = {
   name: 'Agentic Software Development Winter Bootcamp',
   short: 'Winter Bootcamp',
-  tagline: 'Build software with agents across the complete delivery loop.',
+  tagline: 'From idea to impact — faster, together.',
   subtitle:
-    'A six-session community programme exploring how GitHub Copilot supports intent, implementation, quality, review, delivery and learning.',
+    'A six-session community programme for learning how GitHub Copilot and coding agents support the complete software delivery loop.',
   season: 'Winter',
   kickoffDate: null,
-  kickoffLabel: 'Placeholder Friday schedule · final dates TBC',
+  kickoffLabel: 'Six Friday dates shown for registration testing · final dates TBC',
   kickoff: null,
   footer: 'Agentic Software Development Winter Bootcamp',
 }
 
-const ACCENTS = ['#79c7ff', '#a8a0ff', '#f0b86e', '#63d9b1', '#7ca7ff', '#e59bc3']
+const ACCENTS = ['#d4a06a', '#9080c0', '#7aaac8', '#6a9e84', '#cc8e82', '#e0b56d']
 
-export const SESSIONS = Array.from({ length: 6 }, (_, index) => {
-  const number = String(index + 1).padStart(2, '0')
-  return {
-    id: `session-${number}`,
-    number,
-    title: '[Session topic TBC]',
-    shortTitle: `Session ${number}`,
-    track: 'Topic TBC',
-    subtitle: 'Session details will be added when the programme is confirmed.',
-    owner: '[Owner TBC]',
-    ownerInitials: 'TBC',
-    audience: 'Software community',
-    format: 'Format TBC',
-    time: ['09:15', '10:15', '11:15', '12:45', '13:45', '14:45'][index],
-    scheduleMark: `S${index + 1}`,
-    accent: ACCENTS[index],
-    spotlight: 'The session focus and hands-on challenge will be announced.',
+export const SESSIONS = [
+  {
+    id: 'session-01',
+    number: '01',
+    title: 'GitHub Copilot App Foundations',
+    shortTitle: 'Copilot Foundations',
+    track: 'FOUNDATIONS',
+    subtitle: 'Navigate the app, manage sessions and context, and guide agents effectively.',
+    audience: 'Any role',
+    format: 'Hands-on introduction',
+    time: '09:15',
+    scheduleMark: 'APP',
+    accent: ACCENTS[0],
+    spotlight: 'Build the habits and shared vocabulary needed for the rest of the bootcamp.',
     overview:
-      'This placeholder reserves a complete session in the programme. The confirmed description, examples, prerequisites and practical activity will be added here.',
+      'A hands-on introduction to the GitHub Copilot app. Through many short examples, learn how to navigate the app, work with sessions and context, and guide agents effectively. You’ll leave ready to take part in the rest of the bootcamp.',
     outcomes: [
-      'Learning outcomes TBC',
-      'Hands-on activity TBC',
-      'Tools and prerequisites TBC',
+      'Navigate the GitHub Copilot app and its core workflows',
+      'Work intentionally with sessions, context and instructions',
+      'Guide agents with clear requests, feedback and boundaries',
     ],
-    tools: ['Tools TBC'],
-  }
-})
+    tools: ['Copilot app', 'Sessions', 'Context'],
+  },
+  {
+    id: 'session-02',
+    number: '02',
+    title: 'Plan & Design',
+    shortTitle: 'Plan & Design',
+    track: 'PLAN & DESIGN',
+    subtitle: 'Turn scattered input into clear requirements and a standards-aligned design.',
+    audience: 'Product Owners, Product Managers, Analysts, Developers, Architects',
+    format: 'Collaborative workshop',
+    time: '10:15',
+    scheduleMark: 'PLAN',
+    accent: ACCENTS[1],
+    spotlight: 'Challenge assumptions and expose technical unknowns before implementation starts.',
+    overview:
+      'Turn scattered input from emails, workshops, and meetings into clear requirements, then work with a coding agent to challenge assumptions and fill gaps. Shape the requirements into a design based on your architecture and engineering standards, and identify technical unknowns before building starts.',
+    outcomes: [
+      'Consolidate scattered inputs into reviewable requirements',
+      'Challenge assumptions and identify gaps with a coding agent',
+      'Shape a design around architecture and engineering standards',
+    ],
+    tools: ['Requirements', 'Architecture', 'Engineering standards'],
+  },
+  {
+    id: 'session-03',
+    number: '03',
+    title: 'Build & Test',
+    shortTitle: 'Build & Test',
+    track: 'BUILD & TEST',
+    subtitle: 'Steer implementation and testing from an agreed design and bounded scope.',
+    audience: 'Developers, Testers',
+    format: 'Hands-on build',
+    time: '11:15',
+    scheduleMark: 'BUILD',
+    accent: ACCENTS[2],
+    spotlight: 'Use skills, guardrails and strong tests to produce high-quality, verifiable results.',
+    overview:
+      'Starting from a defined design and scope, steer a coding agent through implementation and testing. Explore how skills, guardrails, and a strong testing approach help produce high-quality, verifiable results.',
+    outcomes: [
+      'Break an approved design into focused implementation work',
+      'Use skills and guardrails to keep agents aligned',
+      'Build verification into the implementation loop',
+    ],
+    tools: ['Skills', 'Guardrails', 'Testing'],
+  },
+  {
+    id: 'session-04',
+    number: '04',
+    title: 'Review, Deploy & Operate',
+    shortTitle: 'Review & Operate',
+    track: 'REVIEW & OPERATE',
+    subtitle: 'Review faster, deploy safely and use AI to investigate production issues.',
+    audience: 'Developers, Testers',
+    format: 'Delivery workshop',
+    time: '12:45',
+    scheduleMark: 'SHIP',
+    accent: ACCENTS[3],
+    spotlight: 'Keep review from becoming the bottleneck as coding speed increases.',
+    overview:
+      'When AI speeds up coding, review can become the bottleneck. Explore faster and more focused ways to review changes so they can be merged and deployed safely. After release, see how AI can help investigate and respond to application issues.',
+    outcomes: [
+      'Focus reviews on behaviour, evidence and risk',
+      'Move approved changes through deployment safely',
+      'Investigate and respond to application issues with AI support',
+    ],
+    tools: ['Pull requests', 'CI/CD', 'Operations'],
+  },
+  {
+    id: 'session-05',
+    number: '05',
+    title: 'Evaluations & Continuous Improvement',
+    shortTitle: 'Evaluations',
+    track: 'EVALUATE & IMPROVE',
+    subtitle: 'Measure agentic workflows and improve quality, performance and cost.',
+    audience: 'Developers',
+    format: 'Evaluation workshop',
+    time: '13:45',
+    scheduleMark: 'EVAL',
+    accent: ACCENTS[4],
+    spotlight: 'Treat agentic engineering like any other process: measure it, learn and improve.',
+    overview:
+      'Treat your agentic engineering workflow like any other process: measure it and keep improving it. Review sessions, skills, and recurring mistakes to improve quality, performance, and cost-effectiveness. Explore how to assess decision quality and safely move toward auto-approving low-risk decisions.',
+    outcomes: [
+      'Review sessions, skills and recurring failure patterns',
+      'Measure quality, performance and cost-effectiveness',
+      'Assess decision quality before automating low-risk approvals',
+    ],
+    tools: ['Evaluations', 'Session review', 'Decision quality'],
+  },
+  {
+    id: 'session-06',
+    number: '06',
+    title: 'AI-Native App Modernization',
+    shortTitle: 'App Modernization',
+    track: 'MODERNIZATION',
+    subtitle: 'Apply the full workflow in an end-to-end application modernization scenario.',
+    audience: 'Developers, Testers, Architects',
+    format: 'Capstone',
+    prerequisite: 'Sessions 1–5',
+    time: '14:45',
+    scheduleMark: 'MOD',
+    accent: ACCENTS[5],
+    spotlight: 'Bring the complete bootcamp together in a specification-driven modernization capstone.',
+    overview:
+      'Bring everything from the bootcamp together in an end-to-end modernization scenario. Move from analyzing an existing application through specification-driven design, refactoring, regression testing, and deployment.',
+    outcomes: [
+      'Analyze an existing application and define modernization intent',
+      'Refactor through a specification-driven design',
+      'Protect behaviour with regression tests and deploy the result',
+    ],
+    tools: ['Modernization', 'Refactoring', 'Regression testing'],
+  },
+]
 
 export const SESSION_DATES = [
   { id: '2026-12-04', label: 'Friday, 4 December 2026', short: '4 Dec', day: '04', month: 'DEC' },
@@ -57,22 +165,22 @@ export const registrationSlotId = (dateId, session) => `${dateId}|${session.time
 
 export const PERSONAS = [
   {
-    id: 'developers', icon: '{ }', label: 'Software developers',
-    desc: 'From intent and architecture to implementation and review.',
-    does: 'Use agents as collaborators while keeping design choices, code quality and accountability with the engineering team.',
-    stack: ['Issues', 'Specs', 'Code', 'Tests', 'Pull requests'],
+    id: 'product', icon: 'PLAN', label: 'Product & architecture',
+    desc: 'Turn scattered intent into requirements, decisions and designs.',
+    does: 'Use agents to consolidate inputs, challenge assumptions and shape a design that follows your architecture and engineering standards.',
+    stack: ['Inputs', 'Requirements', 'Decisions', 'Design'],
   },
   {
-    id: 'quality', icon: 'QA', label: 'Quality engineers',
-    desc: 'Make expected behaviour, evidence and risk visible.',
-    does: 'Turn acceptance criteria into executable checks and use agents to expand coverage without lowering the quality bar.',
-    stack: ['Acceptance criteria', 'Tests', 'Security', 'Review'],
+    id: 'delivery', icon: '{ }', label: 'Developers & testers',
+    desc: 'Build, verify, review and deploy focused changes.',
+    does: 'Steer coding agents through implementation and testing while keeping evidence, risk and human accountability visible.',
+    stack: ['Code', 'Tests', 'Pull requests', 'CI/CD'],
   },
   {
-    id: 'platform', icon: '∞', label: 'Platform & engineering teams',
-    desc: 'Connect repositories, CI, delivery and production learning.',
-    does: 'Give agents safe, observable paths through the delivery system while teams retain control of release decisions.',
-    stack: ['GitHub', 'CI/CD', 'Cloud', 'Telemetry'],
+    id: 'improvement', icon: '↻', label: 'Engineering teams',
+    desc: 'Learn from sessions, production signals and repeated mistakes.',
+    does: 'Evaluate agentic workflows, improve quality and cost, and decide where low-risk automation can safely increase.',
+    stack: ['Sessions', 'Evaluations', 'Operations', 'Learning'],
   },
 ]
 
@@ -89,30 +197,30 @@ export const TEAM = [
     id: 'owners',
     name: 'To be announced',
     initials: 'TBC',
-    role: 'Session owners',
-    focus: 'Owners for the six programme sessions will be published when confirmed',
-    accent: '#63d9b1',
+    role: 'Session facilitators',
+    focus: 'Facilitators for the six confirmed programme topics will be published when finalised',
+    accent: '#9080c0',
   },
 ]
 
 export const PILLARS = [
   {
-    id: 'whole-loop',
+    id: 'foundations',
     icon: '01',
+    title: 'Start with strong foundations',
+    desc: 'Learn the Copilot app, sessions, context and agent guidance before moving into delivery workflows.',
+  },
+  {
+    id: 'whole-loop',
+    icon: '02',
     title: 'Practise the whole delivery loop',
-    desc: 'Connect issues, specifications, code, tests, reviews, releases and production feedback.',
+    desc: 'Connect planning, design, code, tests, reviews, releases, operations and modernization.',
   },
   {
     id: 'evidence',
-    icon: '02',
-    title: 'Evidence over output',
-    desc: 'Ask agents for reviewable plans, focused diffs, executable checks and visible delivery signals.',
-  },
-  {
-    id: 'community',
     icon: '03',
-    title: 'Built for the broader community',
-    desc: 'Relevant to developers, testers, architects, platform teams and engineering leaders.',
+    title: 'Improve with evidence',
+    desc: 'Use reviewable plans, executable checks, evaluations and visible delivery signals to keep improving.',
   },
 ]
 
@@ -242,11 +350,11 @@ export const SETUP_RESOURCES = [
 export const FAQ = [
   {
     q: 'Who is this for?',
-    a: 'The broader software development community: developers, testers, architects, platform engineers, engineering leaders and adjacent roles.',
+    a: 'The broader software development community. The foundations session is for any role, while later sessions focus on product, analysis, architecture, development and testing.',
   },
   {
     q: 'What are the session topics?',
-    a: 'The programme will contain six sessions. Topics and detailed outcomes are still being confirmed and will be published here.',
+    a: 'GitHub Copilot App Foundations; Plan & Design; Build & Test; Review, Deploy & Operate; Evaluations & Continuous Improvement; and AI-Native App Modernization.',
   },
   {
     q: 'When does it start?',
@@ -285,7 +393,7 @@ export const REGISTRATION = {
   title: 'Join the Agentic Software Development Winter Bootcamp.',
   subtitle: 'Confirm your company email, choose your sessions and provide the details needed for event access.',
   slotHelp:
-    'These Friday dates and times are placeholders for workflow validation. Final dates and programme details remain TBC. Select any session times you would attend.',
+    'These Friday dates and times are placeholders for workflow validation. Session topics are confirmed; final dates and facilitators remain TBC. Select any session times you would attend.',
   environments: [
     {
       id: 'local',
