@@ -479,7 +479,7 @@ export function TeamSlide({ index }) {
         id="team"
         eyebrow="Brought to you by"
         title="Your Team"
-        subtitle="Your host is confirmed; session facilitators will be added as the programme is finalised."
+        subtitle="Programme coordination and session facilitators will be announced as the programme is finalised."
       />
       <div className={`${s.grid} ${s.teamGrid}`}>
         {TEAM.map((person) => (

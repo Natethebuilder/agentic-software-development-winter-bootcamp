@@ -605,7 +605,7 @@
 .soonCard p { margin-top: 8px; color: var(--muted-foreground); font-size: 16px; line-height: 1.55; }
 
 /* ── Team ── */
-.teamGrid { grid-template-columns: repeat(2, minmax(0, 1fr)); max-width: 760px; }
+.teamGrid { grid-template-columns: minmax(0, 420px); justify-content: center; max-width: 760px; }
 .helper { align-items: center; text-align: center; }
 .helperAvatar {
   width: 76px; height: 76px; border-radius: 50%;

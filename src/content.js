@@ -199,19 +199,11 @@ export const PERSONAS = [
 
 export const TEAM = [
   {
-    id: 'nathan',
-    name: 'Nathan Brahmbhatt',
-    initials: 'NB',
-    role: 'Host',
-    focus: 'Bootcamp host and programme coordination',
-    accent: '#79c7ff',
-  },
-  {
-    id: 'owners',
+    id: 'programme-team',
     name: 'To be announced',
     initials: 'TBC',
-    role: 'Session facilitators',
-    focus: 'Facilitators for the six confirmed programme topics will be published when finalised',
+    role: 'Programme team',
+    focus: 'Programme coordination and session facilitators will be published when finalised',
     accent: '#9080c0',
   },
 ]
