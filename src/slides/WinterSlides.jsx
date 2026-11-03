@@ -1,11 +1,13 @@
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useId, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
 import { BottomBar, Editable, Slide, useSlides } from '@deckio/deck-engine'
 import RegistrationForm from '../registration/RegistrationForm.jsx'
 import { Logos, Mascot } from '../winter/Decor.jsx'
 import {
-  BOOTCAMP, GITHUB_ACCESS, PERSONAS, PILLARS, PREP, REGISTER_STEPS, SESSION_DATES, SESSIONS, TEAM,
+  BOOTCAMP, GITHUB_ACCESS, PERSONAS, PILLARS, PREP, PREREQUISITES, REGISTER_STEPS, REGISTRATION_SOON,
+  SESSION_DATES, SESSIONS, TEAM,
 } from '../content.js'
+import { PREREQUISITES_STATE, REGISTRATION_OPEN } from '../siteState.js'
 import s from './Slides.module.css'
 
 function SlideProgress({ index }) {
@@ -42,6 +44,71 @@ function Header({ id, eyebrow, title, subtitle }) {
   )
 }
 
+const stopPropagation = (event) => event.stopPropagation()
+
+function RegistrationDialog({ onClose }) {
+  const titleId = useId()
+  const dialogRef = useRef(null)
+
+  useEffect(() => {
+    const closeOnEscape = (event) => {
+      if (event.key === 'Escape') onClose()
+    }
+    window.addEventListener('keydown', closeOnEscape, true)
+    return () => window.removeEventListener('keydown', closeOnEscape, true)
+  }, [onClose])
+
+  useEffect(() => {
+    dialogRef.current?.focus()
+  }, [])
+
+  return createPortal(
+    <div
+      className={s.registrationOverlay}
+      role="presentation"
+      onPointerDown={stopPropagation}
+      onTouchStart={stopPropagation}
+      onTouchEnd={stopPropagation}
+      onClick={onClose}
+    >
+      <div
+        ref={dialogRef}
+        className={s.registrationModal}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby={titleId}
+        tabIndex={-1}
+        onClick={stopPropagation}
+        onKeyDown={stopPropagation}
+      >
+        <div className={s.registrationModalHeader}>
+          <div>
+            <span>{BOOTCAMP.name}</span>
+            <h2 id={titleId}>Bootcamp registration</h2>
+          </div>
+          <button type="button" aria-label="Close registration" onClick={onClose}>×</button>
+        </div>
+        <RegistrationForm />
+      </div>
+    </div>,
+    document.body,
+  )
+}
+
+function RegistrationButton({ className, initiallyOpen = false, children }) {
+  const [open, setOpen] = useState(initiallyOpen)
+  const close = useCallback(() => setOpen(false), [])
+
+  return (
+    <>
+      <button type="button" className={className} aria-haspopup="dialog" onClick={() => setOpen(true)}>
+        {children}
+      </button>
+      {open && <RegistrationDialog onClose={close} />}
+    </>
+  )
+}
+
 export function WinterTitleSlide({ index }) {
   return (
     <Slide index={index} className={s.slide}>
@@ -59,6 +126,16 @@ export function WinterTitleSlide({ index }) {
           <Editable as="p" id="title.subtitle" multiline className={s.subtitle}>
             {`${BOOTCAMP.tagline} ${BOOTCAMP.subtitle}`}
           </Editable>
+          <div className={s.heroCta}>
+            {REGISTRATION_OPEN ? (
+              <RegistrationButton className={s.heroRegister}>
+                Register now <span aria-hidden="true">→</span>
+              </RegistrationButton>
+            ) : (
+              <span className={s.heroSoon} role="status"><i aria-hidden="true" />{REGISTRATION_SOON.cta}</span>
+            )}
+            <Editable as="span" id="title.ctaNote" className={s.heroCtaNote}>Free · Six connected sessions</Editable>
+          </div>
         </div>
         <Mascot className={s.heroMascot} />
       </div>
@@ -168,7 +245,7 @@ export function TimetableSlide({ index }) {
         id="timetable"
         eyebrow="Programme schedule"
         title="Six Fridays. The complete programme each time."
-        subtitle="Session topics are confirmed. These dates and times validate the registration workflow and remain TBC."
+        subtitle={`Session topics are confirmed. These dates and times validate the registration workflow and remain TBC. ${REGISTRATION_OPEN ? 'Choose any combination during registration.' : 'Registration will open soon.'}`}
       />
       <div className={s.scheduleGrid}>
         {SESSION_DATES.map((date) => (
@@ -196,6 +273,28 @@ export function TimetableSlide({ index }) {
 }
 
 export function SetupSlide({ index }) {
+  if (PREREQUISITES_STATE !== 'ready') {
+    const soon = PREREQUISITES.soon
+    return (
+      <Frame index={index} id="setup" orbs={['orbIce', 'orbHolly']}>
+        <Header
+          id="setup"
+          eyebrow="Get ready"
+          title="Prerequisites are on their way"
+          subtitle={soon.subtitle}
+        />
+        <div className={s.soonCard} role="status">
+          <span className={s.soonMark} aria-hidden="true">{soon.mark}</span>
+          <div>
+            <small><i aria-hidden="true" />{soon.label}</small>
+            <Editable as="h3" id="setup.soon.heading">{soon.heading}</Editable>
+            <Editable as="p" id="setup.soon.body" multiline>{soon.body}</Editable>
+          </div>
+        </div>
+      </Frame>
+    )
+  }
+
   return (
     <Frame index={index} id="setup" orbs={['orbIce', 'orbHolly']}>
       <Header
@@ -326,8 +425,8 @@ export function SurveySlide({ index }) {
 }
 
 export function RegisterSlide({ index }) {
-  const [registrationOpen, setRegistrationOpen] = useState(
-    () => new URLSearchParams(window.location.search).get('deckRegister') === '1',
+  const [openOnLoad] = useState(
+    () => REGISTRATION_OPEN && new URLSearchParams(window.location.search).get('deckRegister') === '1',
   )
 
   useEffect(() => {
@@ -337,22 +436,15 @@ export function RegisterSlide({ index }) {
     window.history.replaceState(null, '', `${url.pathname}${url.search}${url.hash}`)
   }, [])
 
-  useEffect(() => {
-    if (!registrationOpen) return undefined
-    const closeOnEscape = (event) => {
-      if (event.key === 'Escape') setRegistrationOpen(false)
-    }
-    window.addEventListener('keydown', closeOnEscape, true)
-    return () => window.removeEventListener('keydown', closeOnEscape, true)
-  }, [registrationOpen])
-
   return (
     <Frame index={index} id="register" orbs={['orbIce', 'orbHolly']}>
       <Header
         id="register"
         eyebrow="Ready to join?"
-        title="How to register"
-        subtitle="Registration is open. Confirm your company email; no GitHub sign-in is required."
+        title={REGISTRATION_OPEN ? 'How to register' : REGISTRATION_SOON.title}
+        subtitle={REGISTRATION_OPEN
+          ? 'Registration is open. Confirm your company email; no GitHub sign-in is required.'
+          : 'When registration opens, it takes about two minutes:'}
       />
       <div className={s.registerSlideGrid}>
         <div className={s.points}>
@@ -363,42 +455,19 @@ export function RegisterSlide({ index }) {
             </div>
           ))}
         </div>
-        <div className={s.registerPrompt}>
-          <span className={s.registerPromptMark}>GH</span>
+        <div className={`${s.registerPrompt} ${REGISTRATION_OPEN ? '' : s.registerPromptSoon}`}>
+          <span className={s.registerPromptMark}>{REGISTRATION_OPEN ? 'GH' : 'REG'}</span>
           <div>
-            <strong>{GITHUB_ACCESS.eyebrow}</strong>
-            <p>The organization invitation and $100 of GitHub Copilot AI credits arrive a few days before the event.</p>
+            <strong>{REGISTRATION_OPEN ? GITHUB_ACCESS.eyebrow : REGISTRATION_SOON.heading}</strong>
+            <p>{REGISTRATION_OPEN
+              ? 'The organization invitation and $100 of GitHub Copilot AI credits arrive a few days before the event.'
+              : REGISTRATION_SOON.body}</p>
           </div>
-          <button type="button" onClick={() => setRegistrationOpen(true)}>Open registration</button>
+          {REGISTRATION_OPEN
+            ? <RegistrationButton initiallyOpen={openOnLoad}>Open registration</RegistrationButton>
+            : <span className={s.registerSoonBadge} role="status"><i aria-hidden="true" />{REGISTRATION_SOON.badge}</span>}
         </div>
       </div>
-      {registrationOpen && createPortal(
-        <div
-          className={s.registrationOverlay}
-          role="presentation"
-          onPointerDown={(event) => event.stopPropagation()}
-          onClick={() => setRegistrationOpen(false)}
-        >
-          <div
-            className={s.registrationModal}
-            role="dialog"
-            aria-modal="true"
-            aria-labelledby="deck-registration-title"
-            onClick={(event) => event.stopPropagation()}
-            onKeyDown={(event) => event.stopPropagation()}
-          >
-            <div className={s.registrationModalHeader}>
-              <div>
-                <span>Agentic Software Development Winter Bootcamp</span>
-                <h2 id="deck-registration-title">Bootcamp registration</h2>
-              </div>
-              <button type="button" aria-label="Close registration" onClick={() => setRegistrationOpen(false)}>×</button>
-            </div>
-            <RegistrationForm />
-          </div>
-        </div>,
-        document.body,
-      )}
     </Frame>
   )
 }

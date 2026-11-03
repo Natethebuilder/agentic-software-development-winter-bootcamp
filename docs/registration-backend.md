@@ -2,6 +2,8 @@
 
 The public form uses the shared multi-event Power Automate flow and a dedicated private SharePoint List. GitHub OAuth and GitHub identity are not used for registration.
 
+Registration availability is controlled by `api/site-state.json`. State `1` accepts submissions; state `2` keeps the form and backend implementation in place while the public UI shows “opening soon” and the API returns `403`.
+
 ## SharePoint target
 
 - Site: `https://microsofteur.sharepoint.com/teams/AgenticSoftwareDevelopmentWinterBootcamp`

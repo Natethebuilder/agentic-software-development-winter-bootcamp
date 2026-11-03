@@ -67,7 +67,7 @@ export default function RegistrationForm() {
         setRegistrationToken(result.registrationToken)
       }
       setStatus('success')
-      setMessage('Thanks. Your registration is saved. GitHub organization access details will be sent a few days before the event.')
+      setMessage(REGISTRATION.success)
     } catch (error) {
       setStatus('error')
       setMessage(error.message)

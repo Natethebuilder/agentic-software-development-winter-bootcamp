@@ -2,6 +2,10 @@ const assert = require('node:assert/strict')
 const { createHash } = require('node:crypto')
 const test = require('node:test')
 const register = require('./index.js')
+const siteState = require('../site-state.json')
+
+// Keep normal tests independent from the state committed for the live site.
+siteState.registration = 1
 
 const registrationToken = '123e4567-e89b-42d3-a456-426614174000'
 const sessionDates = ['2026-12-04', '2026-12-11', '2026-12-18', '2027-01-08', '2027-01-15', '2027-01-22']
@@ -74,6 +78,27 @@ test('rejects invalid date, time, and session combinations', async (t) => {
       await register(context, request(body))
       assert.equal(context.res.status, 400)
     })
+  }
+})
+
+test('refuses registrations while registration is paused', async () => {
+  configuredEnvironment()
+  let called = false
+  global.fetch = async () => {
+    called = true
+    return { ok: true }
+  }
+
+  const original = siteState.registration
+  siteState.registration = 2
+  try {
+    const context = {}
+    await register(context, request(validBody()))
+    assert.equal(context.res.status, 403)
+    assert.equal(context.res.body.error, 'Registration will open soon.')
+    assert.equal(called, false)
+  } finally {
+    siteState.registration = original
   }
 })
 
