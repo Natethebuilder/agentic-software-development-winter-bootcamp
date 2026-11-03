@@ -11,20 +11,22 @@ export default function Snowfall({ enabled = true, density = 1 }) {
     let particles = []
     let width = 0
     let height = 0
+    let paused = false
     const pointer = { x: -9999, y: -9999 }
+    const motionQuery = window.matchMedia('(prefers-reduced-motion: reduce)')
 
     const symbols = [
-      { text: '0', rgb: '103, 219, 164' },
-      { text: '1', rgb: '103, 219, 164' },
-      { text: '0', rgb: '103, 219, 164' },
-      { text: '1', rgb: '103, 219, 164' },
-      { text: '{ }', rgb: '121, 199, 255' },
-      { text: '[]', rgb: '121, 199, 255' },
-      { text: '</>', rgb: '121, 199, 255' },
-      { text: '=>', rgb: '176, 166, 255' },
-      { text: 'git', rgb: '121, 199, 255' },
-      { text: 'CI', rgb: '103, 219, 164' },
-      { text: 'PR', rgb: '176, 166, 255' },
+      { text: '0', rgb: '212, 160, 106' },
+      { text: '1', rgb: '212, 160, 106' },
+      { text: '0', rgb: '212, 160, 106' },
+      { text: '1', rgb: '212, 160, 106' },
+      { text: '{ }', rgb: '122, 170, 200' },
+      { text: '[]', rgb: '122, 170, 200' },
+      { text: '</>', rgb: '122, 170, 200' },
+      { text: '=>', rgb: '144, 128, 192' },
+      { text: 'git', rgb: '212, 160, 106' },
+      { text: 'CI', rgb: '106, 158, 132' },
+      { text: 'PR', rgb: '144, 128, 192' },
     ]
     const spawn = (anywhere) => {
       const token = symbols[Math.floor(Math.random() * symbols.length)]
@@ -60,6 +62,10 @@ export default function Snowfall({ enabled = true, density = 1 }) {
     }
 
     const tick = (t) => {
+      if (paused) {
+        raf = 0
+        return
+      }
       ctx.clearRect(0, 0, width, height)
       for (const f of particles) {
         f.y += f.vy
@@ -80,14 +86,29 @@ export default function Snowfall({ enabled = true, density = 1 }) {
       raf = requestAnimationFrame(tick)
     }
 
+    const syncMotion = () => {
+      paused = document.hidden || motionQuery.matches
+      if (paused) {
+        cancelAnimationFrame(raf)
+        raf = 0
+        ctx.clearRect(0, 0, width, height)
+      } else if (!raf) {
+        raf = requestAnimationFrame(tick)
+      }
+    }
+
     resize()
-    raf = requestAnimationFrame(tick)
+    syncMotion()
     window.addEventListener('resize', resize)
     window.addEventListener('pointermove', onMove)
+    document.addEventListener('visibilitychange', syncMotion)
+    motionQuery.addEventListener('change', syncMotion)
     return () => {
       cancelAnimationFrame(raf)
       window.removeEventListener('resize', resize)
       window.removeEventListener('pointermove', onMove)
+      document.removeEventListener('visibilitychange', syncMotion)
+      motionQuery.removeEventListener('change', syncMotion)
     }
   }, [enabled, density])
 

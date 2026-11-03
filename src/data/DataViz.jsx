@@ -120,9 +120,9 @@ export function ProgrammeBoard() {
       <div className={d.programmeHead}>
         <div>
           <span>programme.yml</span>
-          <strong>Six placeholder Fridays · 36 selectable sessions</strong>
+          <strong>Six confirmed sessions · 36 selectable time slots</strong>
         </div>
-        <p>Every session is available on every placeholder date. Dates, topics and owners remain TBC until the programme is confirmed.</p>
+        <p>Every session is available on every placeholder date. Dates, times and facilitators remain TBC.</p>
       </div>
       <div className={d.scheduleDates}>
         {SESSION_DATES.map((date) => (
@@ -136,7 +136,7 @@ export function ProgrammeBoard() {
                 <span key={`${date.id}-${session.id}`} style={{ '--slot-accent': session.accent }}>
                   <time dateTime={`${date.id}T${session.time}`}>{session.time}</time>
                   <b>{session.shortTitle}</b>
-                  <small>Topic TBC</small>
+                  <small>{session.track}</small>
                 </span>
               ))}
             </div>

@@ -51,7 +51,7 @@ export function WinterTitleSlide({ index }) {
       <div className={`orb ${s.orbPine}`} />
       <div className={`${s.hero} content-frame content-gutter`}>
         <div>
-          <span className={s.pill}><Editable as="span" id="title.pill">BUILD · {BOOTCAMP.season} · Online</Editable></span>
+          <span className={s.pill}><Editable as="span" id="title.pill">BUILD · LEARN · SHIP · {BOOTCAMP.season}</Editable></span>
           <h1>
             <Editable as="span" id="title.before">Agentic Software Development</Editable>{' '}
             <Editable as="span" id="title.highlight" className={s.highlight}>Winter Bootcamp</Editable>
@@ -93,7 +93,7 @@ export function OfferingSlide({ index }) {
       <div className={s.stats}>
         {[
           ['online', 'Online', 'Join live from anywhere'],
-          ['weeks', 'Six sessions', 'Topics and dates TBC'],
+          ['weeks', 'Six sessions', 'The complete delivery loop'],
           ['credits', '$100 AI credits', 'Included with event access'],
           ['cost', 'Free', 'Only your time'],
           ['team', 'Delivered by', 'Microsoft Solution Engineers & Architects'],
@@ -166,16 +166,16 @@ export function TimetableSlide({ index }) {
     <Frame index={index} id="timetable" orbs={['orbIce', 'orbHolly']}>
       <Header
         id="timetable"
-        eyebrow="Placeholder programme schedule"
-        title="Six Fridays. Six sessions each."
-        subtitle="These dates and times validate the registration workflow. The complete public programme remains TBC."
+        eyebrow="Programme schedule"
+        title="Six Fridays. The complete programme each time."
+        subtitle="Session topics are confirmed. These dates and times validate the registration workflow and remain TBC."
       />
       <div className={s.scheduleGrid}>
         {SESSION_DATES.map((date) => (
           <div key={date.id} className={s.scheduleDay}>
             <header>
               <span><b>{date.day}</b>{date.month}</span>
-              <div><strong>{date.short}</strong><small>Placeholder · TBC</small></div>
+              <div><strong>{date.short}</strong><small>Date · TBC</small></div>
             </header>
             <div>
               {SESSIONS.map((session) => (
@@ -189,7 +189,7 @@ export function TimetableSlide({ index }) {
         ))}
       </div>
       <Editable as="p" id="timetable.caption" className={s.caption}>
-        36 valid registration choices · final dates, topics and speakers TBC
+        36 valid registration choices · final dates and facilitators TBC
       </Editable>
     </Frame>
   )
@@ -220,19 +220,28 @@ export function SetupSlide({ index }) {
 export function SessionDetailsIntroSlide({ index }) {
   return (
     <Frame index={index} id="session-details-intro" orbs={['orbIce', 'orbHolly', 'orbPine']}>
-      <div className={s.detailIntro}>
-        <span className={s.pill}>PROGRAMME BRANCH</span>
-        <Editable as="h1" id="sessionDetailsIntro.title">
-          Six sessions. <span className={s.highlight}>Programme details TBC.</span>
-        </Editable>
-        <Editable as="p" id="sessionDetailsIntro.subtitle" multiline className={s.subtitle}>
-          Each reserved session has space for its confirmed topic, speaker, outcomes, tools and hands-on activity.
-        </Editable>
-        <div className={s.detailIntroTracks}>
-          {SESSIONS.map((session) => (
-            <span key={session.id}><b>{session.number}</b>{session.track}</span>
-          ))}
-        </div>
+      <Header
+        id="session-details-intro"
+        eyebrow="Confirmed programme"
+        title="Six sessions. One AI-native delivery loop."
+        subtitle="Build strong foundations, work across the lifecycle, improve the workflow, then apply it end to end."
+      />
+      <div className={s.sessionOverview}>
+        {SESSIONS.map((session) => (
+          <div
+            key={session.id}
+            className={s.sessionOverviewRow}
+            style={{ '--session-accent': session.accent }}
+          >
+            <span className={s.sessionOverviewNum}>{session.number}</span>
+            <span className={s.sessionOverviewIcon}>{session.scheduleMark}</span>
+            <div className={s.sessionOverviewMain}>
+              <h3>{session.title}</h3>
+              <p>{session.subtitle}</p>
+            </div>
+            <span className={s.sessionOverviewAudience}>{session.audience}</span>
+          </div>
+        ))}
       </div>
     </Frame>
   )
@@ -241,11 +250,12 @@ export function SessionDetailsIntroSlide({ index }) {
 function SessionDetailSlide({ index, session }) {
   return (
     <Frame index={index} id={`detail-${session.id}`} orbs={['orbIce', 'orbPine']}>
-      <div className={s.detailBody}>
+      <div className={s.detailBody} style={{ '--session-accent': session.accent }}>
         <div className={s.detailMeta}>
           <span className={s.detailNumber}>SESSION {session.number}</span>
           <span className={s.tag}>{session.audience}</span>
           <span className={`${s.tag} ${s.tagPine}`}>{session.format}</span>
+          {session.prerequisite && <span className={`${s.tag} ${s.tagIce}`}>Prerequisite: {session.prerequisite}</span>}
         </div>
         <div className={s.detailHeader}>
           <div>
@@ -270,8 +280,8 @@ function SessionDetailSlide({ index, session }) {
             </div>
             <div className={`${s.detailPanel} ${s.detailToolbox}`}>
               <div>
-                <span className={s.detailLabel}>Session owner</span>
-                <strong>{session.owner}</strong>
+                <span className={s.detailLabel}>Format</span>
+                <strong>{session.format}</strong>
               </div>
               <div className={s.detailTools}>{session.tools.map((tool) => <span key={tool}>{tool}</span>)}</div>
             </div>
@@ -400,7 +410,7 @@ export function TeamSlide({ index }) {
         id="team"
         eyebrow="Brought to you by"
         title="Your Team"
-        subtitle="Your host is confirmed; session owners will be added as the programme is finalised."
+        subtitle="Your host is confirmed; session facilitators will be added as the programme is finalised."
       />
       <div className={`${s.grid} ${s.teamGrid}`}>
         {TEAM.map((person) => (

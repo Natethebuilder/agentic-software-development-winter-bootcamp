@@ -1,49 +1,53 @@
 @import '@deckio/deck-engine/styles/global.css';
 @import '@deckio/deck-engine/themes/dark.css';
 
-/* ── Neutral code palette with restrained Matrix accents ─────────────── */
+/* ── Warm alpine night palette ───────────────────────────────────────── */
 :root {
-  --background: #06090f;
-  --foreground: #edf4fa;
-  --card: #0c121b;
-  --secondary: #111a25;
-  --muted: #182433;
-  --muted-foreground: #a7b5c4;
-  --border: #2b3b4d;
-  --accent: #67dba4;
-  --primary: #67dba4;
-  --ring: rgba(103, 219, 164, 0.32);
+  --background: #0c0a14;
+  --foreground: #f2ece4;
+  --card: #140f20;
+  --secondary: #1a1430;
+  --muted: #201838;
+  --muted-foreground: #b0a090;
+  --border: #2e2444;
+  --accent: #d4a06a;
+  --primary: #d4a06a;
+  --ring: rgba(212, 160, 106, 0.4);
 
-  --purple: #b0a6ff;
-  --purple-deep: #5d50a8;
-  --cyan: #78d7ff;
-  --green: #67dba4;
-  --pink: #e7a6c7;
+  --purple: #9080c0;
+  --purple-deep: #5c4a90;
+  --cyan: #7aaac8;
+  --green: #6a9e84;
+  --pink: #cc8e82;
+  --orange: #d4943c;
 
-  --holly: #67dba4;
-  --pine: #2c8e68;
-  --gold: #f2c56b;
-  --frost: #f4f8fb;
-  --ice: #79c7ff;
-  --night: #06090f;
+  --holly: #9080c0;
+  --pine: #5c4a90;
+  --gold: #e6b66f;
+  --frost: #f2ece4;
+  --ice: #d4a06a;
+  --night: #0c0a14;
+  --warm-glow: #d4a574;
+  --warm-amber: rgba(212, 165, 116, 0.1);
 
-  --glow-accent: rgba(103, 219, 164, 0.08);
-  --glow-purple: rgba(176, 166, 255, 0.08);
-  --glow-cyan: rgba(120, 215, 255, 0.09);
+  --glow-accent: rgba(212, 160, 106, 0.1);
+  --glow-purple: rgba(144, 128, 192, 0.1);
+  --glow-cyan: rgba(122, 170, 200, 0.08);
 }
 
 body {
   background:
-    radial-gradient(1200px 700px at 85% -10%, rgba(45, 82, 128, 0.26), transparent 60%),
-    radial-gradient(900px 600px at -10% 110%, rgba(54, 122, 94, 0.12), transparent 60%),
+    radial-gradient(1000px 680px at 82% 4%, rgba(212, 148, 60, 0.18), transparent 58%),
+    radial-gradient(900px 620px at 8% 102%, rgba(92, 74, 144, 0.22), transparent 62%),
+    linear-gradient(160deg, #0c0a14 0%, #120d20 52%, #0c0a14 100%),
     var(--night);
 }
 
-/* Code-stream accent bar on every slide */
+/* Alpine twilight accent bar on every slide */
 .accent-bar {
-  background: linear-gradient(to bottom, var(--ice), var(--green));
-  opacity: 0.72;
-  box-shadow: 0 0 14px rgba(121, 199, 255, 0.24);
+  background: linear-gradient(to bottom, var(--warm-glow), var(--purple));
+  opacity: 0.8;
+  box-shadow: 0 0 16px rgba(212, 160, 106, 0.24);
 }
 
 .deck-ty-watermark { display: none; }
@@ -61,10 +65,11 @@ body {
 /* ── Delivery-loop progress ───────────────────────────────────────────── */
 .deck-delivery-progress,
 .slide-delivery-progress {
-  height: 14px;
+  height: 18px;
   pointer-events: none;
-  background: color-mix(in srgb, var(--night) 88%, transparent);
-  border-bottom: 1px solid color-mix(in srgb, var(--ice) 18%, transparent);
+  background: color-mix(in srgb, var(--night) 84%, transparent);
+  border-bottom: 1px solid color-mix(in srgb, var(--ice) 22%, transparent);
+  backdrop-filter: blur(10px);
 }
 .deck-delivery-progress {
   position: fixed;
@@ -86,20 +91,20 @@ body {
   position: absolute;
   inset: auto auto 0 0;
   height: 3px;
-  background: linear-gradient(90deg, var(--green), var(--ice), var(--purple));
-  box-shadow: 0 0 12px color-mix(in srgb, var(--ice) 48%, transparent);
+  background: linear-gradient(90deg, var(--purple), var(--ice), var(--gold));
+  box-shadow: 0 0 14px color-mix(in srgb, var(--ice) 58%, transparent);
   transition: width 0.45s ease;
 }
 .deck-delivery-progress i,
 .slide-delivery-progress i {
   position: absolute;
-  top: 4px;
-  width: 6px;
-  height: 6px;
+  top: 5px;
+  width: 8px;
+  height: 8px;
   transform: translateX(-50%);
-  border-radius: 2px;
-  border: 1px solid color-mix(in srgb, var(--ice) 28%, transparent);
-  background: var(--night);
+  border-radius: 50%;
+  border: 1px solid color-mix(in srgb, var(--ice) 38%, transparent);
+  background: color-mix(in srgb, var(--night) 88%, var(--purple));
 }
 .deck-delivery-progress i:nth-of-type(1), .slide-delivery-progress i:nth-of-type(1) { left: 16.666%; }
 .deck-delivery-progress i:nth-of-type(2), .slide-delivery-progress i:nth-of-type(2) { left: 33.333%; }
@@ -110,7 +115,7 @@ body {
 .deck-delivery-progress i.is-complete,
 .slide-delivery-progress i.is-complete {
   background: var(--ice);
-  box-shadow: 0 0 9px color-mix(in srgb, var(--ice) 80%, transparent);
+  box-shadow: 0 0 12px color-mix(in srgb, var(--ice) 88%, transparent);
 }
 html[data-export-mode="capture"] .slide-delivery-progress { display: block; }
 html[data-export-mode="capture"] .deck-delivery-progress { display: none; }

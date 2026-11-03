@@ -20,7 +20,7 @@ export default {
   subtitle: 'GitHub Copilot and agentic practices across the complete software development lifecycle.',
   description: 'A practical six-session winter bootcamp for the broader software development community.',
   icon: '</>',
-  accent: '#62ff9f',
+  accent: '#d4a06a',
   theme: 'dark',
   appearance: 'dark',
   order: 1,
