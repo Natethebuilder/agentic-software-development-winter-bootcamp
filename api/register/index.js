@@ -14,7 +14,9 @@ const SESSION_TIMES = {
 const SESSION_IDS = new Set(
   SESSION_DATES.flatMap((date) => Object.entries(SESSION_TIMES).map(([session, time]) => `${date}|${time}|${session}`)),
 )
-const ENVIRONMENTS = new Set(['local', 'cloud'])
+// The shared registration flow requires an environment preference. This bootcamp has
+// no cloud option, so the API always sends local and ignores any browser value.
+const ENVIRONMENT_PREFERENCE = 'local'
 const REGISTRATION_TOKEN = /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i
 
 function response(status, body) {
@@ -41,7 +43,6 @@ module.exports = async function register(context, req) {
   const suppliedToken = typeof body.registrationToken === 'string' ? body.registrationToken.trim() : ''
   const requestedSessions = Array.isArray(body.sessions) ? body.sessions : []
   const sessions = [...new Set(requestedSessions.filter((id) => SESSION_IDS.has(id)))]
-  const environment = ENVIRONMENTS.has(body.environment) ? body.environment : ''
 
   if (!company || company.length > 160) {
     context.res = response(400, { error: 'Enter a valid company or organisation.' })
@@ -63,8 +64,8 @@ module.exports = async function register(context, req) {
     context.res = response(400, { error: 'Choose at least one valid date and session time.' })
     return
   }
-  if (!environment || body.consent !== true) {
-    context.res = response(400, { error: 'Choose an environment and provide data consent.' })
+  if (body.consent !== true) {
+    context.res = response(400, { error: 'Provide data consent to register.' })
     return
   }
 
@@ -97,7 +98,7 @@ module.exports = async function register(context, req) {
     company,
     companyEmail: email,
     sessionSelections: sessions,
-    environmentPreference: environment,
+    environmentPreference: ENVIRONMENT_PREFERENCE,
     consent: true,
     updatedAt: new Date().toISOString(),
   }

@@ -41,9 +41,9 @@ The Azure Static Web Apps build uses `/` so the website, deck and `/api/register
 
 The registration API:
 
-1. validates company, matching email entries, the 36 allowed `YYYY-MM-DD|HH:MM|session-id` selections, environment and consent;
+1. validates company, matching email entries, the 36 allowed `YYYY-MM-DD|HH:MM|session-id` selections and consent;
 2. uses a browser-held opaque token to derive an event-scoped SHA-256 `RegistrationId`;
-3. sends canonical company-email, session-selection and environment-preference fields without GitHub identity;
+3. sends canonical company-email and session-selection fields, plus the fixed `local` environment preference the shared flow requires, without GitHub identity;
 4. sends `eventId: agentic-software-development-winter-bootcamp` to the shared registration flow;
 5. lets that flow route the submission into the dedicated Software Development SharePoint List and initialize its operational statuses.
 
