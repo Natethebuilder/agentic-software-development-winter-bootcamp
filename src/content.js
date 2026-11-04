@@ -337,7 +337,7 @@ export const PREREQUISITES = {
   },
   ready: {
     title: 'Pre-flight checks',
-    subtitle: 'Complete these software and access checks locally before your first hands-on session, or request a limited cloud environment during registration.',
+    subtitle: 'Complete these software and access checks on your own machine before your first hands-on session.',
   },
 }
 
@@ -354,17 +354,17 @@ export const READINESS_PATHS = [
   {
     id: 'ready',
     title: 'Already ready',
-    desc: 'If every check passes, choose the local development option and arrive ready for the hands-on work.',
+    desc: 'If every check passes, you can arrive ready for the hands-on work.',
   },
   {
     id: 'setup',
     title: 'Able to install locally',
-    desc: 'Choose the local development option and complete the published setup before your first hands-on session.',
+    desc: 'Complete the guided setup below before your first hands-on session.',
   },
   {
-    id: 'cloud',
-    title: 'Need a managed environment',
-    desc: 'Choose the cloud option if local setup is not possible. Capacity is limited, so access is not guaranteed.',
+    id: 'unable',
+    title: 'Unsure or unable to install',
+    desc: 'Check early with your IT team whether you can install these tools. You can still join the sessions and follow along with the presenter.',
   },
 ]
 
@@ -417,37 +417,25 @@ export const FAQ = [
   {
     q: 'How do I register?',
     a: REGISTRATION_OPEN
-      ? 'Provide and confirm your company email, choose your sessions and select your development environment. No GitHub sign-in is required on this website.'
-      : 'Registration will open soon. When it does, provide and confirm your company email, choose your sessions and select your development environment.',
+      ? 'Provide and confirm your company email, then choose your dates and sessions. No GitHub sign-in is required on this website.'
+      : 'Registration will open soon. When it does, provide and confirm your company email, then choose your dates and sessions.',
   },
 ]
 
 export const REGISTER_STEPS = [
   'Enter and confirm your company email address',
-  'Choose the sessions and development environment you need',
+  'Choose the dates and session times you want to attend',
   'Receive the GitHub organization invitation link a few days before the event',
 ]
 
 export const REGISTRATION = {
   eyebrow: 'Registration',
   title: 'Join the Agentic Software Development Winter Bootcamp.',
-  subtitle: 'Confirm your company email, choose the dates and session times you want to attend, and tell us which development environment you need.',
+  subtitle: 'Confirm your company email and choose the dates and session times you want to attend.',
   slotHelp:
     'Every date runs the same six sessions, so you can mix and match, for example Foundations on 15 January and Build & Test on 22 January. Switch dates with the tabs below; sessions you have ticked on other dates stay selected.',
-  environments: [
-    {
-      id: 'local',
-      label: 'I will use a local development environment',
-      desc: 'Choose this if your machine already meets the requirements or you will complete the setup yourself.',
-    },
-    {
-      id: 'cloud',
-      label: 'I need a cloud development environment',
-      desc: 'Managed environments have limited capacity. Selecting this option does not guarantee access.',
-    },
-  ],
   consent:
-    'I consent to Microsoft using my company, company email, session choices and environment preference to administer the bootcamp, send the GitHub organization invitation, provision access, communicate with me and improve the programme. Registration data is deleted after the administration period.',
+    'I consent to Microsoft using my company, company email and session choices to administer the bootcamp, send the GitHub organization invitation, provision access, communicate with me and improve the programme. Registration data is deleted after the administration period.',
   success: 'Thanks. Your registration is saved. GitHub organization access details will be sent a few days before the event.',
 }
 

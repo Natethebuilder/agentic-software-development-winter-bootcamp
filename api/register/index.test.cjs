@@ -32,7 +32,6 @@ function validBody() {
     emailConfirmation: 'builder@example.com',
     registrationToken,
     sessions: ['2027-01-15|09:15|session-01', '2027-02-19|14:45|session-06'],
-    environment: 'cloud',
     consent: true,
   }
 }
@@ -80,6 +79,23 @@ test('rejects invalid date, time, and session combinations', async (t) => {
       assert.equal(context.res.status, 400)
     })
   }
+})
+
+test('requires data consent', async () => {
+  configuredEnvironment()
+  let called = false
+  global.fetch = async () => {
+    called = true
+    return { ok: true }
+  }
+
+  const context = {}
+  const body = validBody()
+  body.consent = false
+  await register(context, request(body))
+
+  assert.equal(context.res.status, 400)
+  assert.equal(called, false)
 })
 
 test('refuses registrations while registration is paused', async () => {
@@ -132,7 +148,7 @@ test('forwards an anonymous event-routed upsert payload', async () => {
     createHash('sha256').update('agentic-software-development-winter-bootcamp:builder@example.com').digest('hex'),
   )
   assert.deepEqual(received.body.sessionSelections, validBody().sessions)
-  assert.equal(received.body.environmentPreference, 'cloud')
+  assert.equal(received.body.environmentPreference, 'local')
   assert.equal('githubUserId' in received.body, false)
   assert.equal('githubUsername' in received.body, false)
   assert.equal('email' in received.body, false)
@@ -144,6 +160,25 @@ test('forwards an anonymous event-routed upsert payload', async () => {
   )
   assert.equal(context.res.body.registrationToken, registrationToken)
   assert.equal('registrationEmailKey' in context.res.body, false)
+})
+
+test('always forwards the local environment preference', async () => {
+  configuredEnvironment()
+  let received
+  global.fetch = async (_url, options) => {
+    received = JSON.parse(options.body)
+    return { ok: true }
+  }
+
+  const context = {}
+  const body = validBody()
+  body.environment = 'cloud'
+  body.environmentPreference = 'cloud'
+  await register(context, request(body))
+
+  assert.equal(context.res.status, 202)
+  assert.equal(received.environmentPreference, 'local')
+  assert.equal('environment' in received, false)
 })
 
 test('normalizes the downstream email key deterministically', async () => {

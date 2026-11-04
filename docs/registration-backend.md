@@ -22,9 +22,9 @@ Registration availability is controlled by `api/site-state.json`. State `1` acce
 | `CompanyEmail` | Single line of text | Normalized communication address |
 | `SessionSelections` | Choice, multiple selections | The 36 canonical placeholder date-time-session choices described below |
 | `Sessions` | Multiple lines of text | Temporary semicolon-delimited compatibility copy |
-| `Environment` | Choice | `local` or `cloud` |
+| `Environment` | Choice | `local` or `cloud`; this event always submits `local` |
 | `OrganizationAccessStatus` | Choice | `Pending`, `Invitation queued`, `Invitation sent`, `Joined`, or `Issue` |
-| `CloudEnvironmentStatus` | Choice | `Not requested`, `Requested`, `Allocated`, `Ready`, `Waitlisted`, or `Issue` |
+| `CloudEnvironmentStatus` | Choice | `Not requested`, `Requested`, `Allocated`, `Ready`, `Waitlisted`, or `Issue`; new rows for this event stay `Not requested` |
 | `Consent` | Yes/No | Explicit data consent |
 | `UpdatedAt` | Date and time | Latest submitted timestamp |
 
@@ -91,11 +91,13 @@ The API allowlist is the Cartesian product of the six dates and six session/time
     "2027-01-15|09:15|session-01",
     "2027-02-19|14:45|session-06"
   ],
-  "environmentPreference": "cloud",
+  "environmentPreference": "local",
   "consent": true,
   "updatedAt": "2026-01-01T12:00:00.000Z"
 }
 ```
+
+`environmentPreference` is always `local`. Registration does not offer a cloud development environment, but the shared flow still requires the field, so the API sends this fixed value and ignores any environment value from the browser. Rows submitted while the cloud option was still on the form keep `cloud` until the attendee updates their registration.
 
 The shared flow temporarily accepts `email`, `sessions`, and `environment` as aliases during deployment migration. New clients use only the canonical fields above.
 
@@ -123,7 +125,7 @@ The flow writes filterable `SessionSelections` and the temporary `Sessions` text
 
 ## Operational view
 
-Prioritize `CompanyEmail`, `Company`, `SessionSelections`, `Environment`, both status columns, `Consent`, and `UpdatedAt`. Hide `Title`, `RegistrationId`, and `Sessions` from the default view where practical.
+Prioritize `CompanyEmail`, `Company`, `SessionSelections`, `OrganizationAccessStatus`, `Consent`, and `UpdatedAt`. Hide `Title`, `RegistrationId`, and `Sessions` from the default view where practical. `Environment` and `CloudEnvironmentStatus` can be hidden too, because new registrations are always `local` and `Not requested`.
 
 ## Azure Static Web Apps
 
@@ -142,7 +144,7 @@ A few days before the event, the invitation provides the link for joining the ev
 
 - The public site and registration API do not require GitHub sign-in.
 - The disabled GitHub OAuth route returns `404`.
-- Registration tests validate email confirmation, all 36 canonical choices, invalid date/time/session combinations, backend settings, and the canonical payload.
+- Registration tests validate email confirmation, data consent, all 36 canonical choices, invalid date/time/session combinations, backend settings, the canonical payload, and the fixed `local` environment preference.
 - Registration tests validate deterministic normalized email-key derivation and prove browser-supplied key overrides are ignored.
 - Test submissions require explicit approval because they create or update SharePoint data.
 - A create should initialize the two operational status fields.
@@ -151,4 +153,4 @@ A few days before the event, the invitation provides the link for joining the ev
 - A valid same-token/same-email update to a legacy row should replace its email-valued `Title` with the hash; mismatched tokens must not trigger that migration.
 - Response-path testing should confirm `400` and `401` failures, and that `202` is returned only after the SharePoint create or update completes.
 - Flow run history should mask secure inputs and outputs for registration-bearing actions.
-- Company and environment changes should reset only the relevant downstream operational status as described above.
+- Company changes should reset only `OrganizationAccessStatus`. Updating a row that was submitted with `cloud` should reset `CloudEnvironmentStatus` to `Not requested`.

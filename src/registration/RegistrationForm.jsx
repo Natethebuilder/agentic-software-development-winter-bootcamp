@@ -19,7 +19,6 @@ export default function RegistrationForm() {
   const [email, setEmail] = useState('')
   const [emailConfirmation, setEmailConfirmation] = useState('')
   const [registrationToken, setRegistrationToken] = useState(readRegistrationToken)
-  const [environment, setEnvironment] = useState('local')
   const [consent, setConsent] = useState(false)
   const [status, setStatus] = useState('idle')
   const [message, setMessage] = useState('')
@@ -55,7 +54,6 @@ export default function RegistrationForm() {
             emailConfirmation: normalizedConfirmation,
             registrationToken,
             sessions: slots,
-            environment,
             consent,
           }),
         })
@@ -147,16 +145,6 @@ export default function RegistrationForm() {
             ? `${slots.length} session time${slots.length === 1 ? '' : 's'} selected across ${selectedDateCount} date${selectedDateCount === 1 ? '' : 's'}`
             : 'No date or session time selected yet'}
         </p>
-      </fieldset>
-
-      <fieldset className={s.environment}>
-        <legend>Development environment</legend>
-        {REGISTRATION.environments.map((option) => (
-          <label key={option.id}>
-            <input type="radio" name="environment" value={option.id} checked={environment === option.id} onChange={(e) => setEnvironment(e.target.value)} />
-            <span><strong>{option.label}</strong><small>{option.desc}</small></span>
-          </label>
-        ))}
       </fieldset>
 
       <label className={s.consent}>

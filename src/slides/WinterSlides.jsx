@@ -304,7 +304,7 @@ export function SetupSlide({ index }) {
         id="setup"
         eyebrow="Get ready"
         title="Your hands-on development setup"
-        subtitle="This setup is required for hands-on participation. Complete it locally before your first session or request a limited cloud environment."
+        subtitle="This setup is required for hands-on participation. Complete it on your own machine before your first session."
       />
       <div className={`${s.grid} ${s.grid4}`}>
         {PREP.slice(0, 4).map((p) => (
