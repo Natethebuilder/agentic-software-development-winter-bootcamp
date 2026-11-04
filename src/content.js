@@ -6,7 +6,7 @@ import { PREREQUISITES_STATE, REGISTRATION_OPEN } from './siteState.js'
 export const BOOTCAMP = {
   name: 'Agentic Software Development Winter Bootcamp',
   short: 'Winter Bootcamp',
-  tagline: 'From idea to impact — faster, together.',
+  tagline: 'From idea to impact, faster together.',
   subtitle:
     'Six practical sessions across the software development lifecycle, from planning and design to build, review, operations and modernization with GitHub Copilot.',
   season: 'Winter 2027',
