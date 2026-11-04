@@ -171,7 +171,7 @@ export function OfferingSlide({ index }) {
       <div className={s.stats}>
         {[
           ['online', 'Online', 'Join live from anywhere'],
-          ['weeks', 'Winter Fridays', `4 Dec 2026 – 22 Jan 2027${BOOTCAMP.datesConfirmed ? '' : ' · preliminary'}`],
+          ['weeks', 'Winter Fridays', `15 Jan – 19 Feb 2027${BOOTCAMP.datesConfirmed ? '' : ' · preliminary'}`],
           ['credits', '$100 AI credits', 'Included with event access'],
           ['cost', 'Free', 'Only your time'],
           ['team', 'Delivered by', 'Microsoft Solution Engineers & Architects'],
@@ -269,7 +269,7 @@ export function TimetableSlide({ index }) {
         ))}
       </div>
       <Editable as="p" id="timetable.caption" className={s.caption}>
-        {`All six sessions run on 4, 11 and 18 December 2026, and 8, 15 and 22 January 2027.${DATES_NOTE ? ` ${DATES_NOTE}` : ''}`}
+        {`All six sessions run on 15, 22 and 29 January, and 5, 12 and 19 February 2027.${DATES_NOTE ? ` ${DATES_NOTE}` : ''}`}
       </Editable>
     </Frame>
   )

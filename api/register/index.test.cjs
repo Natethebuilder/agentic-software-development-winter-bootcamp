@@ -8,7 +8,7 @@ const siteState = require('../site-state.json')
 siteState.registration = 1
 
 const registrationToken = '123e4567-e89b-42d3-a456-426614174000'
-const sessionDates = ['2026-12-04', '2026-12-11', '2026-12-18', '2027-01-08', '2027-01-15', '2027-01-22']
+const sessionDates = ['2027-01-15', '2027-01-22', '2027-01-29', '2027-02-05', '2027-02-12', '2027-02-19']
 const sessionTimes = {
   'session-01': '09:15',
   'session-02': '10:15',
@@ -31,7 +31,7 @@ function validBody() {
     email: 'Builder@Example.com',
     emailConfirmation: 'builder@example.com',
     registrationToken,
-    sessions: ['2026-12-04|09:15|session-01', '2027-01-22|14:45|session-06'],
+    sessions: ['2027-01-15|09:15|session-01', '2027-02-19|14:45|session-06'],
     environment: 'cloud',
     consent: true,
   }
@@ -55,7 +55,7 @@ test('rejects duplicate date and session slots', async () => {
   configuredEnvironment()
   const context = {}
   const body = validBody()
-  body.sessions = ['2026-12-04|09:15|session-01', '2026-12-04|09:15|session-01']
+  body.sessions = ['2027-01-15|09:15|session-01', '2027-01-15|09:15|session-01']
   await register(context, request(body))
   assert.equal(context.res.status, 400)
 })
@@ -63,10 +63,11 @@ test('rejects duplicate date and session slots', async () => {
 test('rejects invalid date, time, and session combinations', async (t) => {
   configuredEnvironment()
   const invalidSelections = [
-    '2026-12-03|09:15|session-01',
-    '2026-12-04|09:00|session-01',
-    '2026-12-04|09:15|session-02',
-    '2026-12-04|09:15|session-99',
+    '2027-01-14|09:15|session-01',
+    '2026-12-04|09:15|session-01',
+    '2027-01-15|09:00|session-01',
+    '2027-01-15|09:15|session-02',
+    '2027-01-15|09:15|session-99',
     'session-01',
   ]
 

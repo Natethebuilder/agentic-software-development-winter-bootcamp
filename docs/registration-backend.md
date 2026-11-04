@@ -54,12 +54,12 @@ The browser cannot submit or override `registrationEmailKey`, and the API never 
 
 The public placeholder schedule uses these six Fridays:
 
-- `2026-12-04`
-- `2026-12-11`
-- `2026-12-18`
-- `2027-01-08`
 - `2027-01-15`
 - `2027-01-22`
+- `2027-01-29`
+- `2027-02-05`
+- `2027-02-12`
+- `2027-02-19`
 
 Each date offers the same six session slots:
 
@@ -88,8 +88,8 @@ The API allowlist is the Cartesian product of the six dates and six session/time
   "company": "Example organisation",
   "companyEmail": "person@example.com",
   "sessionSelections": [
-    "2026-12-04|09:15|session-01",
-    "2027-01-22|14:45|session-06"
+    "2027-01-15|09:15|session-01",
+    "2027-02-19|14:45|session-06"
   ],
   "environmentPreference": "cloud",
   "consent": true,

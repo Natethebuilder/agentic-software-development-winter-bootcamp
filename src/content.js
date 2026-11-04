@@ -9,9 +9,9 @@ export const BOOTCAMP = {
   tagline: 'From idea to impact — faster, together.',
   subtitle:
     'Six practical sessions across the software development lifecycle, from planning and design to build, review, operations and modernization with GitHub Copilot.',
-  season: 'Winter 2026/27',
-  kickoffDate: '2026-12-04',
-  kickoffLabel: 'Friday, 4 December 2026 · programme starts at 09:15',
+  season: 'Winter 2027',
+  kickoffDate: '2027-01-15',
+  kickoffLabel: 'Friday, 15 January 2027 · programme starts at 09:15',
   // ISO timestamp for a live countdown; null shows the kickoff date instead.
   kickoff: null,
   // Switch to true once the six Fridays are confirmed; this removes the "preliminary" labels.
@@ -166,12 +166,12 @@ export const LINEUP = {
 }
 
 export const SESSION_DATES = [
-  { id: '2026-12-04', label: 'Friday, 4 December 2026', short: '4 Dec', day: '04', month: 'DEC' },
-  { id: '2026-12-11', label: 'Friday, 11 December 2026', short: '11 Dec', day: '11', month: 'DEC' },
-  { id: '2026-12-18', label: 'Friday, 18 December 2026', short: '18 Dec', day: '18', month: 'DEC' },
-  { id: '2027-01-08', label: 'Friday, 8 January 2027', short: '8 Jan', day: '08', month: 'JAN' },
   { id: '2027-01-15', label: 'Friday, 15 January 2027', short: '15 Jan', day: '15', month: 'JAN' },
   { id: '2027-01-22', label: 'Friday, 22 January 2027', short: '22 Jan', day: '22', month: 'JAN' },
+  { id: '2027-01-29', label: 'Friday, 29 January 2027', short: '29 Jan', day: '29', month: 'JAN' },
+  { id: '2027-02-05', label: 'Friday, 5 February 2027', short: '5 Feb', day: '05', month: 'FEB' },
+  { id: '2027-02-12', label: 'Friday, 12 February 2027', short: '12 Feb', day: '12', month: 'FEB' },
+  { id: '2027-02-19', label: 'Friday, 19 February 2027', short: '19 Feb', day: '19', month: 'FEB' },
 ]
 
 export const registrationSlotId = (dateId, session) => `${dateId}|${session.time}|${session.id}`
@@ -388,7 +388,7 @@ export const FAQ = [
   },
   {
     q: 'When does it start?',
-    a: `The complete six-session programme runs on Friday 4, 11 and 18 December 2026, followed by Friday 8, 15 and 22 January 2027. Sessions start at 09:15, 10:15, 11:15, 12:45, 13:45 and 14:45.${DATES_NOTE ? ` ${DATES_NOTE}` : ''}`,
+    a: `The complete six-session programme runs on Fridays 15, 22 and 29 January and 5, 12 and 19 February 2027. Sessions start at 09:15, 10:15, 11:15, 12:45, 13:45 and 14:45.${DATES_NOTE ? ` ${DATES_NOTE}` : ''}`,
   },
   {
     q: 'Do I need advanced AI experience?',
@@ -433,7 +433,7 @@ export const REGISTRATION = {
   title: 'Join the Agentic Software Development Winter Bootcamp.',
   subtitle: 'Confirm your company email, choose the dates and session times you want to attend, and tell us which development environment you need.',
   slotHelp:
-    'Every date runs the same six sessions, so you can mix and match, for example Foundations on 4 December and Build & Test on 11 December. Switch dates with the tabs below; sessions you have ticked on other dates stay selected.',
+    'Every date runs the same six sessions, so you can mix and match, for example Foundations on 15 January and Build & Test on 22 January. Switch dates with the tabs below; sessions you have ticked on other dates stay selected.',
   environments: [
     {
       id: 'local',
