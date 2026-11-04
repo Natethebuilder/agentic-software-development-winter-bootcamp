@@ -1,10 +1,11 @@
 import { useCallback, useEffect, useId, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
 import { BottomBar, Editable, Slide, useSlides } from '@deckio/deck-engine'
+import PillarMark from '../agentic/PillarMark.jsx'
 import RegistrationForm from '../registration/RegistrationForm.jsx'
 import { Logos, Mascot } from '../winter/Decor.jsx'
 import {
-  BOOTCAMP, GITHUB_ACCESS, PERSONAS, PILLARS, PREP, PREREQUISITES, REGISTER_STEPS, REGISTRATION_SOON,
+  BOOTCAMP, DATES_NOTE, GITHUB_ACCESS, PERSONAS, PILLARS, PREP, PREREQUISITES, REGISTER_STEPS, REGISTRATION_SOON,
   SESSION_DATES, SESSIONS, TEAM,
 } from '../content.js'
 import { PREREQUISITES_STATE, REGISTRATION_OPEN } from '../siteState.js'
@@ -118,7 +119,7 @@ export function WinterTitleSlide({ index }) {
       <div className={`orb ${s.orbPine}`} />
       <div className={`${s.hero} content-frame content-gutter`}>
         <div>
-          <span className={s.pill}><Editable as="span" id="title.pill">BUILD · LEARN · SHIP · {BOOTCAMP.season}</Editable></span>
+          <span className={s.pill}><Editable as="span" id="title.pill">{BOOTCAMP.season} edition · Online</Editable></span>
           <h1>
             <Editable as="span" id="title.before">Agentic Software Development</Editable>{' '}
             <Editable as="span" id="title.highlight" className={s.highlight}>Winter Bootcamp</Editable>
@@ -134,7 +135,7 @@ export function WinterTitleSlide({ index }) {
             ) : (
               <span className={s.heroSoon} role="status"><i aria-hidden="true" />{REGISTRATION_SOON.cta}</span>
             )}
-            <Editable as="span" id="title.ctaNote" className={s.heroCtaNote}>Free · Six connected sessions</Editable>
+            <Editable as="span" id="title.ctaNote" className={s.heroCtaNote}>Free · AI credits provided</Editable>
           </div>
         </div>
         <Mascot className={s.heroMascot} />
@@ -155,13 +156,13 @@ export function OfferingSlide({ index }) {
           <Editable as="span" id="offering.titleHighlight" className={s.highlight}>Ship with confidence.</Editable>
         </h1>
         <Editable as="p" id="offering.subtitle" multiline className={s.subtitle}>
-          A hands-on programme for developers, testers, architects, platform teams and engineering leaders.
+          Practical, hands-on learning across the software development lifecycle with GitHub Copilot, from the first idea to reviewed, tested and running software.
         </Editable>
       </div>
       <div className={`${s.grid} ${s.grid3}`}>
         {PILLARS.map((p) => (
           <div key={p.id} className={s.card}>
-            <span className={s.icon}>{p.icon}</span>
+            <PillarMark id={p.id} size="sm" tag={<Editable as="span" id={`offering.${p.id}.tag`}>{p.tag}</Editable>} />
             <Editable as="h3" id={`offering.${p.id}.title`}>{p.title}</Editable>
             <Editable as="p" id={`offering.${p.id}.desc`}>{p.desc}</Editable>
           </div>
@@ -170,8 +171,8 @@ export function OfferingSlide({ index }) {
       <div className={s.stats}>
         {[
           ['online', 'Online', 'Join live from anywhere'],
-          ['weeks', 'Six sessions', 'The complete delivery loop'],
-          ['credits', '$100 AI credits', 'Included with event access'],
+          ['weeks', 'Winter Fridays', `15 Jan – 19 Feb 2027${BOOTCAMP.datesConfirmed ? '' : ' · preliminary'}`],
+          ['credits', 'AI credits', 'Provided with event access'],
           ['cost', 'Free', 'Only your time'],
           ['team', 'Delivered by', 'Microsoft Solution Engineers & Architects'],
         ].map(([k, v, l]) => (
@@ -219,7 +220,7 @@ export function FormatSlide({ index }) {
       <div className={`${s.grid} ${s.grid2}`}>
         <div className={s.card}>
           <span className={s.kicker}>Hands-on</span>
-          <span className={s.icon}>BUILD</span>
+          <span className={s.icon}>🧑‍💻</span>
           <Editable as="h3" id="format.handson.title">Build it yourself</Editable>
           <Editable as="p" id="format.handson.desc">
             Build with the software tools used in each session while GitHub Copilot and agents support the workflow.
@@ -227,7 +228,7 @@ export function FormatSlide({ index }) {
         </div>
         <div className={s.card}>
           <span className={s.kicker}>Presenter-led</span>
-          <span className={s.icon}>WATCH</span>
+          <span className={s.icon}>👀</span>
           <Editable as="h3" id="format.follow.title">Follow along</Editable>
           <Editable as="p" id="format.follow.desc">
             Watch the presenter build it live, ask questions, and take the materials home to try later.
@@ -244,29 +245,31 @@ export function TimetableSlide({ index }) {
       <Header
         id="timetable"
         eyebrow="Programme schedule"
-        title="Six Fridays. The complete programme each time."
-        subtitle={`Session topics are confirmed. These dates and times validate the registration workflow and remain TBC. ${REGISTRATION_OPEN ? 'Choose any combination during registration.' : 'Registration will open soon.'}`}
+        title="Six dates. The same six-session day."
+        subtitle={`Every date runs all six sessions. ${REGISTRATION_OPEN ? 'Pick' : 'Once registration opens, pick'} as many as you like, on as many dates as you like.`}
       />
-      <div className={s.scheduleGrid}>
+      <div className={s.scheduleDates}>
         {SESSION_DATES.map((date) => (
-          <div key={date.id} className={s.scheduleDay}>
-            <header>
-              <span><b>{date.day}</b>{date.month}</span>
-              <div><strong>{date.short}</strong><small>Date · TBC</small></div>
-            </header>
+          <div key={date.id} className={s.scheduleDate}>
+            <span>{date.month}</span>
+            <strong>{date.day}</strong>
+            <small>Full programme</small>
+          </div>
+        ))}
+      </div>
+      <div className={s.scheduleAgenda}>
+        {SESSIONS.map((session) => (
+          <div key={session.id} className={s.scheduleSlot} style={{ '--slot-accent': session.accent }}>
+            <time dateTime={session.time}>{session.time}</time>
             <div>
-              {SESSIONS.map((session) => (
-                <span key={`${date.id}-${session.id}`} style={{ '--slot-accent': session.accent }}>
-                  <time dateTime={`${date.id}T${session.time}`}>{session.time}</time>
-                  <b>{session.shortTitle}</b>
-                </span>
-              ))}
+              <span>{session.number} · {session.track}</span>
+              <strong>{session.shortTitle}</strong>
             </div>
           </div>
         ))}
       </div>
       <Editable as="p" id="timetable.caption" className={s.caption}>
-        36 valid registration choices · final dates and facilitators TBC
+        {`All six sessions run on 15, 22 and 29 January, and 5, 12 and 19 February 2027.${DATES_NOTE ? ` ${DATES_NOTE}` : ''}`}
       </Editable>
     </Frame>
   )
@@ -319,28 +322,19 @@ export function SetupSlide({ index }) {
 export function SessionDetailsIntroSlide({ index }) {
   return (
     <Frame index={index} id="session-details-intro" orbs={['orbIce', 'orbHolly', 'orbPine']}>
-      <Header
-        id="session-details-intro"
-        eyebrow="Confirmed programme"
-        title="Six sessions. One AI-native delivery loop."
-        subtitle="Build strong foundations, work across the lifecycle, improve the workflow, then apply it end to end."
-      />
-      <div className={s.sessionOverview}>
-        {SESSIONS.map((session) => (
-          <div
-            key={session.id}
-            className={s.sessionOverviewRow}
-            style={{ '--session-accent': session.accent }}
-          >
-            <span className={s.sessionOverviewNum}>{session.number}</span>
-            <span className={s.sessionOverviewIcon}>{session.scheduleMark}</span>
-            <div className={s.sessionOverviewMain}>
-              <h3>{session.title}</h3>
-              <p>{session.subtitle}</p>
-            </div>
-            <span className={s.sessionOverviewAudience}>{session.audience}</span>
-          </div>
-        ))}
+      <div className={s.detailIntro}>
+        <span className={s.pill}>The programme</span>
+        <Editable as="h1" id="sessionDetailsIntro.title">
+          Six sessions. <span className={s.highlight}>One delivery loop.</span>
+        </Editable>
+        <Editable as="p" id="sessionDetailsIntro.subtitle" multiline className={s.subtitle}>
+          The next slides go deeper into the purpose, tools and hands-on outcome of every session.
+        </Editable>
+        <div className={s.detailIntroTracks}>
+          {SESSIONS.map((session) => (
+            <span key={session.id}><b>{session.number}</b>{session.track}</span>
+          ))}
+        </div>
       </div>
     </Frame>
   )
@@ -352,9 +346,10 @@ function SessionDetailSlide({ index, session }) {
       <div className={s.detailBody} style={{ '--session-accent': session.accent }}>
         <div className={s.detailMeta}>
           <span className={s.detailNumber}>SESSION {session.number}</span>
+          <span className={`${s.tag} ${s.tagIce}`}>{session.time}</span>
           <span className={s.tag}>{session.audience}</span>
           <span className={`${s.tag} ${s.tagPine}`}>{session.format}</span>
-          {session.prerequisite && <span className={`${s.tag} ${s.tagIce}`}>Prerequisite: {session.prerequisite}</span>}
+          {session.prerequisite && <span className={`${s.tag} ${s.tagHolly}`}>Prerequisite: {session.prerequisite}</span>}
         </div>
         <div className={s.detailHeader}>
           <div>
@@ -377,11 +372,8 @@ function SessionDetailSlide({ index, session }) {
               <span className={s.detailLabel}>Session focus</span>
               <p>{session.spotlight}</p>
             </div>
-            <div className={`${s.detailPanel} ${s.detailToolbox}`}>
-              <div>
-                <span className={s.detailLabel}>Format</span>
-                <strong>{session.format}</strong>
-              </div>
+            <div className={`${s.detailPanel} ${s.detailToolbox} ${s.detailToolboxPlain}`}>
+              <span className={s.detailLabel}>Tools and concepts</span>
               <div className={s.detailTools}>{session.tools.map((tool) => <span key={tool}>{tool}</span>)}</div>
             </div>
           </div>
@@ -410,9 +402,9 @@ export function SurveySlide({ index }) {
       />
       <div className={s.points}>
         {[
-          ['TIME', 'short', 'Very short, about 2 minutes'],
-          ['SAFE', 'pii', 'No PII captured. Feedback links to a company, not a person'],
-          ['LOOP', 'improve', 'Used to improve the next session'],
+          ['⏱️', 'short', 'Very short, about 2 minutes'],
+          ['🔒', 'pii', 'No PII captured. Feedback links to a company, not a person'],
+          ['📈', 'improve', 'Used to improve the next session'],
         ].map(([icon, k, text]) => (
           <div key={k} className={s.point}>
             <span className={s.icon}>{icon}</span>
@@ -456,11 +448,11 @@ export function RegisterSlide({ index }) {
           ))}
         </div>
         <div className={`${s.registerPrompt} ${REGISTRATION_OPEN ? '' : s.registerPromptSoon}`}>
-          <span className={s.registerPromptMark}>{REGISTRATION_OPEN ? 'GH' : 'REG'}</span>
+          <span className={s.registerPromptMark} aria-hidden="true">{REGISTRATION_OPEN ? '🔑' : '📅'}</span>
           <div>
             <strong>{REGISTRATION_OPEN ? GITHUB_ACCESS.eyebrow : REGISTRATION_SOON.heading}</strong>
             <p>{REGISTRATION_OPEN
-              ? 'The organization invitation and $100 of GitHub Copilot AI credits arrive a few days before the event.'
+              ? 'The organization invitation and GitHub Copilot AI credits arrive a few days before the event.'
               : REGISTRATION_SOON.body}</p>
           </div>
           {REGISTRATION_OPEN
@@ -526,7 +518,7 @@ export function ThankYouSlide({ index }) {
       <div className={`orb ${s.orbHolly}`} />
       <div className={`orb ${s.orbPine}`} />
       <div className={`${s.thanks} content-frame content-gutter`}>
-        <span className={s.pill}>BUILD COMPLETE</span>
+        <span className={s.pill}>Thank you</span>
         <h1><Editable as="span" id="thankYou.title" className={s.highlight}>See you this winter</Editable></h1>
         <Editable as="p" id="thankYou.subtitle" multiline className={s.subtitle}>
           Questions? Reach out to your Microsoft contact.

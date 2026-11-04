@@ -1,53 +1,51 @@
 @import '@deckio/deck-engine/styles/global.css';
 @import '@deckio/deck-engine/themes/dark.css';
 
-/* ── Warm alpine night palette ───────────────────────────────────────── */
+/* ── Winter night palette: deep navy, ice blue and soft violet ────────── */
 :root {
-  --background: #0c0a14;
-  --foreground: #f2ece4;
-  --card: #140f20;
-  --secondary: #1a1430;
-  --muted: #201838;
-  --muted-foreground: #b0a090;
-  --border: #2e2444;
-  --accent: #d4a06a;
-  --primary: #d4a06a;
-  --ring: rgba(212, 160, 106, 0.4);
+  --background: #050b17;
+  --foreground: #eef6ff;
+  --card: #0a1527;
+  --secondary: #0e1b31;
+  --muted: #15243d;
+  --muted-foreground: #94a8c6;
+  --border: #1d2e4b;
+  --accent: #9edcff;
+  --primary: #9edcff;
+  --ring: rgba(158, 220, 255, 0.4);
 
-  --purple: #9080c0;
-  --purple-deep: #5c4a90;
-  --cyan: #7aaac8;
-  --green: #6a9e84;
-  --pink: #cc8e82;
-  --orange: #d4943c;
+  --purple: #b7b4ff;
+  --purple-deep: #34479e;
+  --cyan: #b6f0ff;
+  --green: #6fe3c4;
+  --pink: #e59bff;
 
-  --holly: #9080c0;
-  --pine: #5c4a90;
-  --gold: #e6b66f;
-  --frost: #f2ece4;
-  --ice: #d4a06a;
-  --night: #0c0a14;
-  --warm-glow: #d4a574;
-  --warm-amber: rgba(212, 165, 116, 0.1);
+  --holly: #7cc8ff;
+  --holly-deep: #3d7fd9;
+  --pine: #8f9dff;
+  --gold: #ffd27a;
+  --frost: #f4f9ff;
+  --ice: #9edcff;
+  --night: #050b17;
+  --danger: #ff7a93;
 
-  --glow-accent: rgba(212, 160, 106, 0.1);
-  --glow-purple: rgba(144, 128, 192, 0.1);
-  --glow-cyan: rgba(122, 170, 200, 0.08);
+  --glow-accent: rgba(158, 220, 255, 0.12);
+  --glow-purple: rgba(183, 180, 255, 0.1);
+  --glow-cyan: rgba(182, 240, 255, 0.08);
 }
 
 body {
   background:
-    radial-gradient(1000px 680px at 82% 4%, rgba(212, 148, 60, 0.18), transparent 58%),
-    radial-gradient(900px 620px at 8% 102%, rgba(92, 74, 144, 0.22), transparent 62%),
-    linear-gradient(160deg, #0c0a14 0%, #120d20 52%, #0c0a14 100%),
+    radial-gradient(1200px 700px at 85% -10%, rgba(52, 96, 200, 0.32), transparent 60%),
+    radial-gradient(900px 600px at -10% 110%, rgba(120, 110, 230, 0.16), transparent 60%),
     var(--night);
 }
 
-/* Alpine twilight accent bar on every slide */
+/* Frosted accent bar on every slide */
 .accent-bar {
-  background: linear-gradient(to bottom, var(--warm-glow), var(--purple));
-  opacity: 0.8;
-  box-shadow: 0 0 16px rgba(212, 160, 106, 0.24);
+  background: linear-gradient(to bottom, var(--ice), var(--purple));
+  opacity: 0.85;
+  box-shadow: 0 0 16px rgba(158, 220, 255, 0.3);
 }
 
 .deck-ty-watermark { display: none; }

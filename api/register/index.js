@@ -2,7 +2,7 @@ const { createHash, randomUUID } = require('node:crypto')
 const siteState = require('../site-state.json')
 
 const EVENT_ID = 'agentic-software-development-winter-bootcamp'
-const SESSION_DATES = ['2026-12-04', '2026-12-11', '2026-12-18', '2027-01-08', '2027-01-15', '2027-01-22']
+const SESSION_DATES = ['2027-01-15', '2027-01-22', '2027-01-29', '2027-02-05', '2027-02-12', '2027-02-19']
 const SESSION_TIMES = {
   'session-01': '09:15',
   'session-02': '10:15',
@@ -60,7 +60,7 @@ module.exports = async function register(context, req) {
     return
   }
   if (!sessions.length || sessions.length !== requestedSessions.length) {
-    context.res = response(400, { error: 'Choose at least one valid placeholder date and session time.' })
+    context.res = response(400, { error: 'Choose at least one valid date and session time.' })
     return
   }
   if (!environment || body.consent !== true) {

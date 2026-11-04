@@ -9,7 +9,9 @@ Interactive public website and DECKIO presentation for a six-session community b
 | `#/` | Public website with event framing, interactive programme workflow, development setup, FAQ and registration |
 | `#/deck` | Horizontal DECKIO presentation with the same content and embedded registration |
 
-The six session topics, descriptions and audiences are confirmed. Facilitators, six Friday dates and six daily times remain explicit placeholder/TBC values so the 36-choice registration workflow can be validated end-to-end.
+The six session topics, descriptions and audiences are confirmed. The six Friday dates and daily times are preliminary: set `BOOTCAMP.datesConfirmed` to `true` in `src/content.js` once they are confirmed to remove the "preliminary" labels. Facilitators remain TBC.
+
+All public copy lives in `src/content.js`, and the website and deck share it.
 
 ## Public release states
 
@@ -39,13 +41,13 @@ The Azure Static Web Apps build uses `/` so the website, deck and `/api/register
 
 The registration API:
 
-1. validates company, matching email entries, the 36 allowed `YYYY-MM-DD|HH:MM|session-id` placeholder selections, environment and consent;
+1. validates company, matching email entries, the 36 allowed `YYYY-MM-DD|HH:MM|session-id` selections, environment and consent;
 2. uses a browser-held opaque token to derive an event-scoped SHA-256 `RegistrationId`;
 3. sends canonical company-email, session-selection and environment-preference fields without GitHub identity;
 4. sends `eventId: agentic-software-development-winter-bootcamp` to the shared registration flow;
 5. lets that flow route the submission into the dedicated Software Development SharePoint List and initialize its operational statuses.
 
-A few days before the event, the attendee receives an invitation containing the link to join the event GitHub organization. The event environment includes $100 worth of GitHub Copilot AI credits.
+A few days before the event, the attendee receives an invitation containing the link to join the event GitHub organization. GitHub Copilot AI credits are provided in the event environment.
 
 The application uses:
 

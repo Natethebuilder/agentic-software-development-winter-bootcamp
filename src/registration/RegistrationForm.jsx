@@ -80,7 +80,7 @@ export default function RegistrationForm() {
         <span aria-hidden="true">GH</span>
         <div>
           <strong>GitHub organization access</strong>
-          <p>A few days before the event, your invitation will include the link to join the event GitHub organization. The environment includes $100 of GitHub Copilot AI credits.</p>
+          <p>A few days before the event, your invitation will include the link to join the event GitHub organization. GitHub Copilot AI credits are provided in the environment.</p>
         </div>
       </div>
 
@@ -108,9 +108,9 @@ export default function RegistrationForm() {
       </div>
 
       <fieldset className={s.sessionField}>
-        <legend>Choose your placeholder dates and session times</legend>
+        <legend>Choose your dates and session times</legend>
         <p className={s.sessionHint}>{REGISTRATION.slotHelp}</p>
-        <div className={s.dateTabs} role="tablist" aria-label="Choose a placeholder bootcamp date">
+        <div className={s.dateTabs} role="tablist" aria-label="Choose a bootcamp date">
           {SESSION_DATES.map((date) => {
             const count = slots.filter((slot) => slot.startsWith(`${date.id}|`)).length
             return (
@@ -123,7 +123,7 @@ export default function RegistrationForm() {
                 onClick={() => setActiveDate(date.id)}
               >
                 <span>{date.short}</span>
-                <small>{count ? `${count} selected` : 'Placeholder · TBC'}</small>
+                <small>{count ? `${count} selected` : 'Choose sessions'}</small>
               </button>
             )
           })}
@@ -144,8 +144,8 @@ export default function RegistrationForm() {
         </div>
         <p className={s.selectionSummary}>
           {slots.length
-            ? `${slots.length} placeholder session time${slots.length === 1 ? '' : 's'} selected across ${selectedDateCount} date${selectedDateCount === 1 ? '' : 's'}`
-            : 'No placeholder date or session time selected yet'}
+            ? `${slots.length} session time${slots.length === 1 ? '' : 's'} selected across ${selectedDateCount} date${selectedDateCount === 1 ? '' : 's'}`
+            : 'No date or session time selected yet'}
         </p>
       </fieldset>
 
