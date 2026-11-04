@@ -80,7 +80,7 @@ export default function RegistrationForm() {
         <span aria-hidden="true">GH</span>
         <div>
           <strong>GitHub organization access</strong>
-          <p>A few days before the event, your invitation will include the link to join the event GitHub organization. The environment includes $100 of GitHub Copilot AI credits.</p>
+          <p>A few days before the event, your invitation will include the link to join the event GitHub organization. GitHub Copilot AI credits are provided in the environment.</p>
         </div>
       </div>
 

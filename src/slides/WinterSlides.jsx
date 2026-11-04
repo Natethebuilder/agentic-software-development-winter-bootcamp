@@ -135,7 +135,7 @@ export function WinterTitleSlide({ index }) {
             ) : (
               <span className={s.heroSoon} role="status"><i aria-hidden="true" />{REGISTRATION_SOON.cta}</span>
             )}
-            <Editable as="span" id="title.ctaNote" className={s.heroCtaNote}>Free · $100 AI credits included</Editable>
+            <Editable as="span" id="title.ctaNote" className={s.heroCtaNote}>Free · AI credits provided</Editable>
           </div>
         </div>
         <Mascot className={s.heroMascot} />
@@ -172,7 +172,7 @@ export function OfferingSlide({ index }) {
         {[
           ['online', 'Online', 'Join live from anywhere'],
           ['weeks', 'Winter Fridays', `15 Jan – 19 Feb 2027${BOOTCAMP.datesConfirmed ? '' : ' · preliminary'}`],
-          ['credits', '$100 AI credits', 'Included with event access'],
+          ['credits', 'AI credits', 'Provided with event access'],
           ['cost', 'Free', 'Only your time'],
           ['team', 'Delivered by', 'Microsoft Solution Engineers & Architects'],
         ].map(([k, v, l]) => (
@@ -452,7 +452,7 @@ export function RegisterSlide({ index }) {
           <div>
             <strong>{REGISTRATION_OPEN ? GITHUB_ACCESS.eyebrow : REGISTRATION_SOON.heading}</strong>
             <p>{REGISTRATION_OPEN
-              ? 'The organization invitation and $100 of GitHub Copilot AI credits arrive a few days before the event.'
+              ? 'The organization invitation and GitHub Copilot AI credits arrive a few days before the event.'
               : REGISTRATION_SOON.body}</p>
           </div>
           {REGISTRATION_OPEN

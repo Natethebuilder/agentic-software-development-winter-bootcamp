@@ -136,7 +136,7 @@ Do not expose either value in source, documentation, browser responses, or logs.
 
 ## GitHub organization access
 
-A few days before the event, the invitation provides the link for joining the event GitHub organization. The event environment includes $100 worth of GitHub Copilot AI credits.
+A few days before the event, the invitation provides the link for joining the event GitHub organization. GitHub Copilot AI credits are provided in the event environment.
 
 ## Verification
 

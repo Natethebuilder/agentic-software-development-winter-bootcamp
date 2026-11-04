@@ -47,7 +47,7 @@ The registration API:
 4. sends `eventId: agentic-software-development-winter-bootcamp` to the shared registration flow;
 5. lets that flow route the submission into the dedicated Software Development SharePoint List and initialize its operational statuses.
 
-A few days before the event, the attendee receives an invitation containing the link to join the event GitHub organization. The event environment includes $100 worth of GitHub Copilot AI credits.
+A few days before the event, the attendee receives an invitation containing the link to join the event GitHub organization. GitHub Copilot AI credits are provided in the event environment.
 
 The application uses:
 

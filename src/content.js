@@ -232,9 +232,9 @@ export const PILLARS = [
 
 export const GITHUB_ACCESS = {
   eyebrow: 'GitHub organization access',
-  title: 'Event organization access and $100 of GitHub Copilot AI credits.',
+  title: 'Event organization access and GitHub Copilot AI credits.',
   description:
-    'A few days before the event starts, registered attendees will receive an invitation containing the link to join the event GitHub organization. The event environment includes $100 worth of AI credits to use with GitHub Copilot.',
+    'A few days before the event starts, registered attendees will receive an invitation containing the link to join the event GitHub organization. AI credits to use with GitHub Copilot are provided in the event environment.',
 }
 
 // Hero console: one example GitHub Copilot run for each session, shown as an agent trace.
@@ -408,7 +408,7 @@ export const FAQ = [
   },
   {
     q: 'What is included with the event GitHub environment?',
-    a: 'You receive access to the event GitHub organization and $100 worth of AI credits to use with GitHub Copilot.',
+    a: 'You receive access to the event GitHub organization and free AI credits to use with GitHub Copilot.',
   },
   {
     q: 'How do I access the GitHub organization?',
