@@ -5,7 +5,7 @@
 }
 .form { min-width: 0; max-width: 100%; padding: 24px; }
 .ticketNotice { display: grid; grid-template-columns: auto minmax(0, 1fr); align-items: center; gap: 14px; padding-bottom: 20px; border-bottom: 1px solid var(--border); }
-.ticketNotice > span { width: 48px; height: 48px; display: grid; place-items: center; border-radius: 14px; border: 1px solid color-mix(in srgb, var(--gold) 55%, transparent); background: color-mix(in srgb, var(--gold) 12%, var(--night)); color: var(--gold); font: 900 14px/1 ui-monospace, monospace; }
+.ticketNotice > span { width: 48px; height: 48px; display: grid; place-items: center; border-radius: 14px; border: 1px solid color-mix(in srgb, var(--ice) 55%, transparent); background: color-mix(in srgb, var(--ice) 12%, var(--night)); color: var(--ice); font: 900 14px/1 ui-monospace, monospace; }
 .ticketNotice strong { display: block; font-size: 17px; }
 .ticketNotice p { margin-top: 5px; color: var(--muted-foreground); font-size: 13px; line-height: 1.5; }
 .fields { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; margin-top: 20px; }
@@ -65,7 +65,7 @@
 .consent { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 11px; margin-top: 22px; padding: 14px; border-radius: 12px; background: color-mix(in srgb, var(--night) 50%, transparent); color: var(--muted-foreground); font-size: 13px; line-height: 1.5; }
 .consent input { margin-top: 3px; accent-color: var(--ice); }
 .submitRow { display: flex; align-items: center; gap: 16px; margin-top: 20px; }
-.submitRow button { appearance: none; border: 0; border-radius: 999px; padding: 12px 20px; color: #041019; background: linear-gradient(135deg, var(--ice), var(--green)); font: inherit; font-weight: 800; cursor: pointer; }
+.submitRow button { appearance: none; border: 0; border-radius: 999px; padding: 12px 20px; color: #04122a; background: linear-gradient(135deg, #e3f6ff, var(--ice) 52%, #6fb8ff); font: inherit; font-weight: 800; cursor: pointer; }
 .submitRow button:disabled { opacity: .48; cursor: not-allowed; }
 .submitRow small { color: var(--muted-foreground); }
 .message { margin-top: 15px; padding: 11px 13px; border-radius: 10px; color: var(--green); background: color-mix(in srgb, var(--green) 10%, transparent); }

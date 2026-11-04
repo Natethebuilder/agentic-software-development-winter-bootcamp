@@ -1,11 +1,12 @@
 import { useEffect, useRef, useState } from 'react'
 import { Logos, Mascot } from '../winter/Decor.jsx'
-import { AgentTerminal, Countdown, ProgrammeBoard } from '../data/DataViz.jsx'
+import { AgentRunConsole, Countdown, ScheduleBoard } from '../data/DataViz.jsx'
+import PillarMark from '../agentic/PillarMark.jsx'
 import usePrefersReducedMotion from '../hooks/usePrefersReducedMotion.js'
 import SetupWizard from '../setup/SetupWizard.jsx'
 import RegistrationForm from '../registration/RegistrationForm.jsx'
 import {
-  BOOTCAMP, FAQ, GITHUB_ACCESS, LINEUP, PERSONAS, PILLARS, PREP, PREREQUISITES, READINESS_PATHS,
+  BOOTCAMP, DATES_NOTE, FAQ, GITHUB_ACCESS, LINEUP, PERSONAS, PILLARS, PREP, PREREQUISITES, READINESS_PATHS,
   REGISTRATION, REGISTRATION_SOON, SESSIONS,
 } from '../content.js'
 import { PREREQUISITES_STATE, REGISTRATION_OPEN } from '../siteState.js'
@@ -22,6 +23,7 @@ const NAV = [
 
 const PREP_KEY = 'winter-bootcamp:prep'
 const DECK_URL = `${import.meta.env.BASE_URL}#/deck`
+const GITHUB_MARK = `${import.meta.env.BASE_URL}logos/github-mark.svg`
 
 function useReveal(rootRef) {
   useEffect(() => {
@@ -111,7 +113,13 @@ function PersonaPicker() {
   )
 }
 
+// The bootcamp workflow runs one job per session in order, then reveals the session list.
 const BUS_GRADIENT = `linear-gradient(90deg, ${SESSIONS.map((session) => session.accent).join(', ')})`
+
+const jobState = (index, lit, phase) => {
+  if (index < lit) return 'success'
+  return phase === 'running' && index === lit ? 'running' : 'queued'
+}
 
 function ProgrammeReveal() {
   const reduced = usePrefersReducedMotion()
@@ -124,11 +132,12 @@ function ProgrammeReveal() {
   useEffect(() => {
     if (phase !== 'running') return undefined
     const id = lit < SESSIONS.length
-      ? setTimeout(() => setLit((count) => count + 1), lit === 0 ? 520 : 240)
-      : setTimeout(() => setPhase('done'), 420)
+      ? setTimeout(() => setLit((n) => n + 1), lit === 0 ? 560 : 320)
+      : setTimeout(() => setPhase('done'), 450)
     return () => clearTimeout(id)
   }, [phase, lit])
 
+  // The run button disappears when the jobs finish, so keep keyboard focus on the first job.
   useEffect(() => {
     if (phase === 'done' && moveFocus.current) {
       moveFocus.current = false
@@ -148,23 +157,24 @@ function ProgrammeReveal() {
   }
 
   const jumpTo = (id) =>
-    document.getElementById(`programme-${id}`)?.scrollIntoView({
-      behavior: reduced ? 'auto' : 'smooth',
-      block: 'start',
-    })
+    document.getElementById(`programme-${id}`)?.scrollIntoView({ behavior: reduced ? 'auto' : 'smooth', block: 'start' })
 
-  const status = phase === 'idle' ? 'ready' : phase === 'running' ? `handoff ${lit}/${SESSIONS.length}` : 'complete'
+  const status = phase === 'idle' ? 'ready' : phase === 'running' ? `running ${lit}/${SESSIONS.length}` : 'success'
 
   return (
     <div className={s.programmeReveal}>
       <div className={`${s.orch} ${phase !== 'idle' ? s.orchActive : ''} ${phase === 'done' ? s.orchDone : ''}`}>
         <div className={s.orchHead}>
-          <span className={s.orchName}><i aria-hidden="true" />{LINEUP.agent}</span>
+          <span className={s.orchName}>
+            <i aria-hidden="true" />
+            <span className={s.orchFile}>{LINEUP.agent}</span>
+            <span className={s.orchTrigger}>{LINEUP.trigger}</span>
+          </span>
           <span className={s.orchStatus}><i aria-hidden="true" />{status}</span>
         </div>
 
         <div className={s.orchCore}>
-          <span className={s.orchCoreMark} aria-hidden="true"><span className={s.orchCode}>&lt;/&gt;</span></span>
+          <span className={s.orchCoreMark}><img src={GITHUB_MARK} alt="" /></span>
           <span className={s.orchCoreText}>
             <strong>{LINEUP.coreTitle}</strong>
             <small>{LINEUP.coreDetail}</small>
@@ -173,12 +183,16 @@ function ProgrammeReveal() {
         <span className={s.orchTrunk} aria-hidden="true" />
         <span className={s.orchBus} style={{ '--bus': BUS_GRADIENT }} aria-hidden="true" />
 
-        <ol className={s.orchNodes} aria-label="Programme stages">
+        <ol className={s.orchNodes} aria-label="Workflow jobs">
           {SESSIONS.map((session, index) => {
+            const state = jobState(index, lit, phase)
             const label = (
               <>
-                <span className={s.orchNodeNum}>{session.number}</span>
-                <span className={s.orchNodeTrack}>{session.scheduleMark}</span>
+                <span className={s.orchNodeNum}>
+                  {session.number}
+                  <i className={s.jobStatus} data-state={state} aria-hidden="true" />
+                </span>
+                <span className={s.orchNodeTrack}>{session.track}</span>
                 <span className={s.orchNodeTime}>{session.time}</span>
               </>
             )
@@ -217,6 +231,7 @@ function ProgrammeReveal() {
             onClick={run}
             aria-disabled={phase === 'running'}
             aria-controls="programme-sessions"
+            aria-expanded="false"
           >
             <span className={phase === 'running' ? s.orchSpinner : s.orchPlay} aria-hidden="true" />
             {phase === 'running' ? LINEUP.running : LINEUP.run}
@@ -231,13 +246,13 @@ function ProgrammeReveal() {
             <article
               key={session.id}
               id={`programme-${session.id}`}
-              className={s.sessionRow}
+              className={`${s.sessionRow} ${s.sessionRowOpen}`}
               style={{ '--i': index, '--session-accent': session.accent }}
             >
               <div className={s.sessionSummary}>
                 <span className={s.sessionNumber}>{session.number}</span>
                 <span className={s.sessionHeading}>
-                  <span className={s.sessionAudience}>{session.track}</span>
+                  <span className={s.sessionAudience}>{session.time} · {session.audience}</span>
                   <strong>{session.title}</strong>
                   <small>{session.subtitle}</small>
                 </span>
@@ -250,17 +265,19 @@ function ProgrammeReveal() {
 
                 <div className={s.sessionDepth}>
                   <div>
-                    <h4>Audience</h4>
-                    <p className={s.sessionAudienceCopy}>{session.audience}</p>
-                    {session.prerequisite && (
-                      <p className={s.sessionPrerequisite}>Prerequisite: {session.prerequisite}</p>
-                    )}
+                    <h4>You will</h4>
+                    <ul>
+                      {session.outcomes.map((outcome) => <li key={outcome}>{outcome}</li>)}
+                    </ul>
                   </div>
                   <div className={s.sessionToolkit}>
                     <span>Tools and concepts</span>
                     <div className={s.sessionTools}>
                       {session.tools.map((tool) => <span key={tool}>{tool}</span>)}
                     </div>
+                    {session.prerequisite && (
+                      <p className={s.sessionPrerequisite}>Prerequisite: {session.prerequisite}</p>
+                    )}
                   </div>
                 </div>
               </div>
@@ -319,6 +336,7 @@ function PrepChecklist() {
   )
 }
 
+// Stands in for a section's interactive content while that part of the programme is not open yet.
 function SoonPanel({ mark, label, heading, body, children }) {
   return (
     <div className={s.soonPanel} role="status">
@@ -376,7 +394,7 @@ export default function Site() {
         <section id="top" className={`${s.panel} ${s.heroPanel}`} data-panel>
           <div className={s.hero}>
           <div className={s.heroText}>
-            <span className={s.pill}>BUILD · LEARN · SHIP · {BOOTCAMP.season} · Online</span>
+            <span className={s.pill}>{BOOTCAMP.season} · Online · Six one-hour sessions</span>
             <h1>
               Agentic Software Development <span className={s.highlight}>Winter Bootcamp</span>
             </h1>
@@ -394,13 +412,14 @@ export default function Site() {
               target={BOOTCAMP.kickoff}
               date={BOOTCAMP.kickoffDate}
               dateLabel={BOOTCAMP.kickoffLabel}
+              preliminary={!BOOTCAMP.datesConfirmed}
               className={s.countdown}
             />
           </div>
           <div className={s.heroArt}>
-            <AgentTerminal className={s.terminal}>
+            <AgentRunConsole className={s.heroConsole}>
               <Mascot className={s.perched} />
-            </AgentTerminal>
+            </AgentRunConsole>
             <Logos size="md" className={s.heroLogos} />
           </div>
           </div>
@@ -419,14 +438,14 @@ export default function Site() {
           <div className={`${s.grid} ${s.g3}`}>
             {PILLARS.map((p) => (
               <article key={p.id} className={s.card}>
-                <span className={s.icon}>{p.icon}</span>
+                <PillarMark id={p.id} tag={p.tag} />
                 <h3>{p.title}</h3>
                 <p>{p.desc}</p>
               </article>
             ))}
           </div>
           <div className={s.ticketCallout}>
-            <span aria-hidden="true">GH</span>
+            <span aria-hidden="true"><img src={GITHUB_MARK} alt="" /></span>
             <div>
               <small>{GITHUB_ACCESS.eyebrow}</small>
               <h3>{GITHUB_ACCESS.title}</h3>
@@ -452,10 +471,10 @@ export default function Site() {
           id="schedule"
           idx="03"
           eyebrow="Schedule"
-          title="Six placeholder Fridays. The complete programme each time."
-          subtitle={`Session topics are confirmed. The dates and times below validate the registration workflow and remain explicitly TBC; facilitators will be announced later. ${REGISTRATION_OPEN ? 'Choose any combination during registration.' : 'Once registration opens, choose any combination of session times.'}`}
+          title="Six dates. The same complete programme."
+          subtitle={`All six sessions run on every date. ${REGISTRATION_OPEN ? 'When you register' : 'Once registration opens'}, pick as many sessions as you like, on as many dates as you like.${DATES_NOTE ? ` ${DATES_NOTE}` : ''}`}
         >
-          <ProgrammeBoard />
+          <ScheduleBoard />
         </Section>
 
         <Section
@@ -507,12 +526,12 @@ export default function Site() {
         >
           {REGISTRATION_OPEN ? <RegistrationForm /> : (
             <SoonPanel
-              mark="REG"
+              mark="📅"
               label={REGISTRATION_SOON.badge}
               heading={REGISTRATION_SOON.heading}
               body={REGISTRATION_SOON.body}
             >
-              <button type="button" className={s.btnGhost} onClick={() => go('lineup')}>Run the programme</button>
+              <button type="button" className={s.btnGhost} onClick={() => go('lineup')}>See the lineup</button>
               <button type="button" className={s.btnGhost} onClick={() => go('schedule')}>View the schedule</button>
             </SoonPanel>
           )}

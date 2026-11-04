@@ -60,7 +60,7 @@ module.exports = async function register(context, req) {
     return
   }
   if (!sessions.length || sessions.length !== requestedSessions.length) {
-    context.res = response(400, { error: 'Choose at least one valid placeholder date and session time.' })
+    context.res = response(400, { error: 'Choose at least one valid date and session time.' })
     return
   }
   if (!environment || body.consent !== true) {

@@ -1,0 +1,105 @@
+import { useId } from 'react'
+import { SESSIONS } from '../content.js'
+import a from './Agentic.module.css'
+
+const ACCENTS = SESSIONS.map((session) => session.accent)
+
+const polar = (cx, cy, r, deg) => {
+  const rad = (deg * Math.PI) / 180
+  return [cx + r * Math.cos(rad), cy + r * Math.sin(rad)]
+}
+
+const RING = Array.from({ length: 6 }, (_, k) => polar(32, 32, 22, 60 * k - 90))
+const BARS = [10, 15, 21, 28]
+
+// A terminal session types its first prompt while three foundation blocks light up beneath it:
+// the app, sessions and context that every later session builds on.
+function FoundationsGlyph() {
+  return (
+    <svg viewBox="0 0 64 64" className={a.svg} aria-hidden="true" focusable="false">
+      <rect x="8.5" y="9.5" width="47" height="34" rx="6" className={a.frame} />
+      <path d="M8.5 19.5 H55.5" className={a.divider} />
+      <circle cx="14.5" cy="14.5" r="1.5" className={a.winDot} />
+      <circle cx="19.5" cy="14.5" r="1.5" className={a.winDot} />
+      <circle cx="24.5" cy="14.5" r="1.5" className={a.winDot} />
+      <path d="M14.5 26 L18.5 29 L14.5 32" className={a.prompt} />
+      <rect x="22" y="27.5" width="22" height="3" rx="1.5" className={a.typed} />
+      <rect x="14.5" y="35.5" width="30" height="3" rx="1.5" className={`${a.typed} ${a.typedLate}`} />
+      <rect x="46.5" y="34.5" width="2.4" height="5" rx="0.8" className={a.cursor} />
+      {[0, 1, 2].map((k) => (
+        <rect
+          key={k}
+          x={8.5 + k * 16.2}
+          y="48.5"
+          width="14.6"
+          height="7"
+          rx="2.6"
+          className={a.block}
+          style={{ '--node': ACCENTS[k], '--k': k }}
+        />
+      ))}
+    </svg>
+  )
+}
+
+// A change travels the whole delivery loop: each of the six stages lights up as it passes.
+function LoopGlyph() {
+  const gradient = `trail-${useId().replace(/[^a-zA-Z0-9_-]/g, '')}`
+  return (
+    <svg viewBox="0 0 64 64" className={a.svg} aria-hidden="true" focusable="false">
+      <defs>
+        <linearGradient id={gradient} gradientUnits="userSpaceOnUse" x1="12.95" y1="21" x2="32" y2="10">
+          <stop offset="0" className={a.trailFrom} />
+          <stop offset="1" className={a.trailTo} />
+        </linearGradient>
+      </defs>
+      <circle cx="32" cy="32" r="22" className={a.track} />
+      <g className={a.orbit}>
+        <path d="M12.95 21 A22 22 0 0 1 32 10" className={a.trail} stroke={`url(#${gradient})`} />
+        <circle cx="32" cy="10" r="2.6" className={a.head} />
+      </g>
+      {RING.map(([x, y], k) => (
+        <circle key={k} cx={x} cy={y} r="3.6" className={a.stage} style={{ '--node': ACCENTS[k], '--k': k }} />
+      ))}
+      <circle cx="32" cy="32" r="9.5" className={a.core} />
+      <path d="M34.75 27.24 A5.5 5.5 0 1 1 27.24 29.25" className={a.loopArrow} />
+      <path d="M24.4 30.6 L27.24 29.25 L27.9 32.4" className={a.loopArrow} />
+    </svg>
+  )
+}
+
+// Measure, then improve: four results rise, the trend is drawn through them and a check confirms it.
+function EvidenceGlyph() {
+  return (
+    <svg viewBox="0 0 64 64" className={a.svg} aria-hidden="true" focusable="false">
+      <path d="M8 52.5 H56" className={a.axis} />
+      {BARS.map((h, k) => (
+        <rect
+          key={k}
+          x={10 + k * 10}
+          y={52 - h}
+          width="7"
+          height={h}
+          rx="2"
+          className={a.bar}
+          style={{ '--k': k }}
+        />
+      ))}
+      <path d="M13.5 37 L23.5 31 L33.5 26 L43.5 18" className={a.trend} pathLength="1" />
+      <circle cx="51" cy="13" r="7" className={a.badge} />
+      <path d="M47.8 13.2 L50.1 15.5 L54.4 10.8" className={a.check} pathLength="1" />
+    </svg>
+  )
+}
+
+const GLYPHS = { foundations: FoundationsGlyph, 'whole-loop': LoopGlyph, evidence: EvidenceGlyph }
+
+export default function PillarMark({ id, tag, size = 'md', className = '' }) {
+  const Glyph = GLYPHS[id] ?? LoopGlyph
+  return (
+    <div className={`${a.mark} ${size === 'sm' ? a.sm : ''} ${className}`}>
+      <span className={a.tile}><Glyph /></span>
+      {tag && <span className={a.tag}>{tag}</span>}
+    </div>
+  )
+}
