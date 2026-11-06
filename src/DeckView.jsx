@@ -1,4 +1,5 @@
 import { InlineEditProvider, Navigation, SlideErrorBoundary, SlideProvider, useSlides } from '@deckio/deck-engine'
+import { useState } from 'react'
 import '@deckio/deck-engine/styles/editable.css'
 import project from '../deck.config.js'
 import { Mascot } from './winter/Decor.jsx'
