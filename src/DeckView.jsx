@@ -1,4 +1,5 @@
 import { InlineEditProvider, Navigation, SlideErrorBoundary, SlideProvider, useSlides } from '@deckio/deck-engine'
+import { useState } from 'react'
 import '@deckio/deck-engine/styles/editable.css'
 import project from '../deck.config.js'
 import { Mascot } from './winter/Decor.jsx'
@@ -22,8 +23,20 @@ function DeliveryProgress() {
   )
 }
 
+const NAVBAR_DISMISSED_KEY = 'deck-navbar-dismissed'
+
+function readNavbarDismissed() {
+  try { return localStorage.getItem(NAVBAR_DISMISSED_KEY) === '1' } catch { return false }
+}
+
 function DeckNavBar() {
   const { go, atStart, atEnd, displayIndex, visibleCount } = useSlides()
+  const [dismissed, setDismissed] = useState(readNavbarDismissed)
+  if (dismissed) return null
+  const dismiss = () => {
+    try { localStorage.setItem(NAVBAR_DISMISSED_KEY, '1') } catch { /* storage unavailable */ }
+    setDismissed(true)
+  }
   // Pointer clicks blur the button so the engine's arrow-key handler (which ignores focused buttons) keeps working.
   const step = (e, dir) => {
     go(dir)
@@ -41,6 +54,9 @@ function DeckNavBar() {
       </div>
       <button type="button" className="deck-navbar-btn deck-navbar-next" onClick={(e) => step(e, 1)} disabled={atEnd} aria-label="Next slide">
         <span className="deck-navbar-label">Next</span><span aria-hidden="true">→</span>
+      </button>
+      <button type="button" className="deck-navbar-close" onClick={dismiss} aria-label="Hide slide navigation" title="Hide (swipe and arrow keys still work)">
+        <span aria-hidden="true">×</span>
       </button>
     </nav>
   )
