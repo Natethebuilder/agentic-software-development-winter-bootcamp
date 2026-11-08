@@ -5,10 +5,10 @@ import PillarMark from '../agentic/PillarMark.jsx'
 import RegistrationForm from '../registration/RegistrationForm.jsx'
 import { Logos, Mascot } from '../winter/Decor.jsx'
 import {
-  BOOTCAMP, DATES_NOTE, GITHUB_ACCESS, PERSONAS, PILLARS, PREP, PREREQUISITES, REGISTER_STEPS, REGISTRATION_SOON,
-  SESSION_DATES, SESSIONS, TEAM,
+  BOOTCAMP, DATES_NOTE, GITHUB_ACCESS, PERSONAS, PILLARS, PREP, PREREQUISITES, REGISTER_STEPS, REGISTRATION_CLOSED,
+  REGISTRATION_UNAVAILABLE, SESSION_DATES, SESSIONS, TEAM,
 } from '../content.js'
-import { PREREQUISITES_STATE, REGISTRATION_OPEN } from '../siteState.js'
+import { PREREQUISITES_STATE, REGISTRATION_OPEN, REGISTRATION_STATE, byRegistrationState } from '../siteState.js'
 import s from './Slides.module.css'
 
 function SlideProgress({ index }) {
@@ -133,7 +133,9 @@ export function WinterTitleSlide({ index }) {
                 Register now <span aria-hidden="true">→</span>
               </RegistrationButton>
             ) : (
-              <span className={s.heroSoon} role="status"><i aria-hidden="true" />{REGISTRATION_SOON.cta}</span>
+              <span className={s.heroSoon} role="status">
+                {REGISTRATION_STATE === 2 && <i aria-hidden="true" />}{REGISTRATION_UNAVAILABLE.cta}
+              </span>
             )}
             <Editable as="span" id="title.ctaNote" className={s.heroCtaNote}>Free · AI credits provided</Editable>
           </div>
@@ -246,7 +248,11 @@ export function TimetableSlide({ index }) {
         id="timetable"
         eyebrow="Programme schedule"
         title="Six dates. The same six-session day."
-        subtitle={`Every date runs all six sessions. ${REGISTRATION_OPEN ? 'Pick' : 'Once registration opens, pick'} as many as you like, on as many dates as you like.`}
+        subtitle={`Every date runs all six sessions.${byRegistrationState(
+          ' Pick as many as you like, on as many dates as you like.',
+          ' Once registration opens, pick as many as you like, on as many dates as you like.',
+          '',
+        )}`}
       />
       <div className={s.scheduleDates}>
         {SESSION_DATES.map((date) => (
@@ -433,31 +439,39 @@ export function RegisterSlide({ index }) {
       <Header
         id="register"
         eyebrow="Ready to join?"
-        title={REGISTRATION_OPEN ? 'How to register' : REGISTRATION_SOON.title}
-        subtitle={REGISTRATION_OPEN
-          ? 'Registration is open. Confirm your company email; no GitHub sign-in is required.'
-          : 'When registration opens, it takes about two minutes:'}
+        title={REGISTRATION_OPEN ? 'How to register' : REGISTRATION_UNAVAILABLE.title}
+        subtitle={byRegistrationState(
+          'Registration is open. Confirm your company email; no GitHub sign-in is required.',
+          'When registration opens, it takes about two minutes:',
+          REGISTRATION_CLOSED.subtitle,
+        )}
       />
-      <div className={s.registerSlideGrid}>
-        <div className={s.points}>
-          {REGISTER_STEPS.map((text, i) => (
-            <div key={i} className={s.point}>
-              <span className={s.stepNum}>{i + 1}</span>
-              <Editable as="span" id={`register.step${i + 1}`}>{text}</Editable>
-            </div>
-          ))}
-        </div>
+      <div className={REGISTRATION_STATE === 3 ? `${s.registerSlideGrid} ${s.registerSlideClosed}` : s.registerSlideGrid}>
+        {REGISTRATION_STATE !== 3 && (
+          <div className={s.points}>
+            {REGISTER_STEPS.map((text, i) => (
+              <div key={i} className={s.point}>
+                <span className={s.stepNum}>{i + 1}</span>
+                <Editable as="span" id={`register.step${i + 1}`}>{text}</Editable>
+              </div>
+            ))}
+          </div>
+        )}
         <div className={`${s.registerPrompt} ${REGISTRATION_OPEN ? '' : s.registerPromptSoon}`}>
-          <span className={s.registerPromptMark} aria-hidden="true">{REGISTRATION_OPEN ? '🔑' : '📅'}</span>
+          <span className={s.registerPromptMark} aria-hidden="true">{REGISTRATION_OPEN ? '🔑' : REGISTRATION_UNAVAILABLE.mark}</span>
           <div>
-            <strong>{REGISTRATION_OPEN ? GITHUB_ACCESS.eyebrow : REGISTRATION_SOON.heading}</strong>
+            <strong>{REGISTRATION_OPEN ? GITHUB_ACCESS.eyebrow : REGISTRATION_UNAVAILABLE.heading}</strong>
             <p>{REGISTRATION_OPEN
               ? 'The organization invitation and GitHub Copilot AI credits arrive a few days before the event.'
-              : REGISTRATION_SOON.body}</p>
+              : REGISTRATION_UNAVAILABLE.body}</p>
           </div>
           {REGISTRATION_OPEN
             ? <RegistrationButton initiallyOpen={openOnLoad}>Open registration</RegistrationButton>
-            : <span className={s.registerSoonBadge} role="status"><i aria-hidden="true" />{REGISTRATION_SOON.badge}</span>}
+            : (
+              <span className={s.registerSoonBadge} role="status">
+                {REGISTRATION_STATE === 2 && <i aria-hidden="true" />}{REGISTRATION_UNAVAILABLE.badge}
+              </span>
+            )}
         </div>
       </div>
     </Frame>

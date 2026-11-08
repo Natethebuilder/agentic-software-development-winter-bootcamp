@@ -1,8 +1,11 @@
 const assert = require('node:assert/strict')
 const { createHash } = require('node:crypto')
+const { readFileSync } = require('node:fs')
+const { join } = require('node:path')
 const test = require('node:test')
 const register = require('./index.js')
 const siteState = require('../site-state.json')
+const { consentVersion } = require('../consent-version.json')
 
 // Keep normal tests independent from the state committed for the live site.
 siteState.registration = 1
@@ -39,6 +42,14 @@ function validBody() {
 function configuredEnvironment() {
   process.env.REGISTRATION_FLOW_URL = 'https://flow.example.test/register'
   process.env.REGISTRATION_FLOW_SHARED_SECRET = 'test-only-secret'
+}
+
+function flowReply(status, body) {
+  return {
+    ok: status >= 200 && status < 300,
+    status,
+    text: async () => (typeof body === 'string' ? body : JSON.stringify(body)),
+  }
 }
 
 test('rejects mismatched email confirmation', async () => {
@@ -149,6 +160,7 @@ test('forwards an anonymous event-routed upsert payload', async () => {
   )
   assert.deepEqual(received.body.sessionSelections, validBody().sessions)
   assert.equal(received.body.environmentPreference, 'local')
+  assert.equal(received.body.consentVersion, consentVersion)
   assert.equal('githubUserId' in received.body, false)
   assert.equal('githubUsername' in received.body, false)
   assert.equal('email' in received.body, false)
@@ -159,7 +171,183 @@ test('forwards an anonymous event-routed upsert payload', async () => {
     createHash('sha256').update(`agentic-software-development-winter-bootcamp:${registrationToken}`).digest('hex'),
   )
   assert.equal(context.res.body.registrationToken, registrationToken)
+  assert.equal(context.res.body.outcome, 'received')
   assert.equal('registrationEmailKey' in context.res.body, false)
+})
+
+test('gives a slow flow time to answer within the 45 s Static Web Apps limit', async () => {
+  configuredEnvironment()
+  const timeout = AbortSignal.timeout
+  let timeoutMs
+  AbortSignal.timeout = (ms) => {
+    timeoutMs = ms
+    return timeout.call(AbortSignal, ms)
+  }
+  global.fetch = async () => ({ ok: true })
+
+  const context = {}
+  try {
+    await register(context, request(validBody()))
+  } finally {
+    AbortSignal.timeout = timeout
+  }
+
+  assert.equal(context.res.status, 202)
+  assert.ok(timeoutMs >= 20_000)
+  assert.ok(timeoutMs < 45_000)
+})
+
+test('reports an updated registration when the flow updated the saved record', async () => {
+  configuredEnvironment()
+  global.fetch = async () => flowReply(202, { ok: true, outcome: 'updated' })
+
+  const context = {}
+  await register(context, request(validBody()))
+
+  assert.equal(context.res.status, 202)
+  assert.deepEqual(context.res.body, { ok: true, outcome: 'updated', registrationToken })
+})
+
+test('answers new and already registered email addresses identically', async (t) => {
+  configuredEnvironment()
+  const replies = {
+    created: () => flowReply(202, { ok: true, outcome: 'created' }),
+    unchanged: () => flowReply(202, { ok: true, outcome: 'unchanged' }),
+    'missing outcome': () => flowReply(202, { ok: true }),
+    'empty body': () => flowReply(202, ''),
+    'non-JSON body': () => flowReply(202, 'Accepted'),
+    'JSON null body': () => flowReply(202, 'null'),
+    'unknown outcome': () => flowReply(202, { ok: true, outcome: 'something-new' }),
+    'unreadable body': () => ({ ok: true, status: 202, text: async () => { throw new Error('aborted') } }),
+    'no body reader': () => ({ ok: true, status: 202 }),
+  }
+
+  for (const [label, reply] of Object.entries(replies)) {
+    await t.test(label, async () => {
+      global.fetch = async () => reply()
+      const context = {}
+      await register(context, request(validBody()))
+      assert.equal(context.res.status, 202)
+      assert.deepEqual(context.res.body, { ok: true, outcome: 'received', registrationToken })
+    })
+  }
+})
+
+test('returns a token for a new registration without a stored token', async () => {
+  configuredEnvironment()
+  global.fetch = async () => flowReply(202, { ok: true, outcome: 'unchanged' })
+
+  const context = {}
+  const body = validBody()
+  delete body.registrationToken
+  await register(context, request(body))
+
+  assert.equal(context.res.status, 202)
+  assert.equal(context.res.body.outcome, 'received')
+  assert.match(context.res.body.registrationToken, /^[0-9a-f-]{36}$/)
+})
+
+test('maps a flow email mismatch to 409 without returning a token', async (t) => {
+  configuredEnvironment()
+  const replies = {
+    'email-mismatch body': () => flowReply(409, { ok: false, outcome: 'email-mismatch' }),
+    'empty body': () => flowReply(409, ''),
+  }
+
+  for (const [label, reply] of Object.entries(replies)) {
+    await t.test(label, async () => {
+      global.fetch = async () => reply()
+      const context = {}
+      await register(context, request(validBody()))
+      assert.equal(context.res.status, 409)
+      assert.deepEqual(context.res.body, {
+        error: 'This email address doesn\u2019t match the registration saved in this browser. Check the address, or choose "Not you? Start a new registration".',
+        code: 'registration-email-mismatch',
+      })
+      assert.equal('registrationToken' in context.res.body, false)
+    })
+  }
+})
+
+test('reports other flow failures as 502', async (t) => {
+  configuredEnvironment()
+  for (const status of [400, 401, 404, 500]) {
+    await t.test(String(status), async () => {
+      global.fetch = async () => flowReply(status, { ok: false })
+      const context = {}
+      await register(context, request(validBody()))
+      assert.equal(context.res.status, 502)
+      assert.equal(context.res.body.error, 'Registration storage rejected the request.')
+      assert.equal('registrationToken' in context.res.body, false)
+    })
+  }
+})
+
+test('sends the server-side consent version and ignores a browser value', async () => {
+  configuredEnvironment()
+  let received
+  global.fetch = async (_url, options) => {
+    received = JSON.parse(options.body)
+    return flowReply(202, { ok: true, outcome: 'created' })
+  }
+
+  const body = validBody()
+  body.consentVersion = 'browser-supplied-version'
+  await register({}, request(body))
+
+  assert.match(consentVersion, /^\d{4}-\d{2}-\d{2}$/)
+  assert.equal(received.consentVersion, consentVersion)
+})
+
+test('documents the consent wording for the current consent version', () => {
+  const root = join(__dirname, '..', '..')
+  const content = readFileSync(join(root, 'src', 'content.js'), 'utf8')
+  const docs = readFileSync(join(root, 'docs', 'registration-backend.md'), 'utf8')
+  const wording = content.match(/\bconsent:\s*'([^']+)'/)?.[1]
+  const row = docs.split(/\r?\n/).find((line) => line.startsWith(`| \`${consentVersion}\` |`))
+
+  assert.ok(wording, 'src/content.js has no REGISTRATION.consent wording')
+  assert.ok(row, `docs/registration-backend.md has no consent wording row for ${consentVersion}`)
+  assert.ok(
+    row.includes(wording),
+    'The consent wording changed. Add a new version to api/consent-version.json and the docs table.',
+  )
+})
+
+test('accepts registrations only while registration is open', async (t) => {
+  configuredEnvironment()
+  const original = siteState.registration
+  const states = [
+    [1, 202],
+    [2, 403, 'Registration will open soon.'],
+    [3, 403, 'Registration is closed.'],
+    [0, 403, 'Registration is not open.'],
+    [4, 403, 'Registration is not open.'],
+    ['1', 403, 'Registration is not open.'],
+    [true, 403, 'Registration is not open.'],
+    [null, 403, 'Registration is not open.'],
+    [undefined, 403, 'Registration is not open.'],
+  ]
+
+  try {
+    for (const [state, status, error] of states) {
+      await t.test(`state ${state === undefined ? 'missing' : JSON.stringify(state)}`, async () => {
+        let called = false
+        global.fetch = async () => {
+          called = true
+          return flowReply(202, { ok: true, outcome: 'created' })
+        }
+        siteState.registration = state
+        const context = {}
+        await register(context, request(validBody()))
+        assert.equal(context.res.status, status)
+        assert.equal(called, status === 202)
+        if (error) assert.deepEqual(context.res.body, { error })
+      })
+    }
+  } finally {
+    siteState.registration = original
+  }
 })
 
 test('always forwards the local environment preference', async () => {

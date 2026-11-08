@@ -21,10 +21,11 @@ The website, deck and registration API share `api/site-state.json`.
 | --- | --- | --- |
 | `registration` | `1` | Registration is open and submissions reach `/api/register` |
 | `registration` | `2` | Registration entry points show “opening soon” and the API returns `403` |
+| `registration` | `3` | Registration is closed: entry points show a closed message, the form is hidden and the API returns `403` |
 | `prerequisites` | `"ready"` | Show the readiness checklist and guided setup |
 | `prerequisites` | `"soon"` | Replace setup content with a coming-soon panel |
 
-Change only this JSON file to move the public experience between states.
+Change only this JSON file to move the public experience between states. Any `registration` value other than `1`, `2` or `3` is treated as closed by both the site and the API, so a mistake never opens registration.
 
 ## Develop
 
@@ -43,9 +44,10 @@ The registration API:
 
 1. validates company, matching email entries, the 36 allowed `YYYY-MM-DD|HH:MM|session-id` selections and consent;
 2. uses a browser-held opaque token to derive an event-scoped SHA-256 `RegistrationId`;
-3. sends canonical company-email and session-selection fields, plus the fixed `local` environment preference the shared flow requires, without GitHub identity;
+3. sends canonical company-email and session-selection fields, plus the fixed `local` environment preference the shared flow requires and the consent wording version from `api/consent-version.json`, without GitHub identity;
 4. sends `eventId: agentic-software-development-winter-bootcamp` to the shared registration flow;
-5. lets that flow route the submission into the dedicated Software Development SharePoint List and initialize its operational statuses.
+5. lets that flow route the submission into the dedicated Software Development SharePoint List and initialize its operational statuses;
+6. gives new and already registered email addresses the same confirmation, so the response never reveals whether an address is registered.
 
 A few days before the event, the attendee receives an invitation containing the link to join the event GitHub organization. GitHub Copilot AI credits are provided in the event environment.
 
