@@ -364,6 +364,8 @@
   align-items: stretch;
   gap: 18px;
 }
+/* Closed registration has no steps to show, so the notice takes the full row. */
+.registerSlideClosed { grid-template-columns: minmax(0, 760px); }
 .registerPrompt {
   display: grid;
   grid-template-columns: auto minmax(0, 1fr);

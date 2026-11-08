@@ -1,4 +1,4 @@
-import { PREREQUISITES_STATE, REGISTRATION_OPEN } from './siteState.js'
+import { PREREQUISITES_STATE, REGISTRATION_STATE, byRegistrationState } from './siteState.js'
 
 // Shared public content for the landing site and the deck.
 // Session topics are confirmed. The six Friday dates are preliminary; facilitators are TBC.
@@ -416,9 +416,11 @@ export const FAQ = [
   },
   {
     q: 'How do I register?',
-    a: REGISTRATION_OPEN
-      ? 'Provide and confirm your company email, then choose your dates and sessions. No GitHub sign-in is required on this website.'
-      : 'Registration will open soon. When it does, provide and confirm your company email, then choose your dates and sessions.',
+    a: byRegistrationState(
+      'Provide and confirm your company email, then choose your dates and sessions. No GitHub sign-in is required on this website.',
+      'Registration will open soon. When it does, provide and confirm your company email, then choose your dates and sessions.',
+      'Registration is closed and new registrations are no longer accepted. For questions about an existing registration, contact the Microsoft contact who invited you.',
+    ),
   },
 ]
 
@@ -434,9 +436,15 @@ export const REGISTRATION = {
   subtitle: 'Confirm your company email and choose the dates and session times you want to attend.',
   slotHelp:
     'Every date runs the same six sessions, so you can mix and match, for example Foundations on 15 January and Build & Test on 22 January. Switch dates with the tabs below; sessions you have ticked on other dates stay selected.',
+  // Changing this wording needs a new version in api/consent-version.json and a new row in the
+  // consent wording versions table in docs/registration-backend.md. npm test checks they agree.
   consent:
     'I consent to Microsoft using my company, company email and session choices to administer the bootcamp, send the GitHub organization invitation, provision access, communicate with me and improve the programme. Registration data is deleted after the administration period.',
-  success: 'Thanks. Your registration is saved. GitHub organization access details will be sent a few days before the event.',
+  // New and already registered email addresses get the same confirmation, so the form never
+  // reveals whether an address is registered.
+  received:
+    'Thanks, we’ve received your registration. If this email address was already registered, your original registration is unchanged. To change it, contact the Microsoft contact who invited you. GitHub organization access details will be sent a few days before the event.',
+  updated: 'Thanks. Your registration has been updated. GitHub organization access details will be sent a few days before the event.',
 }
 
 export const REGISTRATION_SOON = {
@@ -447,4 +455,19 @@ export const REGISTRATION_SOON = {
   heading: 'Registration will open soon',
   body: 'All six sessions run on every date, so once registration opens you can pick as many sessions as you like, on as many dates as you like.',
   cta: 'Registration opens soon',
+  mark: '📅',
 }
+
+export const REGISTRATION_CLOSED = {
+  eyebrow: 'Registration',
+  title: 'Registration is closed.',
+  subtitle: 'New registrations for this bootcamp are no longer accepted.',
+  badge: 'Closed',
+  heading: 'Registration is closed',
+  body: 'If you already registered, you do not need to do anything. For questions about your registration, contact the Microsoft contact who invited you.',
+  cta: 'Registration closed',
+  mark: '🔒',
+}
+
+// Copy shown wherever registration appears while it is not open (state 2 or 3).
+export const REGISTRATION_UNAVAILABLE = REGISTRATION_STATE === 2 ? REGISTRATION_SOON : REGISTRATION_CLOSED

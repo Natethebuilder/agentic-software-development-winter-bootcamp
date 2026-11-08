@@ -1,7 +1,8 @@
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 import { REGISTRATION, SESSION_DATES, SESSIONS, registrationSlotId } from '../content.js'
 import s from './RegistrationForm.module.css'
 
+// The token is the only registration state this browser keeps.
 const TOKEN_KEY = 'agentic-software-development-winter-bootcamp:registration-token'
 
 function readRegistrationToken() {
@@ -12,7 +13,12 @@ function saveRegistrationToken(token) {
   try { localStorage.setItem(TOKEN_KEY, token) } catch { /* ignore */ }
 }
 
+function clearRegistrationToken() {
+  try { localStorage.removeItem(TOKEN_KEY) } catch { /* ignore */ }
+}
+
 export default function RegistrationForm() {
+  const companyInput = useRef(null)
   const [slots, setSlots] = useState([])
   const [activeDate, setActiveDate] = useState(SESSION_DATES[0].id)
   const [company, setCompany] = useState('')
@@ -20,6 +26,7 @@ export default function RegistrationForm() {
   const [emailConfirmation, setEmailConfirmation] = useState('')
   const [registrationToken, setRegistrationToken] = useState(readRegistrationToken)
   const [consent, setConsent] = useState(false)
+  // idle | submitting | received | updated | error
   const [status, setStatus] = useState('idle')
   const [message, setMessage] = useState('')
 
@@ -29,10 +36,26 @@ export default function RegistrationForm() {
   const emailMismatch = Boolean(emailConfirmation) && !emailsMatch
   const valid = slots.length > 0 && company.trim() && emailsMatch && consent
   const selectedDateCount = new Set(slots.map((slot) => slot.split('|')[0])).size
+  const done = status === 'received' || status === 'updated'
 
   const toggleSlot = (id) => setSlots((current) => (
     current.includes(id) ? current.filter((item) => item !== id) : [...current, id]
   ))
+
+  // For shared devices: forget this browser's registration and start an empty one.
+  const startNewRegistration = () => {
+    clearRegistrationToken()
+    setRegistrationToken('')
+    setSlots([])
+    setActiveDate(SESSION_DATES[0].id)
+    setCompany('')
+    setEmail('')
+    setEmailConfirmation('')
+    setConsent(false)
+    setStatus('idle')
+    setMessage('')
+    companyInput.current?.focus()
+  }
 
   const submit = async (event) => {
     event.preventDefault()
@@ -43,7 +66,10 @@ export default function RegistrationForm() {
       let result
       if (import.meta.env.DEV) {
         await new Promise((resolve) => setTimeout(resolve, 500))
-        result = { registrationToken: registrationToken || crypto.randomUUID() }
+        result = {
+          outcome: registrationToken ? 'updated' : 'received',
+          registrationToken: registrationToken || crypto.randomUUID(),
+        }
       } else {
         const response = await fetch('/api/register', {
           method: 'POST',
@@ -57,15 +83,18 @@ export default function RegistrationForm() {
             consent,
           }),
         })
-        result = await response.json()
-        if (!response.ok) throw new Error(result.error || 'Registration could not be saved')
+        result = (await response.json().catch(() => null)) || {}
+        // A 409 means the email does not match this browser's saved registration. The token is
+        // kept so the person can correct the address, or start a new registration instead.
+        if (!response.ok || result.ok !== true) throw new Error(result.error || 'Registration could not be saved')
       }
       if (result.registrationToken) {
         saveRegistrationToken(result.registrationToken)
         setRegistrationToken(result.registrationToken)
       }
-      setStatus('success')
-      setMessage(REGISTRATION.success)
+      const outcome = result.outcome === 'updated' ? 'updated' : 'received'
+      setStatus(outcome)
+      setMessage(REGISTRATION[outcome])
     } catch (error) {
       setStatus('error')
       setMessage(error.message)
@@ -85,7 +114,7 @@ export default function RegistrationForm() {
       <div className={s.fields}>
         <label className={s.companyField}>
           <span>Company or organisation</span>
-          <input required autoComplete="organization" value={company} onChange={(e) => setCompany(e.target.value)} />
+          <input ref={companyInput} required autoComplete="organization" value={company} onChange={(e) => setCompany(e.target.value)} />
         </label>
         <label>
           <span>Company email address</span>
@@ -153,12 +182,20 @@ export default function RegistrationForm() {
       </label>
 
       <div className={s.submitRow}>
-        <button type="submit" disabled={!valid || status === 'submitting' || status === 'success'}>
-          {status === 'submitting' ? 'Saving…' : status === 'success' ? 'Registered ✓' : 'Submit registration'}
+        <button type="submit" disabled={!valid || status === 'submitting' || done}>
+          {status === 'submitting' ? 'Saving…' : status === 'received' ? 'Received ✓' : status === 'updated' ? 'Updated ✓' : 'Submit registration'}
         </button>
         <small>No GitHub sign-in is required. The organization invitation is sent to your confirmed company email.</small>
       </div>
       {message && <p className={`${s.message} ${status === 'error' ? s.error : ''}`} role="status">{message}</p>}
+      {registrationToken && (
+        <div className={s.newRegistration}>
+          <span>This browser has already sent a registration.</span>
+          <button type="button" onClick={startNewRegistration} disabled={status === 'submitting'}>
+            Not you? Start a new registration
+          </button>
+        </div>
+      )}
     </form>
   )
 }
