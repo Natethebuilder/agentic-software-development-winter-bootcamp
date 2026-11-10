@@ -3,12 +3,15 @@ import { createPortal } from 'react-dom'
 import { BottomBar, Editable, Slide, useSlides } from '@deckio/deck-engine'
 import PillarMark from '../agentic/PillarMark.jsx'
 import RegistrationForm from '../registration/RegistrationForm.jsx'
+import { MicrosoftFormDialogBody } from '../registration/MicrosoftFormRegistration.jsx'
 import { Logos, Mascot } from '../winter/Decor.jsx'
 import {
   BOOTCAMP, DATES_NOTE, GITHUB_ACCESS, PERSONAS, PILLARS, PREP, PREREQUISITES, REGISTER_STEPS, REGISTRATION_CLOSED,
-  REGISTRATION_UNAVAILABLE, SESSION_DATES, SESSIONS, TEAM,
+  REGISTRATION_FORM, REGISTRATION_UNAVAILABLE, SESSION_DATES, SESSIONS, TEAM,
 } from '../content.js'
-import { PREREQUISITES_STATE, REGISTRATION_OPEN, REGISTRATION_STATE, byRegistrationState } from '../siteState.js'
+import {
+  PREREQUISITES_STATE, REGISTRATION_OPEN, REGISTRATION_STATE, REGISTRATION_VIA_FORM, byRegistrationState,
+} from '../siteState.js'
 import s from './Slides.module.css'
 
 function SlideProgress({ index }) {
@@ -89,7 +92,7 @@ function RegistrationDialog({ onClose }) {
           </div>
           <button type="button" aria-label="Close registration" onClick={onClose}>×</button>
         </div>
-        <RegistrationForm />
+        {REGISTRATION_VIA_FORM ? <MicrosoftFormDialogBody /> : <RegistrationForm />}
       </div>
     </div>,
     document.body,
@@ -252,6 +255,7 @@ export function TimetableSlide({ index }) {
           ' Pick as many as you like, on as many dates as you like.',
           ' Once registration opens, pick as many as you like, on as many dates as you like.',
           '',
+          ` ${REGISTRATION_FORM.scheduleNote}`,
         )}`}
       />
       <div className={s.scheduleDates}>
@@ -444,6 +448,7 @@ export function RegisterSlide({ index }) {
           'Registration is open. Confirm your company email; no GitHub sign-in is required.',
           'When registration opens, it takes about two minutes:',
           REGISTRATION_CLOSED.subtitle,
+          'Registration is open. It takes about two minutes in our Microsoft Form:',
         )}
       />
       <div className={REGISTRATION_STATE === 3 ? `${s.registerSlideGrid} ${s.registerSlideClosed}` : s.registerSlideGrid}>

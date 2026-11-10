@@ -27,11 +27,13 @@ const FLOW_TIMEOUT_MS = 30_000
 const EMAIL_MISMATCH_ERROR =
   'This email address doesn\u2019t match the registration saved in this browser. Check the address, or choose "Not you? Start a new registration".'
 
-// Registration states in api/site-state.json: 1 open, 2 opening soon, 3 closed.
-// Only state 1 accepts registrations; any other value fails closed.
+// Registration states in api/site-state.json: 1 open, 2 opening soon, 3 closed, 4 open through
+// the bootcamp's Microsoft Form. Only state 1 accepts registrations here; any other value fails
+// closed. State 4 tells visitors with a cached page where to go.
 function registrationNotOpenMessage(state) {
   if (state === 2) return 'Registration will open soon.'
   if (state === 3) return 'Registration is closed.'
+  if (state === 4) return 'Registration has moved to a new form. Refresh this page to register.'
   return 'Registration is not open.'
 }
 

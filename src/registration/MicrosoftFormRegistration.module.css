@@ -1,0 +1,253 @@
+/* Registration state 4: this bootcamp's Microsoft Form, in the site's register section and the deck's dialog. */
+.card {
+  position: relative;
+  min-width: 0;
+  max-width: 100%;
+  padding: 26px;
+  border-radius: 22px;
+  border: 1px solid color-mix(in srgb, var(--ice) 28%, var(--border));
+  background:
+    radial-gradient(560px 240px at 100% 0%, color-mix(in srgb, var(--purple) 12%, transparent), transparent 72%),
+    radial-gradient(420px 220px at 0% 100%, color-mix(in srgb, var(--ice) 8%, transparent), transparent 70%),
+    color-mix(in srgb, var(--card) 92%, transparent);
+  box-shadow: 0 20px 55px rgba(0, 0, 0, 0.34);
+}
+.card::before {
+  content: '';
+  position: absolute;
+  left: 26px;
+  right: 26px;
+  top: -1px;
+  height: 2px;
+  border-radius: 2px;
+  background: linear-gradient(90deg, transparent, var(--ice), color-mix(in srgb, var(--purple) 80%, transparent), transparent);
+  opacity: 0.8;
+}
+.started { padding: 16px; }
+
+.intro {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  gap: 20px;
+}
+.mark {
+  width: 60px;
+  height: 60px;
+  display: grid;
+  place-items: center;
+  border-radius: 16px;
+  border: 1px solid color-mix(in srgb, var(--ice) 55%, transparent);
+  background: color-mix(in srgb, var(--ice) 12%, var(--night));
+  box-shadow: 0 0 28px color-mix(in srgb, var(--ice) 22%, transparent);
+  font-size: 26px;
+  line-height: 1;
+}
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--green);
+  font: 700 12px/1.2 ui-monospace, 'Cascadia Code', Consolas, monospace;
+  letter-spacing: 0.3px;
+}
+.badge i {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: currentColor;
+  box-shadow: 0 0 10px currentColor;
+  animation: livePulse 1.8s ease-in-out infinite;
+}
+.intro h3 { margin-top: 6px; color: var(--frost); font-size: 22px; font-weight: 800; line-height: 1.25; letter-spacing: -0.3px; }
+.intro p { margin-top: 6px; color: var(--muted-foreground); font-size: 15px; line-height: 1.55; }
+
+.needs {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  margin: 20px 0 0;
+  padding: 0;
+  list-style: none;
+}
+.needs li {
+  min-width: 0;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: start;
+  align-content: start;
+  column-gap: 12px;
+  padding: 14px;
+  border-radius: 13px;
+  border: 1px solid var(--border);
+  background: color-mix(in srgb, var(--night) 55%, transparent);
+  transition: transform 0.2s, border-color 0.2s;
+}
+.needs li:hover { transform: translateY(-2px); border-color: color-mix(in srgb, var(--ice) 45%, transparent); }
+.needs li::before {
+  content: '✓';
+  grid-row: span 2;
+  width: 24px;
+  height: 24px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  border: 1px solid color-mix(in srgb, var(--ice) 50%, transparent);
+  background: color-mix(in srgb, var(--ice) 12%, transparent);
+  color: var(--ice);
+  font-size: 12px;
+  font-weight: 800;
+}
+.needs strong { color: var(--frost); font-size: 14.5px; line-height: 1.4; }
+.needs span { margin-top: 3px; color: var(--muted-foreground); font-size: 13px; line-height: 1.5; }
+
+.actions {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 16px 28px;
+  margin-top: 20px;
+}
+.access {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  gap: 14px;
+}
+.access > span {
+  width: 44px;
+  height: 44px;
+  display: grid;
+  place-items: center;
+  border-radius: 13px;
+  border: 1px solid color-mix(in srgb, var(--ice) 55%, transparent);
+  background: color-mix(in srgb, var(--ice) 12%, var(--night));
+  color: var(--ice);
+  font: 900 13px/1 ui-monospace, 'Cascadia Code', Consolas, monospace;
+}
+.access p { color: var(--muted-foreground); font-size: 13px; line-height: 1.5; }
+.access strong { color: var(--frost); }
+
+.start {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  appearance: none;
+  border: 0;
+  border-radius: 999px;
+  padding: 13px 26px;
+  color: #04122a;
+  background: linear-gradient(135deg, #e3f6ff, var(--ice) 52%, #6fb8ff);
+  box-shadow: 0 8px 24px rgba(110, 190, 255, 0.32);
+  font: inherit;
+  font-size: 16px;
+  font-weight: 800;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+.start:hover { transform: translateY(-2px); box-shadow: 0 12px 30px rgba(110, 190, 255, 0.5); }
+
+.footer, .toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px 16px;
+}
+.footer { margin-top: 22px; padding-top: 18px; border-top: 1px solid var(--border); }
+.toolbar { justify-content: space-between; }
+.footer small, .toolbar small { color: var(--muted-foreground); font-size: 13px; line-height: 1.45; }
+.newTab {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 9px 16px;
+  border-radius: 999px;
+  border: 1px solid color-mix(in srgb, var(--ice) 40%, transparent);
+  background: color-mix(in srgb, var(--card) 70%, transparent);
+  color: var(--frost);
+  font-size: 14px;
+  font-weight: 700;
+  text-decoration: none;
+  transition: transform 0.2s, border-color 0.2s;
+}
+.newTab:hover { border-color: var(--ice); transform: translateY(-1px); }
+.toolbar .newTab { padding: 8px 15px; font-size: 13.5px; }
+
+/* The form scrolls inside the frame, so the frame stays about one screen tall. */
+.frameWrap {
+  position: relative;
+  margin-top: 14px;
+  border-radius: 14px;
+  overflow: hidden;
+  border: 1px solid color-mix(in srgb, var(--ice) 22%, var(--border));
+  background: color-mix(in srgb, var(--night) 70%, var(--card));
+}
+.frame {
+  display: block;
+  width: 100%;
+  height: clamp(520px, calc(100vh - 180px), 1000px);
+  height: clamp(520px, calc(100svh - 180px), 1000px);
+  border: 0;
+}
+.loading {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  margin: 0;
+  color: var(--muted-foreground);
+  font-size: 14px;
+  pointer-events: none;
+}
+
+/* The deck's registration dialog: the frame fills the dialog below its header. */
+.dialog { min-width: 0; }
+.dialog .frame {
+  height: max(400px, calc(100vh - 262px));
+  height: max(400px, calc(100dvh - 262px));
+}
+
+.start:focus-visible, .newTab:focus-visible { outline: 2px solid var(--ice); outline-offset: 3px; }
+.frame:focus-visible { outline: 2px solid var(--ice); outline-offset: -2px; }
+
+@keyframes livePulse { 50% { opacity: 0.3; } }
+
+@media (max-width: 700px) {
+  .card { padding: 20px 18px; }
+  .card::before { left: 18px; right: 18px; }
+  .intro { gap: 14px; align-items: start; }
+  .mark { width: 52px; height: 52px; border-radius: 14px; font-size: 23px; }
+  .intro h3 { font-size: 20px; }
+  .needs { grid-template-columns: 1fr; }
+  .actions { grid-template-columns: 1fr; }
+  .access { align-items: start; }
+  .start { width: 100%; }
+  /* Microsoft Forms only renders inline in a frame at least 320px wide, so on phones the frame spans the card. */
+  .started { padding: 14px 0 0; overflow: hidden; }
+  .started .toolbar { padding-inline: 16px; }
+  .started .frameWrap { margin-top: 12px; border-width: 1px 0 0; border-radius: 0; }
+  .frame {
+    height: clamp(480px, calc(100vh - 190px), 900px);
+    height: clamp(480px, calc(100svh - 190px), 900px);
+  }
+}
+/* Matches the deck's compact dialog on phones and short landscape screens. The frame spans the
+   dialog so it stays at least 320px wide, and its height leaves room for the dialog title and
+   toolbar, which wrap on narrow phones. Below 320px tall Forms shows a launcher, so very short
+   screens scroll the dialog instead. */
+@media (max-width: 760px), (max-height: 500px) {
+  .dialog .frameWrap { margin: 12px -14px -14px; border-width: 1px 0 0; border-radius: 0; }
+  .dialog .frame {
+    height: max(320px, calc(100vh - 240px));
+    height: max(320px, calc(100dvh - 240px));
+  }
+}
+@media (hover: none) {
+  .needs li:hover, .start:hover, .newTab:hover { transform: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .badge i { animation: none; }
+  .needs li, .start, .newTab { transition: none; }
+}

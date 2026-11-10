@@ -1,4 +1,4 @@
-import { PREREQUISITES_STATE, REGISTRATION_STATE, byRegistrationState } from './siteState.js'
+import { PREREQUISITES_STATE, REGISTRATION_STATE, REGISTRATION_VIA_FORM, byRegistrationState } from './siteState.js'
 
 // Shared public content for the landing site and the deck.
 // Session topics are confirmed. The six Friday dates are preliminary; facilitators are TBC.
@@ -420,13 +420,16 @@ export const FAQ = [
       'Provide and confirm your company email, then choose your dates and sessions. No GitHub sign-in is required on this website.',
       'Registration will open soon. When it does, provide and confirm your company email, then choose your dates and sessions.',
       'Registration is closed and new registrations are no longer accepted. For questions about an existing registration, contact the Microsoft contact who invited you.',
+      'Start the Microsoft Form in the Register section of this page, or open it in a new tab. Enter your company or organisation and your company email twice, then choose a date for each session you want to attend. No GitHub sign-in is required.',
     ),
   },
 ]
 
 export const REGISTER_STEPS = [
   'Enter and confirm your company email address',
-  'Choose the dates and session times you want to attend',
+  REGISTRATION_VIA_FORM
+    ? 'Choose a date for each session you want to attend'
+    : 'Choose the dates and session times you want to attend',
   'Receive the GitHub organization invitation link a few days before the event',
 ]
 
@@ -445,6 +448,36 @@ export const REGISTRATION = {
   received:
     'Thanks, we’ve received your registration. If this email address was already registered, your original registration is unchanged. To change it, contact the Microsoft contact who invited you. GitHub organization access details will be sent a few days before the event.',
   updated: 'Thanks. Your registration has been updated. GitHub organization access details will be sent a few days before the event.',
+}
+
+// Shown in place of the on-site form while registration is 4 in api/site-state.json, when
+// registrations go to this bootcamp's Microsoft Form. Nothing loads from Microsoft Forms until the
+// visitor starts. The form takes one date per session (or None) and Microsoft Forms can't check
+// that the two email entries match, so the copy asks for a date per session and for the same
+// address twice. docs/registration-form/README.md records the form.
+export const REGISTRATION_FORM = {
+  subtitle: 'Register through our Microsoft Form. It takes about two minutes: confirm your company email and choose a date for each session you want to attend.',
+  scheduleNote: 'When you register, choose a date for each session you want to attend.',
+  mark: '📝',
+  badge: 'Registration is open',
+  heading: 'Register with our Microsoft Form',
+  body: 'The form opens right here on this page and takes about two minutes. It asks for:',
+  needs: [
+    { title: 'Company or organisation', desc: 'The company or organisation you work for.' },
+    { title: 'Company email, entered twice', desc: 'Your GitHub organization invitation is sent to this address, so enter the same address both times.' },
+    { title: 'A date for each session', desc: 'Every date runs the same six sessions. Choose a date for each session you want to attend, or None to skip it.' },
+    { title: 'Your consent', desc: 'Agree to Microsoft using your registration details to administer the bootcamp and send your invitation.' },
+  ],
+  access: {
+    title: 'GitHub organization access',
+    body: 'A few days before the event, your invitation will include the link to join the event GitHub organization. GitHub Copilot AI credits are provided in the environment.',
+  },
+  start: 'Start registration',
+  newTab: 'Open the form in a new tab',
+  provider: 'The form is provided by Microsoft Forms.',
+  providerBeforeStart: 'The form is provided by Microsoft Forms and loads only when you start.',
+  loading: 'Loading the registration form…',
+  frameTitle: 'Agentic Software Development Winter Bootcamp registration form (Microsoft Forms)',
 }
 
 export const REGISTRATION_SOON = {
