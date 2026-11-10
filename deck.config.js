@@ -16,7 +16,7 @@ import {
 
 export default {
   id: 'agentic-software-development-winter-bootcamp',
-  title: 'Agentic Software Development Winter Bootcamp',
+  title: 'AI-Native Software Development Lifecycle Winter Bootcamp',
   subtitle: 'GitHub Copilot and agentic practices across the complete software development lifecycle.',
   description: 'A practical six-session winter bootcamp for the broader software development community.',
   icon: '</>',

@@ -124,7 +124,8 @@ export function WinterTitleSlide({ index }) {
         <div>
           <span className={s.pill}><Editable as="span" id="title.pill">{BOOTCAMP.season} edition · Online</Editable></span>
           <h1>
-            <Editable as="span" id="title.before">Agentic Software Development</Editable>{' '}
+            <Editable as="span" id="title.before">AI-Native Software Development Lifecycle</Editable>{' '}
+            <br />
             <Editable as="span" id="title.highlight" className={s.highlight}>Winter Bootcamp</Editable>
           </h1>
           <Editable as="p" id="title.subtitle" multiline className={s.subtitle}>
@@ -198,9 +199,9 @@ export function AudienceSlide({ index }) {
         id="audience"
         eyebrow="Who it's for"
         title="Made for the software community"
-        subtitle="Anyone who helps design, build, test, deliver or operate software."
+        subtitle="Anyone who helps plan, design, build, test, deliver or operate software."
       />
-      <div className={`${s.grid} ${s.grid3}`}>
+      <div className={`${s.grid} ${s.grid4}`}>
         {PERSONAS.map((p) => (
           <div key={p.id} className={s.card}>
             <span className={s.icon}>{p.icon}</span>

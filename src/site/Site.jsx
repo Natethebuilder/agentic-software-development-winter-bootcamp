@@ -382,7 +382,7 @@ export default function Site() {
               <span className={s.brandDataPackets} aria-hidden="true"><i /><i /><i /></span>
             </span>
           </span>
-          <span className={s.brandText}><small>Agentic Software</small><strong>Winter Bootcamp</strong></span>
+          <span className={s.brandText}><small>AI-Native SDLC</small><strong>Winter Bootcamp</strong></span>
         </button>
         <nav className={s.navLinks} aria-label="Sections">
           {NAV.map(([id, label]) => (
@@ -400,7 +400,9 @@ export default function Site() {
           <div className={s.heroText}>
             <span className={s.pill}>{BOOTCAMP.season} · Online · Six one-hour sessions</span>
             <h1>
-              Agentic Software Development <span className={s.highlight}>Winter Bootcamp</span>
+              AI-Native Software Development Lifecycle{' '}
+              <br />
+              <span className={s.highlight}>Winter Bootcamp</span>
             </h1>
             <p className={s.heroLead}>
               <strong>{BOOTCAMP.tagline}</strong> {BOOTCAMP.subtitle}
@@ -437,7 +439,7 @@ export default function Site() {
           idx="01"
           eyebrow="Why join"
           title="Agentic AI across the complete software delivery loop."
-          subtitle="A hands-on programme for developers, testers, architects, platform teams and engineering leaders."
+          subtitle="A hands-on programme for product owners, product managers, developers, testers, architects, platform teams and engineering leaders."
         >
           <div className={`${s.grid} ${s.g3}`}>
             {PILLARS.map((p) => (

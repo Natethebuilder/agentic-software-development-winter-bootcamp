@@ -1,4 +1,4 @@
-# Agentic Software Development Winter Bootcamp
+# AI-Native Software Development Lifecycle Winter Bootcamp
 
 Interactive public website and DECKIO presentation for a six-session community bootcamp about GitHub Copilot and agentic practices across the software development lifecycle.
 

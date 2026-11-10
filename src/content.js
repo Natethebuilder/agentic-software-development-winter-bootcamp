@@ -4,7 +4,7 @@ import { PREREQUISITES_STATE, REGISTRATION_STATE, byRegistrationState } from './
 // Session topics are confirmed. The six Friday dates are preliminary; facilitators are TBC.
 
 export const BOOTCAMP = {
-  name: 'Agentic Software Development Winter Bootcamp',
+  name: 'AI-Native Software Development Lifecycle Winter Bootcamp',
   short: 'Winter Bootcamp',
   tagline: 'From idea to impact, faster together.',
   subtitle:
@@ -16,7 +16,7 @@ export const BOOTCAMP = {
   kickoff: null,
   // Switch to true once the six Fridays are confirmed; this removes the "preliminary" labels.
   datesConfirmed: false,
-  footer: 'Agentic Software Development Winter Bootcamp',
+  footer: 'AI-Native Software Development Lifecycle Winter Bootcamp',
 }
 
 export const DATES_NOTE = BOOTCAMP.datesConfirmed ? '' : 'Dates are preliminary and subject to confirmation.'
@@ -178,10 +178,16 @@ export const registrationSlotId = (dateId, session) => `${dateId}|${session.time
 
 export const PERSONAS = [
   {
-    id: 'product', icon: '🧭', label: 'Product & architecture',
-    desc: 'Turn scattered intent into requirements, decisions and designs.',
-    does: 'Use agents to consolidate inputs, challenge assumptions and shape a design that follows your architecture and engineering standards.',
-    stack: ['Inputs', 'Requirements', 'Decisions', 'Design'],
+    id: 'product', icon: '🧭', label: 'Product owners & managers',
+    desc: 'Turn scattered input into clear, reviewable requirements.',
+    does: 'Use agents to consolidate input from emails, workshops and meetings into clear requirements, challenge assumptions and fill gaps before building starts.',
+    stack: ['Inputs', 'Requirements', 'Assumptions', 'Decisions'],
+  },
+  {
+    id: 'architecture', icon: '📐', label: 'Architects & analysts',
+    desc: 'Shape requirements into decisions and standards-aligned designs.',
+    does: 'Use agents to shape requirements into a design that follows your architecture and engineering standards, and expose technical unknowns before implementation starts.',
+    stack: ['Requirements', 'Design', 'Standards', 'Unknowns'],
   },
   {
     id: 'delivery', icon: '💻', label: 'Developers & testers',
@@ -380,7 +386,7 @@ export const SETUP_RESOURCES = [
 export const FAQ = [
   {
     q: 'Who is this for?',
-    a: 'The broader software development community. The foundations session is for any role, while later sessions focus on product, analysis, architecture, development and testing.',
+    a: 'The broader software development community, from product owners and product managers to developers, testers and architects. The foundations session is for any role, Plan & Design brings product owners, product managers, analysts, developers and architects together, and the later sessions focus on development, testing and architecture.',
   },
   {
     q: 'What are the session topics?',
@@ -433,7 +439,7 @@ export const REGISTER_STEPS = [
 
 export const REGISTRATION = {
   eyebrow: 'Registration',
-  title: 'Join the Agentic Software Development Winter Bootcamp.',
+  title: 'Join the AI-Native Software Development Lifecycle Winter Bootcamp.',
   subtitle: 'Confirm your company email and choose the dates and session times you want to attend.',
   slotHelp:
     'Every date runs the same six sessions, so you can mix and match, for example Foundations on 15 January and Build & Test on 22 January. Switch dates with the tabs below; sessions you have ticked on other dates stay selected.',
@@ -472,7 +478,7 @@ export const REGISTRATION_FORM = {
   provider: 'The form is provided by Microsoft Forms.',
   providerBeforeStart: 'The form is provided by Microsoft Forms and loads only when you start.',
   loading: 'Loading the registration form…',
-  frameTitle: 'Agentic Software Development Winter Bootcamp registration form (Microsoft Forms)',
+  frameTitle: 'AI-Native Software Development Lifecycle Winter Bootcamp registration form (Microsoft Forms)',
 }
 
 export const REGISTRATION_SOON = {

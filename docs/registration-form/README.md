@@ -13,11 +13,11 @@ Responses stay with the form owner in Microsoft Forms and Excel.
 | Theme colour | `#34479e` |
 | Background image | [`background.png`](background.png), 1920 × 1080 |
 | Header image | [`tile.png`](tile.png), 1280 × 720 |
-| Header image alt text | Agentic Software Development Winter Bootcamp logo with the GitHub Copilot mascot |
+| Header image alt text | AI-Native Software Development Lifecycle Winter Bootcamp logo with the GitHub Copilot mascot |
 
 ## Title and description
 
-**Title**: Agentic Software Development Winter Bootcamp registration
+**Title**: AI-Native Software Development Lifecycle Winter Bootcamp registration
 
 **Description**:
 
