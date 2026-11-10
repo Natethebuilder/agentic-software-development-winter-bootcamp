@@ -7,7 +7,7 @@ import { MicrosoftFormDialogBody } from '../registration/MicrosoftFormRegistrati
 import { Logos, Mascot } from '../winter/Decor.jsx'
 import {
   BOOTCAMP, DATES_NOTE, GITHUB_ACCESS, PERSONAS, PILLARS, PREP, PREREQUISITES, REGISTER_STEPS, REGISTRATION_CLOSED,
-  REGISTRATION_FORM, REGISTRATION_UNAVAILABLE, SESSION_DATES, SESSIONS, TEAM,
+  REGISTRATION_UNAVAILABLE, SESSION_DATES, SESSIONS, TEAM,
 } from '../content.js'
 import {
   PREREQUISITES_STATE, REGISTRATION_OPEN, REGISTRATION_STATE, REGISTRATION_VIA_FORM, byRegistrationState,
@@ -255,7 +255,6 @@ export function TimetableSlide({ index }) {
           ' Pick as many as you like, on as many dates as you like.',
           ' Once registration opens, pick as many as you like, on as many dates as you like.',
           '',
-          ` ${REGISTRATION_FORM.scheduleNote}`,
         )}`}
       />
       <div className={s.scheduleDates}>
