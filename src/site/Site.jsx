@@ -480,7 +480,6 @@ export default function Site() {
             ' When you register, pick as many sessions as you like, on as many dates as you like.',
             ' Once registration opens, pick as many sessions as you like, on as many dates as you like.',
             '',
-            ` ${REGISTRATION_FORM.scheduleNote}`,
           )}${DATES_NOTE ? ` ${DATES_NOTE}` : ''}`}
         >
           <ScheduleBoard />
