@@ -1,6 +1,6 @@
 # Software Development registration backend
 
-The public form uses the shared multi-event Power Automate flow and a dedicated private SharePoint List. GitHub OAuth and GitHub identity are not used for registration.
+The public form uses the shared multi-event Power Automate flow and a dedicated private SharePoint List. GitHub OAuth and GitHub identity are not used for registration. In site state `4`, registration moves to the bootcamp's Microsoft Form instead, and this backend receives nothing; see [Registration through Microsoft Forms](#registration-through-microsoft-forms).
 
 ## Registration states
 
@@ -11,9 +11,27 @@ Registration availability is controlled by `registration` in `api/site-state.jso
 | `1` | Open | Shows the registration form | Accepts submissions |
 | `2` | Opening soon | Shows “Registration will open soon” wherever registration appears. The form and backend stay in place for opening. | `403` “Registration will open soon.” |
 | `3` | Closed | Shows “Registration is closed” and no form | `403` “Registration is closed.” |
+| `4` | Open through Microsoft Forms | Every registration entry point leads to the bootcamp's Microsoft Form at `registrationFormUrl`, embedded on the page | `403` “Registration has moved to a new form. Refresh this page to register.” |
 | Any other value | Closed | Same as `3` | `403` “Registration is not open.” |
 
-Unknown values fail closed, so a mistake in `api/site-state.json` can never open registration.
+Unknown values fail closed, so a mistake in `api/site-state.json` can never open registration. State `4` without a valid `registrationFormUrl` also shows as closed, and `npm run build` fails so it can't deploy.
+
+## Registration through Microsoft Forms
+
+In state `4`, the bootcamp's own Microsoft Form captures registrations. Responses stay with the form owner in Microsoft Forms and Excel, not in the SharePoint List, and the Power Automate flow is not used. The site's form, `/api/register` and the flow stay in place, so switching back to `1` restores them. [registration-form/README.md](registration-form/README.md) records the form's questions, settings and design so it can be rebuilt, and lists what Microsoft Forms does not check, such as matching email entries.
+
+To switch to state `4`, set `"registration": 4` and set `"registrationFormUrl"` to the form's response link, then commit and push to `main`. The link must:
+
+- use `https`;
+- be on `forms.office.com`, `forms.cloud.microsoft` or `forms.microsoft.com`;
+- use the path `/Pages/ResponsePage.aspx`;
+- include a non-empty `id` query parameter, as in `https://forms.office.com/Pages/ResponsePage.aspx?id=<form id>`.
+
+Short `/r/` share links are not accepted: open one and copy the address it leads to, or take the `src` from the form's embed code. The site adds `embed=true` for the embedded form and removes it from the new-tab link. The form must accept responses from anyone, because attendees come from many organisations. The content security policy in `public/staticwebapp.config.json` allows frames from the three Forms hosts only.
+
+- **Website**: the registration section lists what the form asks for and loads the form in a frame only when the visitor chooses **Start registration**, so nothing is requested from Microsoft Forms before then. An **Open the form in a new tab** link is always shown. Microsoft Forms renders inside a frame only when the frame is at least 320 pixels wide, so on phones the frame spans the full width of the card.
+- **Deck**: the registration dialog shows the form straight away, because opening the dialog is already the visitor's choice.
+- **API**: `/api/register` refuses submissions with HTTP `403` before validation, without calling the flow. A visitor with an old copy of the page who submits the site's form is asked to refresh and reaches the Microsoft Form.
 
 ## SharePoint target
 
@@ -193,6 +211,7 @@ A few days before the event, the invitation provides the link for joining the ev
 - Registration tests validate email confirmation, data consent, all 36 canonical choices, invalid date/time/session combinations, backend settings, the canonical payload with the server-side `consentVersion`, and the fixed `local` environment preference.
 - Registration tests validate deterministic normalized email-key derivation and prove browser-supplied key overrides are ignored.
 - Registration tests check that only state `1` accepts submissions, the 30-second flow timeout, the mapping in [API responses](#api-responses), and that the consent wording table matches the form.
+- Registration tests check the state `4` refusal, which form links are accepted, the embedded and new-tab links, that state `4` without a valid link shows as closed and stops the build, and that the committed `api/site-state.json` can deploy.
 - Test submissions require explicit approval because they create or update SharePoint data.
 - A create should initialize the two operational status fields and store `ConsentVersion`.
 - A repeat submission from the same browser with the same email should update the same item and answer `updated`.

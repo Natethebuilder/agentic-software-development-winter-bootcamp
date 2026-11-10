@@ -22,10 +22,12 @@ The website, deck and registration API share `api/site-state.json`.
 | `registration` | `1` | Registration is open and submissions reach `/api/register` |
 | `registration` | `2` | Registration entry points show “opening soon” and the API returns `403` |
 | `registration` | `3` | Registration is closed: entry points show a closed message, the form is hidden and the API returns `403` |
+| `registration` | `4` | Registration is open through the bootcamp's Microsoft Form: entry points lead to the form, embedded on the page, and the API returns `403` |
+| `registrationFormUrl` | `"https://forms.office.com/Pages/ResponsePage.aspx?id=<form id>"` | The Microsoft Form's response link, required for state `4` (`forms.cloud.microsoft` and `forms.microsoft.com` links also work) |
 | `prerequisites` | `"ready"` | Show the readiness checklist and guided setup |
 | `prerequisites` | `"soon"` | Replace setup content with a coming-soon panel |
 
-Change only this JSON file to move the public experience between states. Any `registration` value other than `1`, `2` or `3` is treated as closed by both the site and the API, so a mistake never opens registration.
+Change only this JSON file to move the public experience between states. Any `registration` value other than `1`, `2`, `3` or `4` is treated as closed by both the site and the API, so a mistake never opens registration. State `4` without a valid `registrationFormUrl` also shows as closed, and the build fails so it can't deploy. The form itself is recorded in [docs/registration-form/README.md](docs/registration-form/README.md).
 
 ## Develop
 
@@ -39,6 +41,8 @@ npm run build:swa
 The Azure Static Web Apps build uses `/` so the website, deck and `/api/register` share one origin.
 
 ## Registration architecture
+
+In state `4`, registrations go to the bootcamp's Microsoft Form, and the API and flow below receive nothing. See [Registration through Microsoft Forms](docs/registration-backend.md#registration-through-microsoft-forms).
 
 The registration API:
 

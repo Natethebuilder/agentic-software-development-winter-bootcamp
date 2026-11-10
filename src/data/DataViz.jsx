@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { AGENT_RUNS, DATES_NOTE, SESSION_DATES, SESSIONS } from '../content.js'
+import { AGENT_RUNS, DATES_NOTE, REGISTRATION_FORM, SESSION_DATES, SESSIONS } from '../content.js'
 import usePrefersReducedMotion from '../hooks/usePrefersReducedMotion.js'
 import { byRegistrationState } from '../siteState.js'
 import d from './Data.module.css'
@@ -179,6 +179,7 @@ export function ScheduleBoard() {
               'Select any combination of dates and session times during registration.',
               'Once registration opens, you can select any combination of dates and session times.',
               'Registration is closed.',
+              REGISTRATION_FORM.scheduleNote,
             )}
             {DATES_NOTE && <> {DATES_NOTE}</>}
           </p>

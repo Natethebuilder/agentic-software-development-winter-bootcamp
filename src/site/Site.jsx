@@ -5,11 +5,14 @@ import PillarMark from '../agentic/PillarMark.jsx'
 import usePrefersReducedMotion from '../hooks/usePrefersReducedMotion.js'
 import SetupWizard from '../setup/SetupWizard.jsx'
 import RegistrationForm from '../registration/RegistrationForm.jsx'
+import MicrosoftFormRegistration from '../registration/MicrosoftFormRegistration.jsx'
 import {
   BOOTCAMP, DATES_NOTE, FAQ, GITHUB_ACCESS, LINEUP, PERSONAS, PILLARS, PREP, PREREQUISITES, READINESS_PATHS,
-  REGISTRATION, REGISTRATION_UNAVAILABLE, SESSIONS,
+  REGISTRATION, REGISTRATION_FORM, REGISTRATION_UNAVAILABLE, SESSIONS,
 } from '../content.js'
-import { PREREQUISITES_STATE, REGISTRATION_OPEN, REGISTRATION_STATE, byRegistrationState } from '../siteState.js'
+import {
+  PREREQUISITES_STATE, REGISTRATION_OPEN, REGISTRATION_STATE, REGISTRATION_VIA_FORM, byRegistrationState,
+} from '../siteState.js'
 import s from './Site.module.css'
 
 const NAV = [
@@ -477,6 +480,7 @@ export default function Site() {
             ' When you register, pick as many sessions as you like, on as many dates as you like.',
             ' Once registration opens, pick as many sessions as you like, on as many dates as you like.',
             '',
+            ` ${REGISTRATION_FORM.scheduleNote}`,
           )}${DATES_NOTE ? ` ${DATES_NOTE}` : ''}`}
         >
           <ScheduleBoard />
@@ -527,9 +531,11 @@ export default function Site() {
           idx="05"
           eyebrow={REGISTRATION_OPEN ? REGISTRATION.eyebrow : REGISTRATION_UNAVAILABLE.eyebrow}
           title={REGISTRATION_OPEN ? REGISTRATION.title : REGISTRATION_UNAVAILABLE.title}
-          subtitle={REGISTRATION_OPEN ? REGISTRATION.subtitle : REGISTRATION_UNAVAILABLE.subtitle}
+          subtitle={REGISTRATION_VIA_FORM
+            ? REGISTRATION_FORM.subtitle
+            : REGISTRATION_OPEN ? REGISTRATION.subtitle : REGISTRATION_UNAVAILABLE.subtitle}
         >
-          {REGISTRATION_OPEN ? <RegistrationForm /> : (
+          {REGISTRATION_VIA_FORM ? <MicrosoftFormRegistration /> : REGISTRATION_OPEN ? <RegistrationForm /> : (
             <SoonPanel
               mark={REGISTRATION_UNAVAILABLE.mark}
               label={REGISTRATION_UNAVAILABLE.badge}
