@@ -19,30 +19,39 @@ Responses stay with the form owner in Microsoft Forms and Excel.
 
 **Title**: AI-Native Software Development Lifecycle Winter Bootcamp registration
 
-**Description**:
+**Description**, one line per quoted line, with the time zone line in bold:
 
 > From idea to impact, faster together. Six practical one-hour sessions across the software development lifecycle with GitHub Copilot.
+>
 > Winter 2027 · Online · Free · AI credits provided
+>
+> **All times are Central European Time (CET, UTC+1).**
+>
 > Every date runs the same six sessions, so pick as many sessions as you like, on as many dates as you like. Dates are preliminary and subject to confirmation. Registration takes about two minutes.
 
 ## Questions
 
-Questions 1 to 3 and the consent question are required. The session questions are optional, so a visitor leaves a session blank to skip it.
+Questions 1 to 4 and the consent question are required. The session questions are optional, so a visitor leaves a session blank to skip it.
 
 | # | Question | Type | Subtitle and options |
 | --- | --- | --- | --- |
-| 1 | Company or organisation | Text | |
-| 2 | Company email address | Text, email address | We send your GitHub organization invitation to this address. |
-| 3 | Re-enter company email address | Text, email address | Enter the same address again to confirm it. |
-| 4 | 09:15 · 01 · GitHub Copilot App Foundations | Choice, multiple answers, optional | Every date runs the same six one-hour sessions. Tick every date you want to attend for each session, and leave a session blank to skip it. |
-| 5 | 10:15 · 02 · Plan & Design | Choice, multiple answers, optional | |
-| 6 | 11:15 · 03 · Build & Test | Choice, multiple answers, optional | |
-| 7 | 12:45 · 04 · Review, Deploy & Operate | Choice, multiple answers, optional | |
-| 8 | 13:45 · 05 · Evaluations & Continuous Improvement | Choice, multiple answers, optional | |
-| 9 | 14:45 · 06 · AI-Native App Modernization | Choice, multiple answers, optional | |
-| 10 | Data consent | Choice, one option | The consent wording, version `2026-11-04` from `REGISTRATION.consent` in `src/content.js`: I consent to Microsoft using my company, company email and session choices to administer the bootcamp, send the GitHub organization invitation, provision access, communicate with me and improve the programme. Registration data is deleted after the administration period. |
+| 1 | Participant’s full name | Text | Enter your first and last name so we can distinguish your registration and associate it with your company email address. |
+| 2 | Company or organisation | Text | |
+| 3 | Company email address | Text, email address | We send your formal invitation to this address. |
+| 4 | Re-enter company email address | Text, email address | Enter the same address again to confirm it. |
+| 5 | GitHub Copilot App Foundations | Choice, multiple answers, optional | **09:15–10:15 CET**<br>Tick each date you want to attend, or leave it blank to skip this session. |
+| 6 | Plan & Design | Choice, multiple answers, optional | **10:15–11:15 CET** |
+| 7 | Build & Test | Choice, multiple answers, optional | **11:15–12:15 CET** |
+| 8 | Review, Deploy & Operate | Choice, multiple answers, optional | **12:45–13:45 CET** |
+| 9 | Evaluations & Continuous Improvement | Choice, multiple answers, optional | **13:45–14:45 CET** |
+| 10 | AI-Native App Modernization | Choice, multiple answers, optional | **14:45–15:45 CET** |
+| 11 | Data consent | Choice, one option | I consent to Microsoft using my name, company, company email and session choices to administer the bootcamp, send the GitHub organization invitation, provision access, communicate with me and improve the programme. Registration data is deleted after the administration period. |
 
-Questions 4 to 9 each offer the six dates as options: `15 Jan`, `22 Jan`, `29 Jan`, `5 Feb`, `12 Feb`, `19 Feb`. A visitor can tick the same session on several dates.
+Each session question's title is the session name, and its subtitle starts with the session's time range in bold. Questions 5 to 10 each offer the six dates as options: `Friday 15 January`, `Friday 22 January`, `Friday 29 January`, `Friday 5 February`, `Friday 12 February`, `Friday 19 February`. A visitor can tick the same session on several dates.
+
+Every date falls before European summer time starts in late March, so CET (UTC+1) is right for all of them. A date from late March onwards would need CEST (UTC+2).
+
+The consent option is `REGISTRATION.consent` from `src/content.js` (version `2026-11-04`) with "name" added, because this form also asks for the participant's full name.
 
 There is no development environment question, because this bootcamp offers no cloud development environment. Attendees set up their own machine with the site's readiness checklist.
 
@@ -68,4 +77,4 @@ When processing responses, keep in mind:
 
 Create the form with the design, questions and settings above. Then copy its full response link, in the form `https://forms.cloud.microsoft/Pages/ResponsePage.aspx?id=<form id>`, into `registrationFormUrl`. A `/r/` short link is not accepted, so open it and copy the address it leads to.
 
-If the consent wording in `src/content.js` changes, update question 10 to match.
+If the consent wording in `src/content.js` changes, update question 11 to match, keeping "name" in it.
