@@ -10,12 +10,19 @@ Interactive DECKIO slide presentation for a six-session community bootcamp about
 | `#/deck` | Main slide presentation with event framing, programme, development setup, session details and registration |
 
 The slide deck is the only public view; there is no Website mode or view switch.
-Its existing navigation, registration dialog and mobile layout are unchanged.
+The homepage's "Learn more and register" button advances to the next slide;
+mid-height side arrows guide visitors through the deck. Registration remains available on the registration slide.
 The former website-only FAQ, interactive programme reveal and saved setup checklist/guided wizard have been removed.
 
-The six session topics, descriptions and audiences are confirmed. The six Friday dates and daily times are preliminary: set `BOOTCAMP.datesConfirmed` to `true` in `src/content.js` once they are confirmed to remove the "preliminary" labels. Facilitators remain TBC.
+The six session topics, descriptions and audiences are confirmed. Session dates and daily times live in `src/content.js`; facilitators remain TBC.
 
 Public copy lives in `src/content.js` and the slide components.
+
+The opening slide uses `src/data/cover-bg.png` from the
+[AI-native SDLC reference deck](https://github.com/karolmckgh/ai-native-sdlc-winter-bootcamp/blob/main/src/data/cover-bg.png),
+with its cover crop and readability gradients. The animated snowfall remains layered above the deck.
+The thank-you slide uses the same reference deck's `src/data/closing-bg.png`;
+the slides between them use its warm amber and purple palette.
 
 ## Public release states
 

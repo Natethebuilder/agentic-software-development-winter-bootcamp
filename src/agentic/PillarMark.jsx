@@ -10,7 +10,6 @@ const polar = (cx, cy, r, deg) => {
 }
 
 const RING = Array.from({ length: 6 }, (_, k) => polar(32, 32, 22, 60 * k - 90))
-const BARS = [10, 15, 21, 28]
 
 // A terminal session types its first prompt while three foundation blocks light up beneath it:
 // the app, sessions and context that every later session builds on.
@@ -68,31 +67,31 @@ function LoopGlyph() {
   )
 }
 
-// Measure, then improve: four results rise, the trend is drawn through them and a check confirms it.
-function EvidenceGlyph() {
+// A legacy application becomes connected, modern modules.
+function ModernizationGlyph() {
   return (
     <svg viewBox="0 0 64 64" className={a.svg} aria-hidden="true" focusable="false">
-      <path d="M8 52.5 H56" className={a.axis} />
-      {BARS.map((h, k) => (
+      <rect x="5" y="17" width="18" height="30" rx="3" className={a.legacyApp} />
+      <path d="M5 24 H23 M9 30 H19 M9 35 H19 M9 40 H16" className={a.divider} />
+      <path d="M27 32 H37 M32 27 L37 32 L32 37" className={a.migrationArrow} />
+      <path d="M40 16 V48 M40 16 H43 M40 32 H43 M40 48 H43" className={a.modernConnections} />
+      {[0, 1, 2].map((k) => (
         <rect
           key={k}
-          x={10 + k * 10}
-          y={52 - h}
-          width="7"
-          height={h}
-          rx="2"
-          className={a.bar}
+          x="43"
+          y={11 + k * 16}
+          width="15"
+          height="10"
+          rx="2.5"
+          className={a.modernModule}
           style={{ '--k': k }}
         />
       ))}
-      <path d="M13.5 37 L23.5 31 L33.5 26 L43.5 18" className={a.trend} pathLength="1" />
-      <circle cx="51" cy="13" r="7" className={a.badge} />
-      <path d="M47.8 13.2 L50.1 15.5 L54.4 10.8" className={a.check} pathLength="1" />
     </svg>
   )
 }
 
-const GLYPHS = { foundations: FoundationsGlyph, 'whole-loop': LoopGlyph, evidence: EvidenceGlyph }
+const GLYPHS = { foundations: FoundationsGlyph, 'whole-loop': LoopGlyph, evidence: ModernizationGlyph }
 
 export default function PillarMark({ id, tag, size = 'md', className = '' }) {
   const Glyph = GLYPHS[id] ?? LoopGlyph

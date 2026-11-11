@@ -19,41 +19,43 @@ export const BOOTCAMP = {
   footer: 'AI-Native Software Development Lifecycle Winter Bootcamp',
 }
 
-export const DATES_NOTE = BOOTCAMP.datesConfirmed ? '' : 'Dates are preliminary and subject to confirmation.'
+export const DATES_NOTE = ''
 
-const ACCENTS = ['#8fd8ff', '#a99bff', '#5fe3b5', '#5aa9ff', '#ffcf7d', '#e59bff']
+const ACCENTS = ['#7aaac8', '#9080c0', '#6a9e84', '#d4a06a', '#d4943c', '#cc8e82']
 
 export const SESSIONS = [
   {
     id: 'session-01',
     number: '01',
     title: 'GitHub Copilot App Foundations',
-    shortTitle: 'Copilot Foundations',
+    detailTitle: 'GitHub Copilot app',
+    detailSubtitle: '',
+    shortTitle: 'GitHub Copilot app - prerequisite session for all other sessions',
     track: 'Foundations',
     subtitle: 'Navigate the app, manage sessions and context, and guide agents effectively.',
     audience: 'Any role',
-    format: 'Hands-on introduction',
+    format: '',
     time: '09:15',
     accent: ACCENTS[0],
-    spotlight: 'Build the habits and shared vocabulary needed for the rest of the bootcamp.',
+    spotlight: 'Get ready to use the GitHub Copilot app in the upcoming bootcamp sessions.',
     overview:
       'A hands-on introduction to the GitHub Copilot app. Through many short examples, learn how to navigate the app, work with sessions and context, and guide agents effectively. You’ll leave ready to take part in the rest of the bootcamp.',
     outcomes: [
-      'Navigate the GitHub Copilot app and its core workflows',
-      'Work intentionally with sessions, context and instructions',
-      'Guide agents with clear requests, feedback and boundaries',
+      'Navigate the GitHub Copilot app and explore its core features.',
+      'Try simple examples to better understand the app.',
     ],
-    tools: ['Copilot app', 'Sessions', 'Context'],
+    tools: ['GitHub Copilot app', 'Sessions', 'Context'],
   },
   {
     id: 'session-02',
     number: '02',
     title: 'Plan & Design',
+    detailSubtitle: '',
     shortTitle: 'Plan & Design',
     track: 'Plan & design',
     subtitle: 'Turn scattered input into clear requirements and a standards-aligned design.',
     audience: 'Product Owners, Product Managers, Analysts, Developers, Architects',
-    format: 'Collaborative workshop',
+    format: '',
     time: '10:15',
     accent: ACCENTS[1],
     spotlight: 'Challenge assumptions and expose technical unknowns before implementation starts.',
@@ -64,17 +66,18 @@ export const SESSIONS = [
       'Challenge assumptions and identify gaps with a coding agent',
       'Shape a design around architecture and engineering standards',
     ],
-    tools: ['Requirements', 'Architecture', 'Engineering standards'],
+    tools: ['Requirements', 'Architecture', 'Engineering standards', 'Spec-driven-development'],
   },
   {
     id: 'session-03',
     number: '03',
     title: 'Build & Test',
+    detailSubtitle: '',
     shortTitle: 'Build & Test',
     track: 'Build & test',
     subtitle: 'Steer implementation and testing from an agreed design and bounded scope.',
     audience: 'Developers, Testers',
-    format: 'Hands-on build',
+    format: '',
     time: '11:15',
     accent: ACCENTS[2],
     spotlight: 'Use skills, guardrails and strong tests to produce high-quality, verifiable results.',
@@ -91,11 +94,12 @@ export const SESSIONS = [
     id: 'session-04',
     number: '04',
     title: 'Review, Deploy & Operate',
+    detailSubtitle: '',
     shortTitle: 'Review & Operate',
     track: 'Review & operate',
     subtitle: 'Review faster, deploy safely and use AI to investigate production issues.',
     audience: 'Developers, Testers',
-    format: 'Delivery workshop',
+    format: '',
     time: '12:45',
     accent: ACCENTS[3],
     spotlight: 'Keep review from becoming the bottleneck as coding speed increases.',
@@ -112,11 +116,12 @@ export const SESSIONS = [
     id: 'session-05',
     number: '05',
     title: 'Evaluations & Continuous Improvement',
+    detailSubtitle: '',
     shortTitle: 'Evaluations',
     track: 'Evaluate & improve',
     subtitle: 'Measure agentic workflows and improve quality, performance and cost.',
     audience: 'Developers',
-    format: 'Evaluation workshop',
+    format: '',
     time: '13:45',
     accent: ACCENTS[4],
     spotlight: 'Treat agentic engineering like any other process: measure it, learn and improve.',
@@ -133,17 +138,18 @@ export const SESSIONS = [
     id: 'session-06',
     number: '06',
     title: 'AI-Native App Modernization',
+    detailSubtitle: '',
     shortTitle: 'App Modernization',
     track: 'Modernize',
-    subtitle: 'Apply the full workflow in an end-to-end application modernization scenario.',
+    subtitle: 'Apply selected techniques from earlier sessions to modernize an existing application.',
     audience: 'Developers, Testers, Architects',
-    format: 'Capstone',
-    prerequisite: 'Sessions 1–5',
+    format: '',
+    prerequisite: 'Complete sessions 1–5',
     time: '14:45',
     accent: ACCENTS[5],
-    spotlight: 'Bring the complete bootcamp together in a specification-driven modernization capstone.',
+    spotlight: 'Explore how selected techniques can support application modernization.',
     overview:
-      'Bring everything from the bootcamp together in an end-to-end modernization scenario. Move from analyzing an existing application through specification-driven design, refactoring, regression testing, and deployment.',
+      'In this bonus session, apply some of the techniques learned in earlier sessions to modernize an existing application. Completing sessions 1–5 is a prerequisite.',
     outcomes: [
       'Analyze an existing application and define modernization intent',
       'Refactor through a specification-driven design',
@@ -178,28 +184,34 @@ export const registrationSlotId = (dateId, session) => `${dateId}|${session.time
 
 export const PERSONAS = [
   {
-    id: 'product', icon: '🧭', label: 'Product owners & managers',
+    id: 'product', icon: '🧭', label: 'Product Owners & Product Managers',
     desc: 'Turn scattered input into clear, reviewable requirements.',
+    recommendedSession: 'Plan & Design',
     does: 'Use agents to consolidate input from emails, workshops and meetings into clear requirements, challenge assumptions and fill gaps before building starts.',
     stack: ['Inputs', 'Requirements', 'Assumptions', 'Decisions'],
   },
   {
-    id: 'architecture', icon: '📐', label: 'Architects & analysts',
-    desc: 'Shape requirements into decisions and standards-aligned designs.',
+    id: 'architecture', icon: '📐', label: 'Architects & Leads & Analysts',
+    desc: 'Assist during the design phase to ensure the outcome adheres to the architecture guidance.',
+    recommendedSession: 'Plan & Design',
+    additionalSessions: [
+      { id: 'modernizationSession', label: 'App Modernization' },
+    ],
     does: 'Use agents to shape requirements into a design that follows your architecture and engineering standards, and expose technical unknowns before implementation starts.',
     stack: ['Requirements', 'Design', 'Standards', 'Unknowns'],
   },
   {
-    id: 'delivery', icon: '💻', label: 'Developers & testers',
+    id: 'delivery', icon: '💻', label: 'Developers & Testers',
     desc: 'Build, verify, review and deploy focused changes.',
+    recommendedSession: 'Plan & Design',
+    additionalSessions: [
+      { id: 'additionalSession', label: 'Build & Test' },
+      { id: 'reviewSession', label: 'Review & Operate' },
+      { id: 'evaluationsSession', label: 'Evaluations' },
+      { id: 'modernizationSession', label: 'App Modernization' },
+    ],
     does: 'Steer coding agents through implementation and testing while keeping evidence, risk and human accountability visible.',
     stack: ['Code', 'Tests', 'Pull requests', 'CI/CD'],
-  },
-  {
-    id: 'improvement', icon: '📈', label: 'Engineering teams',
-    desc: 'Learn from sessions, production signals and repeated mistakes.',
-    does: 'Evaluate agentic workflows, improve quality and cost, and decide where low-risk automation can safely increase.',
-    stack: ['Sessions', 'Evaluations', 'Operations', 'Learning'],
   },
 ]
 
@@ -218,21 +230,21 @@ export const TEAM = [
 export const PILLARS = [
   {
     id: 'foundations',
-    tag: 'Habits first',
-    title: 'Start with strong foundations',
-    desc: 'Learn the Copilot app, sessions, context and agent guidance before moving into delivery workflows.',
+    tag: 'GitHub Copilot app',
+    title: 'Start with the agent-native desktop experience',
+    desc: 'Learn how to use and navigate GitHub Copilot app, designed from the group up for agentic engineering.',
   },
   {
     id: 'whole-loop',
-    tag: '6 stages · 1 loop',
-    title: 'Practise the whole delivery loop',
-    desc: 'Connect planning, design, code, tests, reviews, releases, operations and modernization.',
+    tag: 'Multiple stages · 1 loop',
+    title: 'Practise the whole loop',
+    desc: 'AI-native planning, design, build, test, review, release, operations and evaluations.',
   },
   {
     id: 'evidence',
-    tag: 'Measure → improve',
-    title: 'Improve with evidence',
-    desc: 'Use reviewable plans, executable checks, evaluations and visible delivery signals to keep improving.',
+    tag: 'App modernization',
+    title: 'Modernize existing applications',
+    desc: 'In a bonus session, learn how to apply the AI-Native SDLC to modernize your applications.',
   },
 ]
 
@@ -348,10 +360,9 @@ export const PREREQUISITES = {
 }
 
 export const PREP = [
-  { id: 'github', icon: '🐙', title: 'GitHub account ready', desc: 'Use the GitHub.com account that will accept the event organization invitation.' },
-  { id: 'copilot', icon: '🤖', title: 'GitHub Copilot access', desc: 'Bring an active Copilot plan through your organisation, education access or individual subscription.' },
-  { id: 'git', icon: '🌿', title: 'Git installed', desc: 'A current Git installation supports the hands-on repository workflows.' },
-  { id: 'gh-cli', icon: '⌨️', title: 'GitHub CLI', desc: 'Install and authenticate gh for repository, pull request and workflow exercises.' },
+  { id: 'github', icon: 'github', title: 'GitHub account ready', desc: "Have a personal GitHub.com account ready that is not associated with your work. If you don't have one, you can create one for free at GitHub.com." },
+  { id: 'copilot', icon: 'copilot', title: 'GitHub Copilot access', desc: "Closer to your selected session, we'll send you a link to join our bootcamp GitHub organization using your personal GitHub.com account. We'll provide GitHub Copilot access at no cost through the organization." },
+  { id: 'git', icon: 'copilot', title: 'GitHub Copilot app installed', desc: 'Install the GitHub Copilot app wherever you can: on your corporate machine, in a virtual environment, or on your personal machine.' },
   { id: 'node', icon: '🟩', title: 'Node.js LTS', desc: 'Use a supported Node.js LTS release for the sample application and automation.' },
   { id: 'sample', icon: '🔒', title: 'Sample repository only', desc: 'Use workshop or non-sensitive code. Do not bring credentials or confidential production repositories.' },
 ]
