@@ -2,13 +2,6 @@ import { InlineEditProvider, Navigation, SlideErrorBoundary, SlideProvider, useS
 import { useState } from 'react'
 import '@deckio/deck-engine/styles/editable.css'
 import project from '../deck.config.js'
-import { Mascot } from './winter/Decor.jsx'
-
-function FloatingCopilot() {
-  const { current, totalSlides } = useSlides()
-  if (current <= 0 || current === totalSlides - 1) return null
-  return <Mascot className="floating-copilot" />
-}
 
 function DeliveryProgress() {
   const { current, totalSlides, visibleIndices = [] } = useSlides()
@@ -43,20 +36,26 @@ function DeckNavBar() {
     if (e.detail > 0) e.currentTarget.blur()
   }
   return (
-    <nav className="deck-navbar" aria-label="Slide navigation">
-      <button type="button" className="deck-navbar-btn" onClick={(e) => step(e, -1)} disabled={atStart} aria-label="Previous slide">
-        <span aria-hidden="true">←</span><span className="deck-navbar-label">Previous</span>
+    <nav className="deck-navigation" aria-label="Slide navigation">
+      <button type="button" className="deck-side-arrow deck-side-previous" onClick={(e) => step(e, -1)} disabled={atStart} aria-label="Previous slide">
+        <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+          <path d="m14 6-6 6 6 6" />
+        </svg>
       </button>
-      <div className="deck-navbar-status">
-        <span className="deck-navbar-count" aria-live="polite">Slide {displayIndex + 1} of {visibleCount}</span>
-        <span className="deck-navbar-hint deck-navbar-hint-keys">Use the buttons or arrow keys</span>
-        <span className="deck-navbar-hint deck-navbar-hint-touch">Tap Next or swipe left</span>
+      <div className="deck-navbar">
+        <div className="deck-navbar-status">
+          <span className="deck-navbar-count" aria-live="polite">Slide {displayIndex + 1} of {visibleCount}</span>
+          <span className="deck-navbar-hint deck-navbar-hint-keys">Use the arrows or keyboard</span>
+          <span className="deck-navbar-hint deck-navbar-hint-touch">Tap the arrows or swipe</span>
+        </div>
+        <button type="button" className="deck-navbar-close" onClick={dismiss} aria-label="Hide slide navigation" title="Hide (swipe and arrow keys still work)">
+          <span aria-hidden="true">×</span>
+        </button>
       </div>
-      <button type="button" className="deck-navbar-btn deck-navbar-next" onClick={(e) => step(e, 1)} disabled={atEnd} aria-label="Next slide">
-        <span className="deck-navbar-label">Next</span><span aria-hidden="true">→</span>
-      </button>
-      <button type="button" className="deck-navbar-close" onClick={dismiss} aria-label="Hide slide navigation" title="Hide (swipe and arrow keys still work)">
-        <span aria-hidden="true">×</span>
+      <button type="button" className="deck-side-arrow deck-side-next" onClick={(e) => step(e, 1)} disabled={atEnd} aria-label="Next slide">
+        <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+          <path d="m10 6 6 6-6 6" />
+        </svg>
       </button>
     </nav>
   )
@@ -76,7 +75,6 @@ export default function DeckView() {
             </SlideErrorBoundary>
           ))}
         </div>
-        <FloatingCopilot />
         <DeckNavBar />
       </SlideProvider>
     </InlineEditProvider>

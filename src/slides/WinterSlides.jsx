@@ -114,12 +114,10 @@ function RegistrationButton({ className, initiallyOpen = false, children }) {
 }
 
 export function WinterTitleSlide({ index }) {
+  const { go } = useSlides()
   return (
-    <Slide index={index} className={s.slide}>
+    <Slide index={index} className={`${s.slide} ${s.titleSlide}`}>
       <SlideProgress index={index} />
-      <div className={`orb ${s.orbIce}`} />
-      <div className={`orb ${s.orbHolly}`} />
-      <div className={`orb ${s.orbPine}`} />
       <div className={`${s.hero} content-frame content-gutter`}>
         <div>
           <span className={s.pill}><Editable as="span" id="title.pill">{BOOTCAMP.season} edition · Online</Editable></span>
@@ -133,18 +131,24 @@ export function WinterTitleSlide({ index }) {
           </Editable>
           <div className={s.heroCta}>
             {REGISTRATION_OPEN ? (
-              <RegistrationButton className={s.heroRegister}>
-                Register now <span aria-hidden="true">→</span>
-              </RegistrationButton>
+              <button
+                type="button"
+                className={s.heroRegister}
+                onClick={(event) => {
+                  go(1)
+                  if (event.detail > 0) event.currentTarget.blur()
+                }}
+              >
+                Learn more and register <span aria-hidden="true">→</span>
+              </button>
             ) : (
               <span className={s.heroSoon} role="status">
                 {REGISTRATION_STATE === 2 && <i aria-hidden="true" />}{REGISTRATION_UNAVAILABLE.cta}
               </span>
             )}
-            <Editable as="span" id="title.ctaNote" className={s.heroCtaNote}>Free · AI credits provided</Editable>
+            <Editable as="span" id="title.ctaNote" className={s.heroCtaNote}>Free · AI credits provided · Register on the final slide</Editable>
           </div>
         </div>
-        <Mascot className={s.heroMascot} />
       </div>
       <Logos className={s.heroLogos} size="md" />
       <BottomBar text={<Editable as="span" id="title.footer">{BOOTCAMP.footer}</Editable>} />
@@ -177,7 +181,7 @@ export function OfferingSlide({ index }) {
       <div className={s.stats}>
         {[
           ['online', 'Online', 'Join live from anywhere'],
-          ['weeks', 'Winter Fridays', `15 Jan – 19 Feb 2027${BOOTCAMP.datesConfirmed ? '' : ' · preliminary'}`],
+          ['weeks', 'Winter Fridays', '15 Jan – 19 Feb 2027'],
           ['credits', 'AI credits', 'Provided with event access'],
           ['cost', 'Free', 'Only your time'],
           ['team', 'Delivered by', 'Microsoft Solution Engineers & Architects'],
@@ -201,12 +205,30 @@ export function AudienceSlide({ index }) {
         title="Made for the software community"
         subtitle="Anyone who helps plan, design, build, test, deliver or operate software."
       />
-      <div className={`${s.grid} ${s.grid4}`}>
+      <div className={`${s.grid} ${s.grid3}`}>
         {PERSONAS.map((p) => (
           <div key={p.id} className={s.card}>
             <span className={s.icon}>{p.icon}</span>
             <Editable as="h3" id={`audience.${p.id}.title`}>{p.label}</Editable>
             <Editable as="p" id={`audience.${p.id}.desc`}>{p.desc}</Editable>
+            {p.recommendedSession && (
+              <div className={s.sessionRecommendation}>
+                <span className={s.recommendationLabel}>Recommended sessions:</span>
+                <div className={s.sessionPills}>
+                  <span className={s.sessionPill}>
+                    <Editable as="span" id={`audience.${p.id}.copilotSession`}>GitHub Copilot app</Editable>
+                  </span>
+                  <span className={s.sessionPill}>
+                    <Editable as="span" id={`audience.${p.id}.session`}>{p.recommendedSession}</Editable>
+                  </span>
+                  {p.additionalSessions?.map((session) => (
+                    <span key={session.id} className={s.sessionPill}>
+                      <Editable as="span" id={`audience.${p.id}.${session.id}`}>{session.label}</Editable>
+                    </span>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
         ))}
       </div>
@@ -227,15 +249,35 @@ export function FormatSlide({ index }) {
         <div className={s.card}>
           <span className={s.kicker}>Hands-on</span>
           <span className={s.icon}>🧑‍💻</span>
-          <Editable as="h3" id="format.handson.title">Build it yourself</Editable>
+          <Editable as="h3" id="format.handson.title">Complete it during the bootcamp</Editable>
           <Editable as="p" id="format.handson.desc">
-            Build with the software tools used in each session while GitHub Copilot and agents support the workflow.
+            Choose one machine: corporate or personal.
           </Editable>
+          <div className={s.machineOptions}>
+            <div className={s.machineOption}>
+              <Editable as="h4" id="format.handson.corporate.title">Corporate machine</Editable>
+              <Editable as="p" id="format.handson.corporate.requirements">
+                Install GitHub Copilot app with your company's permission, or use a virtual machine.
+              </Editable>
+            </div>
+            <div className={s.machineOption}>
+              <Editable as="h4" id="format.handson.personal.title">Personal machine</Editable>
+              <Editable as="p" id="format.handson.personal.requirements">
+                Install GitHub Copilot app.
+              </Editable>
+            </div>
+          </div>
+          <p className={s.sharedRequirement}>
+            <strong>Both: </strong>
+            <Editable as="span" id="format.handson.shared.desc">
+              Sign in with your personal GitHub account. Closer to the event, we'll share a link to connect your account to our bootcamp GitHub organization.
+            </Editable>
+          </p>
         </div>
         <div className={s.card}>
-          <span className={s.kicker}>Presenter-led</span>
+          <span className={s.kicker}>JUST WATCH</span>
           <span className={s.icon}>👀</span>
-          <Editable as="h3" id="format.follow.title">Follow along</Editable>
+          <Editable as="h3" id="format.follow.title">Complete it after the bootcamp</Editable>
           <Editable as="p" id="format.follow.desc">
             Watch the presenter build it live, ask questions, and take the materials home to try later.
           </Editable>
@@ -316,12 +358,28 @@ export function SetupSlide({ index }) {
         title="Your hands-on development setup"
         subtitle="This setup is required for hands-on participation. Complete it on your own machine before your first session."
       />
-      <div className={`${s.grid} ${s.grid4}`}>
-        {PREP.slice(0, 4).map((p) => (
+      <div className={`${s.grid} ${s.grid3}`}>
+        {PREP.slice(0, 3).map((p) => (
           <div key={p.id} className={s.card}>
-            <span className={s.icon}>{p.icon}</span>
+            <span className={s.icon}>
+              {p.icon === 'github'
+                ? <img src={`${import.meta.env.BASE_URL}logos/github-mark.svg`} alt="" />
+                : p.icon === 'copilot'
+                  ? <img src={`${import.meta.env.BASE_URL}copilot-mascot.png`} alt="" />
+                  : p.icon}
+            </span>
             <Editable as="h3" id={`setup.${p.id}.title`}>{p.title}</Editable>
-            <Editable as="p" id={`setup.${p.id}.desc`}>{p.desc}</Editable>
+            {p.id === 'git' ? (
+              <p>
+                {p.desc.slice(0, p.desc.indexOf('GitHub Copilot app'))}
+                <a className={s.inlineLink} href="https://docs.github.com/en/copilot/concepts/copilot-surfaces/github-copilot-app">
+                  GitHub Copilot app
+                </a>
+                {p.desc.slice(p.desc.indexOf('GitHub Copilot app') + 'GitHub Copilot app'.length)}
+              </p>
+            ) : (
+              <Editable as="p" id={`setup.${p.id}.desc`}>{p.desc}</Editable>
+            )}
           </div>
         ))}
       </div>
@@ -335,22 +393,18 @@ export function SessionDetailsIntroSlide({ index }) {
       <div className={s.detailIntro}>
         <span className={s.pill}>The programme</span>
         <Editable as="h1" id="sessionDetailsIntro.title">
-          Six sessions. <span className={s.highlight}>One delivery loop.</span>
+          What you'll learn
         </Editable>
         <Editable as="p" id="sessionDetailsIntro.subtitle" multiline className={s.subtitle}>
-          The next slides go deeper into the purpose, tools and hands-on outcome of every session.
+          The following slides describe each session and what you'll learn.
         </Editable>
-        <div className={s.detailIntroTracks}>
-          {SESSIONS.map((session) => (
-            <span key={session.id}><b>{session.number}</b>{session.track}</span>
-          ))}
-        </div>
       </div>
     </Frame>
   )
 }
 
 function SessionDetailSlide({ index, session }) {
+  const subtitle = session.detailSubtitle ?? session.subtitle
   return (
     <Frame index={index} id={`detail-${session.id}`} orbs={['orbIce', 'orbPine']}>
       <div className={s.detailBody} style={{ '--session-accent': session.accent }}>
@@ -358,13 +412,13 @@ function SessionDetailSlide({ index, session }) {
           <span className={s.detailNumber}>SESSION {session.number}</span>
           <span className={`${s.tag} ${s.tagIce}`}>{session.time}</span>
           <span className={s.tag}>{session.audience}</span>
-          <span className={`${s.tag} ${s.tagPine}`}>{session.format}</span>
+          {session.format && <span className={`${s.tag} ${s.tagPine}`}>{session.format}</span>}
           {session.prerequisite && <span className={`${s.tag} ${s.tagHolly}`}>Prerequisite: {session.prerequisite}</span>}
         </div>
         <div className={s.detailHeader}>
           <div>
-            <Editable as="h1" id={`detail.${session.id}.title`}>{session.title}</Editable>
-            <Editable as="p" id={`detail.${session.id}.subtitle`} className={s.detailSubtitle}>{session.subtitle}</Editable>
+            <Editable as="h1" id={`detail.${session.id}.title`}>{session.detailTitle ?? session.title}</Editable>
+            {subtitle && <Editable as="p" id={`detail.${session.id}.subtitle`} className={s.detailSubtitle}>{subtitle}</Editable>}
           </div>
         </div>
         <Editable as="p" id={`detail.${session.id}.overview`} multiline className={s.detailOverview}>
@@ -471,7 +525,7 @@ export function RegisterSlide({ index }) {
               : REGISTRATION_UNAVAILABLE.body}</p>
           </div>
           {REGISTRATION_OPEN
-            ? <RegistrationButton initiallyOpen={openOnLoad}>Open registration</RegistrationButton>
+            ? <RegistrationButton initiallyOpen={openOnLoad}>Register</RegistrationButton>
             : (
               <span className={s.registerSoonBadge} role="status">
                 {REGISTRATION_STATE === 2 && <i aria-hidden="true" />}{REGISTRATION_UNAVAILABLE.badge}
@@ -531,11 +585,8 @@ export function DisclaimerSlide({ index }) {
 
 export function ThankYouSlide({ index }) {
   return (
-    <Slide index={index} className={s.slide}>
+    <Slide index={index} className={`${s.slide} ${s.thanksSlide}`}>
       <SlideProgress index={index} />
-      <div className={`orb ${s.orbIce}`} />
-      <div className={`orb ${s.orbHolly}`} />
-      <div className={`orb ${s.orbPine}`} />
       <div className={`${s.thanks} content-frame content-gutter`}>
         <span className={s.pill}>Thank you</span>
         <h1><Editable as="span" id="thankYou.title" className={s.highlight}>See you this winter</Editable></h1>

@@ -137,25 +137,6 @@ html[data-export-mode="capture"] .deck-delivery-progress { display: none; }
 }
 .mascot-img { width: 100%; height: auto; display: block; }
 
-.floating-copilot {
-  position: fixed;
-  bottom: 84px;
-  right: 48px;
-  width: 110px;
-  opacity: 0.75;
-  z-index: 9000;
-  pointer-events: none;
-  filter: drop-shadow(0 6px 16px rgba(0, 0, 0, 0.4));
-  animation: floating-copilot-bob 5s ease-in-out infinite;
-}
-
-@keyframes floating-copilot-bob {
-  0%, 100% { transform: translateY(0) rotate(0deg); }
-  25%      { transform: translateY(-10px) rotate(2deg); }
-  50%      { transform: translateY(-4px) rotate(0deg); }
-  75%      { transform: translateY(-12px) rotate(-2deg); }
-}
-
 /* ── Logos ────────────────────────────────────────────────────────────── */
 .logos { display: flex; align-items: center; gap: 20px; }
 .logos img { display: block; width: auto; }
@@ -178,6 +159,15 @@ button[title="Back to home"] { top: 36px !important; }
 [class*="_navBtn_"],
 [class*="_keyHint_"] { display: none !important; }
 
+.deck-navigation {
+  position: fixed;
+  inset: 0;
+  z-index: 9100;
+  pointer-events: none;
+}
+.deck-navbar,
+.deck-side-arrow { pointer-events: auto; }
+
 .deck-navbar {
   position: fixed;
   left: 50%;
@@ -198,7 +188,7 @@ button[title="Back to home"] { top: 36px !important; }
 }
 .deck-navbar:hover,
 .deck-navbar:focus-within { opacity: 1; }
-.deck-navbar-btn,
+.deck-side-arrow,
 .deck-navbar-close {
   display: inline-flex;
   align-items: center;
@@ -219,12 +209,27 @@ button[title="Back to home"] { top: 36px !important; }
   -webkit-tap-highlight-color: transparent;
   transition: background 0.2s, transform 0.15s;
 }
-.deck-navbar-btn:hover:not(:disabled),
 .deck-navbar-close:hover { background: color-mix(in srgb, var(--foreground) 10%, transparent); }
-.deck-navbar-btn:active:not(:disabled) { transform: scale(0.96); }
-.deck-navbar-btn:focus-visible,
+.deck-side-arrow:focus-visible,
 .deck-navbar-close:focus-visible { outline: 2px solid var(--ice); outline-offset: 1px; }
-.deck-navbar-btn:disabled { opacity: 0.3; cursor: default; }
+.deck-side-arrow {
+  position: fixed;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 9100;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border: 1px solid color-mix(in srgb, var(--ice) 65%, transparent);
+  background: color-mix(in srgb, var(--night) 88%, transparent);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.35);
+  color: var(--frost);
+}
+.deck-side-previous { left: max(8px, env(safe-area-inset-left, 0px)); }
+.deck-side-next { right: max(8px, env(safe-area-inset-right, 0px)); }
+.deck-side-arrow:hover:not(:disabled) { background: color-mix(in srgb, var(--night) 78%, var(--ice)); }
+.deck-side-arrow:active:not(:disabled) { transform: translateY(-50%) scale(0.96); }
+.deck-side-arrow:disabled { opacity: 0.3; cursor: default; }
 .deck-navbar-close {
   padding: 0;
   font-size: 16px;
@@ -245,24 +250,18 @@ button[title="Back to home"] { top: 36px !important; }
 .deck-navbar-hint-touch { display: none; }
 @media (hover: none) and (pointer: coarse) {
   .deck-navbar { opacity: 0.85; }
-  .deck-navbar-btn, .deck-navbar-close { min-width: 40px; min-height: 40px; }
+  .deck-navbar-close { min-width: 40px; min-height: 40px; }
   .deck-navbar-hint-keys { display: none; }
   .deck-navbar-hint-touch { display: inline; }
 }
-html[data-export-mode="capture"] .deck-navbar { display: none; }
+html[data-export-mode="capture"] .deck-navigation { display: none; }
 
 /* ── Deck on phones: portrait + short landscape ───────────────────────── */
 @media (max-width: 760px), (max-height: 500px) {
-  .deck { --content-gutter: 20px; }
-  .floating-copilot,
+  .deck { --content-gutter: 60px; }
   [class*="keyHint"],
   [class*="exportGroup"],
   button[title="Back to home"] { display: none !important; }
   .deck-navbar { bottom: calc(12px + env(safe-area-inset-bottom, 0px)); }
-  .deck-navbar-btn { padding: 0 10px; }
   .slide > [class^="_bar_"], .slide-overflow-warn { display: none; }
-}
-
-@media (max-width: 380px) {
-  .deck-navbar-btn:not(.deck-navbar-next) .deck-navbar-label { display: none; }
 }
