@@ -1,21 +1,25 @@
 # AI-Native Software Development Lifecycle Winter Bootcamp
 
-Interactive public website and DECKIO presentation for a six-session community bootcamp about GitHub Copilot and agentic practices across the software development lifecycle.
+Interactive DECKIO slide presentation for a six-session community bootcamp about GitHub Copilot and agentic practices across the software development lifecycle.
 
 **Live website:** https://jolly-field-07f1d0f0f.3.azurestaticapps.net/
 
 | Route | Experience |
 | --- | --- |
-| `#/` | Public website with event framing, interactive programme workflow, development setup, FAQ and registration |
-| `#/deck` | Horizontal DECKIO presentation with the same content and embedded registration |
+| `/` and `#/` | Send visitors to the slide deck at the unchanged `#/deck` path |
+| `#/deck` | Main slide presentation with event framing, programme, development setup, session details and registration |
+
+The slide deck is the only public view; there is no Website mode or view switch.
+Its existing navigation, registration dialog and mobile layout are unchanged.
+The former website-only FAQ, interactive programme reveal and saved setup checklist/guided wizard have been removed.
 
 The six session topics, descriptions and audiences are confirmed. The six Friday dates and daily times are preliminary: set `BOOTCAMP.datesConfirmed` to `true` in `src/content.js` once they are confirmed to remove the "preliminary" labels. Facilitators remain TBC.
 
-All public copy lives in `src/content.js`, and the website and deck share it.
+Public copy lives in `src/content.js` and the slide components.
 
 ## Public release states
 
-The website, deck and registration API share `api/site-state.json`.
+The slide presentation and registration API share `api/site-state.json`.
 
 | Setting | Value | Behaviour |
 | --- | --- | --- |
@@ -38,7 +42,10 @@ npm run build
 npm run build:swa
 ```
 
-The Azure Static Web Apps build uses `/` so the website, deck and `/api/register` share one origin.
+Run registration checks with `npm test`. For desktop and mobile browser regression tests,
+run `npx playwright install chromium` once, then `npm run test:browser`.
+
+The Azure Static Web Apps build uses `/` so the presentation and `/api/register` share one origin.
 
 ## Registration architecture
 

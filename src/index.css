@@ -172,34 +172,6 @@ html[data-export-mode="capture"] .deck-delivery-progress { display: none; }
 /* ── Deck-only chrome ─────────────────────────────────────────────────── */
 button[title="Back to home"] { top: 36px !important; }
 
-.deck-chrome {
-  position: fixed;
-  top: 36px;
-  left: 72px;
-  z-index: 9100;
-  display: flex;
-  gap: 10px;
-  opacity: 0.55;
-  transition: opacity 0.2s;
-}
-.deck-chrome:hover, .deck-chrome:focus-within { opacity: 1; }
-.deck-home-link {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  padding: 8px 14px;
-  border-radius: 999px;
-  border: 1px solid var(--border);
-  background: color-mix(in srgb, var(--card) 75%, transparent);
-  color: var(--foreground);
-  font-size: 13px;
-  font-weight: 600;
-  text-decoration: none;
-  backdrop-filter: blur(8px);
-}
-.deck-home-link:hover { border-color: var(--ice); }
-
-
 [class*="exportGroup"] { top: 36px !important; }
 
 /* ── Persistent slide navigation (replaces the engine's auto-hiding arrows) ── */
@@ -286,8 +258,6 @@ html[data-export-mode="capture"] .deck-navbar { display: none; }
   [class*="keyHint"],
   [class*="exportGroup"],
   button[title="Back to home"] { display: none !important; }
-  .deck-chrome { top: 34px; left: 12px; gap: 8px; opacity: 0.9; }
-  .deck-home-link { padding: 6px 12px; font-size: 12px; }
   .deck-navbar { bottom: calc(12px + env(safe-area-inset-bottom, 0px)); }
   .deck-navbar-btn { padding: 0 10px; }
   .slide > [class^="_bar_"], .slide-overflow-warn { display: none; }
