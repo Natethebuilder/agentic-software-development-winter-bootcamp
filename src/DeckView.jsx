@@ -67,9 +67,6 @@ export default function DeckView() {
   return (
     <InlineEditProvider overrides={{}} project={id}>
       <SlideProvider totalSlides={slides.length} project={id} slides={slides} theme={theme}>
-        <div className="deck-chrome">
-          <a className="deck-home-link" href="#/">← Website</a>
-        </div>
         <Navigation />
         <DeliveryProgress />
         <div className="deck" data-project-id={id}>
