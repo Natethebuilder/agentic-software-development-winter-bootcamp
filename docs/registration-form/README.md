@@ -43,7 +43,7 @@ Questions 1 to 4 and the consent question are required. The session questions ar
 | 6 | Plan & Design | Choice, multiple answers, optional | **10:15–11:15 CET** |
 | 7 | Build & Test | Choice, multiple answers, optional | **11:15–12:15 CET** |
 | 8 | Review, Deploy & Operate | Choice, multiple answers, optional | **12:45–13:45 CET** |
-| 9 | Evaluations & Continuous Improvement | Choice, multiple answers, optional | **13:45–14:45 CET** |
+| 9 | Continuous Improvement | Choice, multiple answers, optional | **13:45–14:45 CET** |
 | 10 | AI-Native App Modernization | Choice, multiple answers, optional | **14:45–15:45 CET** |
 | 11 | Data consent | Choice, one option | I consent to Microsoft using my name, company, company email and session choices to administer the bootcamp, send the GitHub organization invitation, provision access, communicate with me and improve the programme. Registration data is deleted after the administration period. |
 

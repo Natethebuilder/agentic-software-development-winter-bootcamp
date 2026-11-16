@@ -115,10 +115,10 @@ export const SESSIONS = [
   {
     id: 'session-05',
     number: '05',
-    title: 'Evaluations & Continuous Improvement',
+    title: 'Continuous Improvement',
     detailSubtitle: '',
-    shortTitle: 'Evaluations',
-    track: 'Evaluate & improve',
+    shortTitle: 'Continuous Improvement',
+    track: 'Continuous improvement',
     subtitle: 'Measure agentic workflows and improve quality, performance and cost.',
     audience: 'Developers',
     format: '',
@@ -207,7 +207,7 @@ export const PERSONAS = [
     additionalSessions: [
       { id: 'additionalSession', label: 'Build & Test' },
       { id: 'reviewSession', label: 'Review & Operate' },
-      { id: 'evaluationsSession', label: 'Evaluations' },
+      { id: 'evaluationsSession', label: 'Continuous Improvement' },
       { id: 'modernizationSession', label: 'App Modernization' },
     ],
     does: 'Steer coding agents through implementation and testing while keeping evidence, risk and human accountability visible.',
@@ -238,7 +238,7 @@ export const PILLARS = [
     id: 'whole-loop',
     tag: 'Multiple stages · 1 loop',
     title: 'Practise the whole loop',
-    desc: 'AI-native planning, design, build, test, review, release, operations and evaluations.',
+    desc: 'AI-native planning, design, build, test, review, release, operations and continuous improvement.',
   },
   {
     id: 'evidence',
@@ -316,7 +316,7 @@ export const AGENT_RUNS = [
   },
   {
     session: 'session-05',
-    area: 'Evaluations',
+    area: 'Continuous Improvement',
     actor: 'you',
     input: 'Which agent sessions needed the most rework this sprint?',
     spans: [
@@ -401,7 +401,7 @@ export const FAQ = [
   },
   {
     q: 'What are the session topics?',
-    a: 'GitHub Copilot App Foundations; Plan & Design; Build & Test; Review, Deploy & Operate; Evaluations & Continuous Improvement; and AI-Native App Modernization.',
+    a: 'GitHub Copilot App Foundations; Plan & Design; Build & Test; Review, Deploy & Operate; Continuous Improvement; and AI-Native App Modernization.',
   },
   {
     q: 'When does it start?',
