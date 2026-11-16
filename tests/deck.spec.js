@@ -98,7 +98,7 @@ test('presents three audience cards with matching compact session pills', async 
     await expect(card.getByText(description, { exact: true })).toBeVisible()
     const pills = card.getByText('Plan & Design', { exact: true }).locator('../..')
     const sessions = label === 'Developers & Testers'
-      ? ['GitHub Copilot app', 'Plan & Design', 'Build & Test', 'Review & Operate', 'Evaluations', 'App Modernization']
+      ? ['GitHub Copilot app', 'Plan & Design', 'Build & Test', 'Review & Operate', 'Continuous Improvement', 'App Modernization']
       : label === 'Architects & Leads & Analysts'
         ? ['GitHub Copilot app', 'Plan & Design', 'App Modernization']
         : ['GitHub Copilot app', 'Plan & Design']
@@ -285,13 +285,13 @@ test('omits the Review Deploy and Operate format label and subtitle', async ({ p
   await expect(slide.getByText('Session focus', { exact: true })).toBeVisible()
 })
 
-test('omits the Evaluations format label and subtitle', async ({ page }) => {
+test('omits the Continuous Improvement format label and subtitle', async ({ page }) => {
   await page.goto('/#/deck')
   for (let index = 0; index < 11; index += 1) {
     await page.getByRole('button', { name: 'Next slide', exact: true }).click()
   }
   const slide = page.locator('.slide').nth(11)
-  await expect(slide.locator('h1')).toHaveText('Evaluations & Continuous Improvement')
+  await expect(slide.locator('h1')).toHaveText('Continuous Improvement')
   await expect(slide.getByText('Evaluation workshop', { exact: true })).toHaveCount(0)
   await expect(slide.getByText('Measure agentic workflows and improve quality, performance and cost.', { exact: true })).toHaveCount(0)
   await expect(slide.locator('li')).toHaveCount(3)
