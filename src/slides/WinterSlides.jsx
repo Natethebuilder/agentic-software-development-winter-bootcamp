@@ -2,7 +2,6 @@ import { useCallback, useEffect, useId, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
 import { BottomBar, Editable, Slide, useSlides } from '@deckio/deck-engine'
 import PillarMark from '../agentic/PillarMark.jsx'
-import RegistrationForm from '../registration/RegistrationForm.jsx'
 import { MicrosoftFormDialogBody } from '../registration/MicrosoftFormRegistration.jsx'
 import { Logos, Mascot } from '../winter/Decor.jsx'
 import {
@@ -10,7 +9,7 @@ import {
   REGISTRATION_UNAVAILABLE, SESSION_DATES, SESSIONS, TEAM,
 } from '../content.js'
 import {
-  PREREQUISITES_STATE, REGISTRATION_OPEN, REGISTRATION_STATE, REGISTRATION_VIA_FORM, byRegistrationState,
+  PREREQUISITES_STATE, REGISTRATION_OPEN, REGISTRATION_STATE, byRegistrationState,
 } from '../siteState.js'
 import s from './Slides.module.css'
 
@@ -92,7 +91,7 @@ function RegistrationDialog({ onClose }) {
           </div>
           <button type="button" aria-label="Close registration" onClick={onClose}>×</button>
         </div>
-        {REGISTRATION_VIA_FORM ? <MicrosoftFormDialogBody /> : <RegistrationForm />}
+        <MicrosoftFormDialogBody />
       </div>
     </div>,
     document.body,
@@ -499,10 +498,9 @@ export function RegisterSlide({ index }) {
         eyebrow="Ready to join?"
         title={REGISTRATION_OPEN ? 'How to register' : REGISTRATION_UNAVAILABLE.title}
         subtitle={byRegistrationState(
-          'Registration is open. Confirm your company email; no GitHub sign-in is required.',
+          'Registration is open. It takes about two minutes in our Microsoft Form:',
           'When registration opens, it takes about two minutes:',
           REGISTRATION_CLOSED.subtitle,
-          'Registration is open. It takes about two minutes in our Microsoft Form:',
         )}
       />
       <div className={REGISTRATION_STATE === 3 ? `${s.registerSlideGrid} ${s.registerSlideClosed}` : s.registerSlideGrid}>

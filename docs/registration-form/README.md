@@ -1,6 +1,6 @@
 # Registration form
 
-This is the Microsoft Form that captures registrations while `api/site-state.json` sets `"registration": 4`; see [Registration through Microsoft Forms](../registration-backend.md#registration-through-microsoft-forms). This page records the form so it can be rebuilt.
+This is the Microsoft Form that captures registrations while `site-state.json` sets `"registration": 4`; see [Registration through Microsoft Forms](../../README.md#registration-through-microsoft-forms). This page records the form so it can be rebuilt.
 
 **Response link** (`registrationFormUrl`): https://forms.cloud.microsoft/Pages/ResponsePage.aspx?id=v4j5cvGGr0GRqy180BHbRxdEa3AwZX5OnfloSBL3H3tUM1pGQkhVWUhFNzFZMFZVMTIzWFFVMlBGMy4u
 
@@ -51,7 +51,7 @@ Each session question's title is the session name, and its subtitle starts with 
 
 Every date falls before European summer time starts in late March, so CET (UTC+1) is right for all of them. A date from late March onwards would need CEST (UTC+2).
 
-The consent option is `REGISTRATION.consent` from `src/content.js` (version `2026-11-04`) with "name" added, because this form also asks for the participant's full name.
+The consent option is the retired on-site form's consent wording (version `2026-11-04`) with "name" added, because this form also asks for the participant's full name.
 
 There is no development environment question, because this bootcamp offers no cloud development environment. Attendees set up their own machine with the site's readiness checklist.
 
@@ -65,7 +65,7 @@ There is no development environment question, because this bootcamp offers no cl
 
 **Thank-you message**: Thanks, we’ve received your registration. GitHub organization access details will be sent to your company email a few days before the event. To change your registration, contact the Microsoft contact who invited you.
 
-## Differences from the site's own form
+## Checking responses
 
 When processing responses, keep in mind:
 
@@ -77,4 +77,4 @@ When processing responses, keep in mind:
 
 Create the form with the design, questions and settings above. Then copy its full response link, in the form `https://forms.cloud.microsoft/Pages/ResponsePage.aspx?id=<form id>`, into `registrationFormUrl`. A `/r/` short link is not accepted, so open it and copy the address it leads to.
 
-If the consent wording in `src/content.js` changes, update question 11 to match, keeping "name" in it.
+To change the consent wording, update question 11 in the form and in the table above.

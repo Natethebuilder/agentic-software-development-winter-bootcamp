@@ -180,8 +180,6 @@ export const SESSION_DATES = [
   { id: '2027-02-19', label: 'Friday, 19 February 2027', short: '19 Feb', day: '19', month: 'FEB' },
 ]
 
-export const registrationSlotId = (dateId, session) => `${dateId}|${session.time}|${session.id}`
-
 export const PERSONAS = [
   {
     id: 'product', icon: '🧭', label: 'Product Owners & Product Managers',
@@ -434,10 +432,9 @@ export const FAQ = [
   {
     q: 'How do I register?',
     a: byRegistrationState(
-      'Provide and confirm your company email, then choose your dates and sessions. No GitHub sign-in is required on this website.',
+      'Start the Microsoft Form in the Register section of this page, or open it in a new tab. Enter your company or organisation and confirm your company email, then choose the dates and session times you want to attend. No GitHub sign-in is required.',
       'Registration will open soon. When it does, provide and confirm your company email, then choose your dates and sessions.',
       'Registration is closed and new registrations are no longer accepted. For questions about an existing registration, contact the Microsoft contact who invited you.',
-      'Start the Microsoft Form in the Register section of this page, or open it in a new tab. Enter your company or organisation and confirm your company email, then choose the dates and session times you want to attend. No GitHub sign-in is required.',
     ),
   },
 ]
@@ -448,24 +445,7 @@ export const REGISTER_STEPS = [
   'Receive the GitHub organization invitation link a few days before the event',
 ]
 
-export const REGISTRATION = {
-  eyebrow: 'Registration',
-  title: 'Join the AI-Native Software Development Lifecycle Winter Bootcamp.',
-  subtitle: 'Confirm your company email and choose the dates and session times you want to attend.',
-  slotHelp:
-    'Every date runs the same six sessions, so you can mix and match, for example Foundations on 15 January and Build & Test on 22 January. Switch dates with the tabs below; sessions you have ticked on other dates stay selected.',
-  // Changing this wording needs a new version in api/consent-version.json and a new row in the
-  // consent wording versions table in docs/registration-backend.md. npm test checks they agree.
-  consent:
-    'I consent to Microsoft using my company, company email and session choices to administer the bootcamp, send the GitHub organization invitation, provision access, communicate with me and improve the programme. Registration data is deleted after the administration period.',
-  // New and already registered email addresses get the same confirmation, so the form never
-  // reveals whether an address is registered.
-  received:
-    'Thanks, we’ve received your registration. If this email address was already registered, your original registration is unchanged. To change it, contact the Microsoft contact who invited you. GitHub organization access details will be sent a few days before the event.',
-  updated: 'Thanks. Your registration has been updated. GitHub organization access details will be sent a few days before the event.',
-}
-
-// Shown in place of the on-site form while registration is 4 in api/site-state.json, when
+// Shown wherever registration appears while registration is 4 in site-state.json, when
 // registrations go to this bootcamp's Microsoft Form. Nothing loads from Microsoft Forms until the
 // visitor starts. docs/registration-form/README.md records the form.
 export const REGISTRATION_FORM = {
