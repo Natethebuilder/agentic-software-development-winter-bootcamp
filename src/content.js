@@ -232,7 +232,7 @@ export const PILLARS = [
     id: 'foundations',
     tag: 'GitHub Copilot app',
     title: 'Start with the agent-native desktop experience',
-    desc: 'Learn how to use and navigate GitHub Copilot app, designed from the group up for agentic engineering.',
+    desc: 'Learn how to use and navigate GitHub Copilot app, designed from the ground up for agentic engineering.',
   },
   {
     id: 'whole-loop',
