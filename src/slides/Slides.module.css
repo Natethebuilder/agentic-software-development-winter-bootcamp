@@ -531,7 +531,7 @@
   cursor: pointer;
 }
 
-/* ── Registration and prerequisite states (api/site-state.json) ── */
+/* ── Registration and prerequisite states (site-state.json) ── */
 .heroSoon, .registerSoonBadge {
   display: inline-flex;
   align-items: center;
