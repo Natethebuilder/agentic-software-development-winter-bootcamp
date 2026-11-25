@@ -473,12 +473,18 @@ test('shows the privacy links in the footer of every slide', async ({ page }) =>
   }
 })
 
-test('keeps hidden slide navigation for the visit only', async ({ page }) => {
+test('keeps hidden slide navigation for the visit only and clears older saved values', async ({ page }) => {
   await page.goto('/')
-  await page.evaluate(() => localStorage.setItem('deck-navbar-dismissed', '1'))
+  await page.evaluate(() => {
+    for (const key of [
+      'deck-navbar-dismissed', 'winter-bootcamp:prep', 'agentic-dev-motion', 'software-winter-bootcamp:code-rain-v1',
+      'agentic-software-development-winter-bootcamp:registration-token',
+    ]) localStorage.setItem(key, '1')
+  })
   await page.reload()
   const navbar = page.locator('.deck-navbar')
   await expect(navbar).toBeVisible()
+  expect(await page.evaluate(() => localStorage.length)).toBe(0)
   await page.getByRole('button', { name: 'Hide slide navigation' }).click()
   await expect(navbar).toHaveCount(0)
   await page.reload()

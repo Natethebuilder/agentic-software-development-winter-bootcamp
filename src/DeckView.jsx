@@ -16,12 +16,10 @@ function DeliveryProgress() {
   )
 }
 
-// Hiding the slide navigation lasts for the visit only, so the site leaves nothing on the device once
-// the tab closes. Earlier versions kept it in localStorage, so that copy is removed.
+// Hiding the slide navigation lasts for the visit only, so it ends when the tab closes.
 const NAVBAR_DISMISSED_KEY = 'deck-navbar-dismissed'
 
 function readNavbarDismissed() {
-  try { localStorage.removeItem(NAVBAR_DISMISSED_KEY) } catch { /* storage unavailable */ }
   try { return sessionStorage.getItem(NAVBAR_DISMISSED_KEY) === '1' } catch { return false }
 }
 

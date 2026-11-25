@@ -69,6 +69,8 @@ The site follows Microsoft's website privacy guidance:
 | `slide:agentic-software-development-winter-bootcamp` | Reopens the current slide after a reload (deck engine) | On load and on every slide change |
 | `deck-navbar-dismissed` | Keeps the slide navigation hidden after the visitor hides it | When the visitor selects Hide |
 
+Earlier versions saved values in local storage, which outlives the visit. On load, `src/main.jsx` removes them from returning visitors' browsers.
+
 Adding a cookie, analytics, ads or any other third-party script needs a privacy review first, and optional cookies also need a cookie banner and a "Manage cookies" footer link.
 
 ## Develop
