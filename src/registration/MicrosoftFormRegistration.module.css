@@ -157,7 +157,10 @@
 }
 .footer { margin-top: 22px; padding-top: 18px; border-top: 1px solid var(--border); }
 .toolbar { justify-content: space-between; }
-.footer small, .toolbar small { color: var(--muted-foreground); font-size: 13px; line-height: 1.45; }
+.footer small { color: var(--muted-foreground); font-size: 13px; line-height: 1.45; }
+.notice { flex: 1 1 320px; margin: 0; color: var(--foreground); font-size: 13.5px; line-height: 1.5; }
+.notice a { color: var(--ice); font-weight: 700; text-underline-offset: 3px; white-space: nowrap; }
+.notice a:focus-visible { outline: 2px solid var(--ice); outline-offset: 2px; border-radius: 2px; }
 .newTab {
   display: inline-flex;
   align-items: center;

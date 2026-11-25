@@ -73,6 +73,15 @@ When processing responses, keep in mind:
 - Microsoft Forms does not require at least one session, so look for responses with no dates ticked.
 - Microsoft Forms does not stop the same address registering twice, so look for repeated addresses and keep the latest response.
 
+## Privacy and data retention
+
+- **Purpose and Privacy link**: the site's registration dialog says why the form collects personal data and links the Microsoft Privacy Statement above the form. To show the link directly above Submit too, add it to the consent question's subtitle: `Microsoft Privacy Statement: https://go.microsoft.com/fwlink/?LinkId=521839`.
+- **Required questions**: Microsoft Forms marks each required question with an asterisk and shows that asterisks mean required. Only the questions needed to register and invite an attendee are required.
+- **Retention**: all registration responses are deleted 30 days after the final session. This is the administration period the consent question refers to. With the current preliminary dates the final session is Friday 19 February 2027, so responses are deleted on Sunday 21 March 2027; recalculate if the dates change. On that date the form owner deletes:
+  - every response in Microsoft Forms (Responses, then More options, then Delete all responses);
+  - the Excel workbook of responses, and any downloads, exports or copies such as invitation lists;
+  - the records in the `Agentic Software Development Bootcamp Registrations` SharePoint List from the retired on-site form.
+
 ## Rebuilding the form
 
 Create the form with the design, questions and settings above. Then copy its full response link, in the form `https://forms.cloud.microsoft/Pages/ResponsePage.aspx?id=<form id>`, into `registrationFormUrl`. A `/r/` short link is not accepted, so open it and copy the address it leads to.

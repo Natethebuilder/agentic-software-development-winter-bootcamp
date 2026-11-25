@@ -1,12 +1,12 @@
 import { useCallback, useEffect, useId, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
-import { BottomBar, Editable, Slide, useSlides } from '@deckio/deck-engine'
+import { Editable, Slide, useSlides } from '@deckio/deck-engine'
 import PillarMark from '../agentic/PillarMark.jsx'
 import { MicrosoftFormDialogBody } from '../registration/MicrosoftFormRegistration.jsx'
 import { Logos, Mascot } from '../winter/Decor.jsx'
 import {
-  BOOTCAMP, DATES_NOTE, GITHUB_ACCESS, PERSONAS, PILLARS, PREP, PREREQUISITES, REGISTER_STEPS, REGISTRATION_CLOSED,
-  REGISTRATION_UNAVAILABLE, SESSION_DATES, SESSIONS, TEAM,
+  BOOTCAMP, DATES_NOTE, GITHUB_ACCESS, PERSONAS, PILLARS, PREP, PREREQUISITES, PRIVACY_LINKS, REGISTER_STEPS,
+  REGISTRATION_CLOSED, REGISTRATION_UNAVAILABLE, SESSION_DATES, SESSIONS, TEAM,
 } from '../content.js'
 import {
   PREREQUISITES_STATE, REGISTRATION_OPEN, REGISTRATION_STATE, byRegistrationState,
@@ -26,13 +26,38 @@ function SlideProgress({ index }) {
   )
 }
 
+// Every slide's footer carries Microsoft's required privacy links. The opt-out icon is the unmodified
+// one from microsoft.com's footer, with the alt text Microsoft's guidance specifies.
+function SlideFooter({ id }) {
+  return (
+    <footer className={s.footer}>
+      <Editable as="span" id={`${id}.footer`} className={s.footerName}>{BOOTCAMP.footer}</Editable>
+      <div className={s.privacyLinks}>
+        {PRIVACY_LINKS.map(({ text, href, optOutIcon }) => (
+          <a key={text} href={href}>
+            {optOutIcon && (
+              <img
+                src={`${import.meta.env.BASE_URL}ccpa-opt-out.svg`}
+                alt="California Consumer Privacy Act (CCPA) Opt-Out Icon"
+                width="43"
+                height="16"
+              />
+            )}
+            {text}
+          </a>
+        ))}
+      </div>
+    </footer>
+  )
+}
+
 function Frame({ index, id, children, orbs = ['orbIce', 'orbPine'] }) {
   return (
     <Slide index={index} className={s.slide}>
       <SlideProgress index={index} />
       {orbs.map((o) => <div key={o} className={`orb ${s[o]}`} />)}
       <div className={`${s.body} content-frame content-gutter`}>{children}</div>
-      <BottomBar text={<Editable as="span" id={`${id}.footer`}>{BOOTCAMP.footer}</Editable>} />
+      <SlideFooter id={id} />
     </Slide>
   )
 }
@@ -150,7 +175,7 @@ export function WinterTitleSlide({ index }) {
         </div>
       </div>
       <Logos className={s.heroLogos} size="md" />
-      <BottomBar text={<Editable as="span" id="title.footer">{BOOTCAMP.footer}</Editable>} />
+      <SlideFooter id="title" />
     </Slide>
   )
 }
@@ -594,7 +619,7 @@ export function ThankYouSlide({ index }) {
         <div className={s.thanksMascots}><Mascot className={s.thanksCopilot} /></div>
         <Logos size="sm" />
       </div>
-      <BottomBar text={<Editable as="span" id="thankYou.footer">{BOOTCAMP.footer}</Editable>} />
+      <SlideFooter id="thankYou" />
     </Slide>
   )
 }

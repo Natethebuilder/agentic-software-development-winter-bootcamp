@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
-import { REGISTRATION_FORM } from '../content.js'
+import { PRIVACY_STATEMENT_URL, REGISTRATION_FORM } from '../content.js'
 import { REGISTRATION_FORM_EMBED_URL, REGISTRATION_FORM_URL } from '../siteState.js'
 import s from './MicrosoftFormRegistration.module.css'
 
@@ -30,10 +30,18 @@ function NewTabLink() {
   )
 }
 
+// Sits above the form: why the form collects personal data, and the Privacy Statement link that
+// Microsoft's privacy guidance requires wherever personal data is collected. It opens in a new tab
+// so a half-completed form is not lost.
 function Toolbar() {
   return (
     <div className={s.toolbar}>
-      <small>{REGISTRATION_FORM.provider}</small>
+      <p className={s.notice}>
+        {REGISTRATION_FORM.notice}{' '}
+        <a href={PRIVACY_STATEMENT_URL} target="_blank" rel="noopener noreferrer">
+          Privacy <span aria-hidden="true">↗</span>
+        </a>
+      </p>
       <NewTabLink />
     </div>
   )
