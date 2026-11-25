@@ -443,8 +443,54 @@ test('keeps registration available on the registration slide', async ({ page }) 
   await page.getByRole('button', { name: 'Register', exact: true }).click()
   const dialog = page.getByRole('dialog', { name: 'Bootcamp registration' })
   await expect(dialog).toBeVisible()
+  await expect(dialog.getByText(/^Microsoft uses the details you enter in this Microsoft Form to register you/)).toBeVisible()
+  await expect(dialog.getByRole('link', { name: 'Privacy', exact: true }))
+    .toHaveAttribute('href', 'https://go.microsoft.com/fwlink/?LinkId=521839')
   await expect(dialog.locator('iframe')).toHaveAttribute('src', /forms\.cloud\.microsoft\/.*embed=true/)
   await page.getByRole('button', { name: 'Close registration' }).click()
   await expect(dialog).toHaveCount(0)
   await expect(page.getByRole('navigation', { name: 'Slide navigation' })).toBeVisible()
+})
+
+test('shows the privacy links in the footer of every slide', async ({ page }) => {
+  const links = [
+    ['Your Privacy Choices', 'https://go.microsoft.com/fwlink/?linkid=2214802'],
+    ['Consumer Health Privacy', 'https://go.microsoft.com/fwlink/?linkid=2259814'],
+    ['Privacy', 'https://go.microsoft.com/fwlink/?LinkId=521839'],
+  ]
+  await page.goto('/')
+  for (let slide = 1; slide <= 18; slide += 1) {
+    const footerLinks = page.locator('.slide.active footer a')
+    await expect(footerLinks).toHaveText(links.map(([text]) => text))
+    for (const [index, [, href]] of links.entries()) {
+      await expect(footerLinks.nth(index)).toBeVisible()
+      await expect(footerLinks.nth(index)).toHaveAttribute('href', href)
+    }
+    const icon = footerLinks.first().getByRole('img', { name: 'California Consumer Privacy Act (CCPA) Opt-Out Icon' })
+    await expect(icon).toBeVisible()
+    expect(await icon.evaluate((img) => img.complete && img.naturalWidth > 0)).toBe(true)
+    if (slide < 18) await page.getByRole('button', { name: 'Next slide', exact: true }).click()
+  }
+})
+
+test('keeps hidden slide navigation for the visit only and clears older saved values', async ({ page }) => {
+  await page.goto('/')
+  await page.evaluate(() => {
+    for (const key of [
+      'deck-navbar-dismissed', 'winter-bootcamp:prep', 'agentic-dev-motion', 'software-winter-bootcamp:code-rain-v1',
+      'agentic-software-development-winter-bootcamp:registration-token',
+    ]) localStorage.setItem(key, '1')
+  })
+  await page.reload()
+  const navbar = page.locator('.deck-navbar')
+  await expect(navbar).toBeVisible()
+  expect(await page.evaluate(() => localStorage.length)).toBe(0)
+  await page.getByRole('button', { name: 'Hide slide navigation' }).click()
+  await expect(navbar).toHaveCount(0)
+  await page.reload()
+  await expect(navbar).toHaveCount(0)
+  expect(await page.evaluate(() => [localStorage.length, sessionStorage.getItem('deck-navbar-dismissed')])).toEqual([0, '1'])
+  const nextVisit = await page.context().newPage()
+  await nextVisit.goto('/')
+  await expect(nextVisit.locator('.deck-navbar')).toBeVisible()
 })

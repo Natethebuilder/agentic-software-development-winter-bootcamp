@@ -263,5 +263,5 @@ html[data-export-mode="capture"] .deck-navigation { display: none; }
   [class*="exportGroup"],
   button[title="Back to home"] { display: none !important; }
   .deck-navbar { bottom: calc(12px + env(safe-area-inset-bottom, 0px)); }
-  .slide > [class^="_bar_"], .slide-overflow-warn { display: none; }
+  .slide-overflow-warn { display: none; }
 }

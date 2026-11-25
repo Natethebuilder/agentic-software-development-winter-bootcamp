@@ -19,6 +19,15 @@ export const BOOTCAMP = {
   footer: 'AI-Native Software Development Lifecycle Winter Bootcamp',
 }
 
+// Microsoft's website privacy guidance requires these footer links, with this exact text, on every
+// slide, and the Privacy Statement link wherever the site collects personal data.
+export const PRIVACY_STATEMENT_URL = 'https://go.microsoft.com/fwlink/?LinkId=521839'
+export const PRIVACY_LINKS = [
+  { text: 'Your Privacy Choices', href: 'https://go.microsoft.com/fwlink/?linkid=2214802', optOutIcon: true },
+  { text: 'Consumer Health Privacy', href: 'https://go.microsoft.com/fwlink/?linkid=2259814' },
+  { text: 'Privacy', href: PRIVACY_STATEMENT_URL },
+]
+
 export const DATES_NOTE = ''
 
 const ACCENTS = ['#7aaac8', '#9080c0', '#6a9e84', '#d4a06a', '#d4943c', '#cc8e82']
@@ -466,7 +475,7 @@ export const REGISTRATION_FORM = {
   },
   start: 'Start registration',
   newTab: 'Open the form in a new tab',
-  provider: 'The form is provided by Microsoft Forms.',
+  notice: 'Microsoft uses the details you enter in this Microsoft Form to register you for the bootcamp and send your invitation.',
   providerBeforeStart: 'The form is provided by Microsoft Forms and loads only when you start.',
   loading: 'Loading the registration form…',
   frameTitle: 'AI-Native Software Development Lifecycle Winter Bootcamp registration form (Microsoft Forms)',

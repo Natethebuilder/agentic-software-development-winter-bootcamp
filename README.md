@@ -56,6 +56,23 @@ A few days before the event, the attendee receives an invitation containing the 
 
 Registrations made through the retired on-site form are in the `Agentic Software Development Bootcamp Registrations` SharePoint List. Its setup and the shared Power Automate flow are described in `docs/registration-backend.md` in the git history.
 
+## Privacy
+
+The site follows Microsoft's website privacy guidance:
+
+- **Footer links on every slide**: Your Privacy Choices, Consumer Health Privacy and Privacy (the Microsoft Privacy Statement), with the exact link text and `go.microsoft.com` links in `PRIVACY_LINKS` in `src/content.js`. On phones, where slides scroll, the links close each slide's content. Your Privacy Choices shows the unmodified opt-out icon from microsoft.com's footer, `public/ccpa-opt-out.svg`, with the alt text "California Consumer Privacy Act (CCPA) Opt-Out Icon".
+- **Registration**: above the embedded form, the registration dialog says why the form collects personal data and links the Privacy Statement. [docs/registration-form/README.md](docs/registration-form/README.md#privacy-and-data-retention) covers the form's required questions and when responses are deleted.
+- **No cookies**: the site sets no cookies and has no analytics, ads, pixels or third-party trackers, and Inter is served from the site, so it needs no cookie banner or "Manage cookies" link. The registration dialog loads Microsoft Forms only after the visitor selects Register. The site keeps only these values, in session storage, which the browser deletes when the tab closes:
+
+| Key | Purpose | Set |
+| --- | --- | --- |
+| `slide:agentic-software-development-winter-bootcamp` | Reopens the current slide after a reload (deck engine) | On load and on every slide change |
+| `deck-navbar-dismissed` | Keeps the slide navigation hidden after the visitor hides it | When the visitor selects Hide |
+
+Earlier versions saved values in local storage, which outlives the visit. On load, `src/main.jsx` removes them from returning visitors' browsers.
+
+Adding a cookie, analytics, ads or any other third-party script needs a privacy review first, and optional cookies also need a cookie banner and a "Manage cookies" footer link.
+
 ## Develop
 
 ```powershell
